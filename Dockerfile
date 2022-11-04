@@ -11,9 +11,9 @@ ENV HOME=/${WORKDIR} \
 
 WORKDIR ${HOME}
 
-# COPY package*.json ./
-# RUN yarn install
+COPY package*.json ./
+RUN yarn install
 
-# COPY . ./
+COPY . ./
 
-# RUN yarn run build
+RUN yarn run build
