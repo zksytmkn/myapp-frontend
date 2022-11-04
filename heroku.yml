@@ -1,0 +1,11 @@
+setup:
+  config:
+    NODE_ENV: production
+build:
+  docker:
+    web: Dockerfile
+  config:
+    WORKDIR: app
+    API_URL: "https://myapp-edible-api.herokuapp.com"
+run:
+  web: yarn run start
