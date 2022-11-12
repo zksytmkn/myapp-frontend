@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  front:
+    container_name: front
+    build:
+      context: .
+      args:
+        WORKDIR: $WORKDIR
+        API_URL: "http://localhost:$API_PORT"
+    command: yarn run dev
+    volumes:
+      - ".:/$WORKDIR"
+    ports:
+      - "$FRONT_PORT:3000"
+    networks:
+      - api_web
+networks: 
+  api_web:
+    external: true
