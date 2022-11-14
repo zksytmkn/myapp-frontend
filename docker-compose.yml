@@ -7,14 +7,16 @@ services:
       context: .
       args:
         WORKDIR: $WORKDIR
-        API_URL: "http://localhost:$API_PORT"
+        API_URL: "http://localhost:$WEB_PORT"
     command: yarn run dev
     volumes:
       - ".:/$WORKDIR"
     ports:
       - "$FRONT_PORT:3000"
     networks:
-      - api_web
-networks: 
-  api_web:
+      - external
+
+networks:
+  external:
+    name: api_external
     external: true
