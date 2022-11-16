@@ -3,7 +3,7 @@ setup:
     NODE_ENV: production
 build:
   docker:
-    web: Dockerfile
+    web: Dockerfile.heroku
   config:
     WORKDIR: app
     API_URL: "https://myapp-edible-api.herokuapp.com"
