@@ -7,7 +7,6 @@ services:
       context: .
       args:
         WORKDIR: $WORKDIR
-        API_URL: "http://localhost:$API_PORT"
     command: yarn run start
     volumes:
       - ".:/$WORKDIR"
