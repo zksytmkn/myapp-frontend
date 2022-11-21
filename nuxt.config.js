@@ -82,7 +82,7 @@ export default {
   i18n: {
     locales: ['ja', 'en'],
     defaultLocale: 'ja',
-    // Doc: https://kazupon.github.io/vue-i18n/api/#properties
+    strategy: 'no_prefix',
     vueI18n: {
       fallbackLocale: 'ja',
       // silentTranslationWarn: true,
