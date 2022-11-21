@@ -11,9 +11,11 @@
       />
       <user-form-email
         :email.sync="params.user.email"
+        placeholder
       />
       <user-form-password
         :password.sync="params.user.password"
+        set-validation
       />
       <v-btn
         :disabled="!isValid"
