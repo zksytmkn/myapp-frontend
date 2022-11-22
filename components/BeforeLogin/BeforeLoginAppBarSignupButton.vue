@@ -1,11 +1,11 @@
 <template>
   <v-btn
-    text
+    outlined
     class="ml-2 font-weight-bold"
-    color="black"
-    to="/login"
+    color="appblue"
+    to="/signup"
   >
-    {{ $t('pages.login') }}
+    {{ $my.pageTitle('signup') }}
   </v-btn>
 </template>
 
