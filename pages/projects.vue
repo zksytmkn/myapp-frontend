@@ -124,7 +124,7 @@
             hide-default-footer
           >
             <template
-              v-slot:item.name="{ item }"
+              v-slot:[`item.name`]="{ item }"
             >
               <nuxt-link
                 :to="$my.projectLinkTo(item.id)"
@@ -134,7 +134,7 @@
               </nuxt-link>
             </template>
             <template
-              v-slot:item.updatedAt="{ item }"
+              v-slot:[`item.updatedAt`]="{ item }"
             >
               {{ $my.dataFormat(item.updatedAt) }}
             </template>
