@@ -6,6 +6,7 @@
     <v-form
       ref="form"
       v-model="isValid"
+      @submit.prevent="login"
     >
       <user-form-email
         :email.sync="params.user.email"
@@ -25,12 +26,12 @@
         class="px-0"
       >
       <v-btn
+        type="submit"
         :disabled="!isValid || loading"
         :loading="loading"
         block
         color="appblue"
         class="white--text"
-        @click="login"
       >
         ログインする
       </v-btn>
@@ -43,19 +44,18 @@
 <script>
 export default {
   layout: 'before-login',
-  data () {
+  data ( { $store } ) {
     return {
       isValid: false,
       loading: false,
-      params: { user: { email: '', password: '' } }
+      params: { user: { email: '', password: '' } },
+      redirectPath: $store.state.loggedIn.homePath
     }
   },
   methods: {
     login () {
       this.loading = true
-      setTimeout(() => {
-        this.loading = false
-      }, 1500)
+      this.$router.push(this.redirectPath)
     }
   }
 }
