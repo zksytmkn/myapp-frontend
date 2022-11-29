@@ -11,13 +11,7 @@ export const state = () => ({
   },
   project: {
     current: null,
-    list: [
-      { id: 1, name: 'MyProject01', updatedAt: '2020-04-01T12:00:00+09:00' },
-      { id: 2, name: 'MyProject02', updatedAt: '2020-04-05T12:00:00+09:00' },
-      { id: 3, name: 'MyProject03', updatedAt: '2020-04-03T12:00:00+09:00' },
-      { id: 4, name: 'MyProject04', updatedAt: '2020-04-04T12:00:00+09:00' },
-      { id: 5, name: 'MyProject05', updatedAt: '2020-04-01T12:00:00+09:00' }
-    ]
+    list: []
   },
   user: {
     current: null
@@ -32,6 +26,9 @@ export const state = () => ({
 export const getters = {}
 
 export const mutations = {
+  setProjectList (state, payload) {
+    state.project.list = payload
+  },
   setCurrentProject (state, payload) {
     state.project.current = payload
   },
@@ -50,6 +47,10 @@ export const mutations = {
 }
 
 export const actions = {
+  getProjectList ({ commit }, projects) {
+    projects = projects || []
+    commit('setProjectList', projects)
+  },
   getCurrentProject ( { state, commit }, params ) {
     const id = Number(params.id)
     const currentProject =
