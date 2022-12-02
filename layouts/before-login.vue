@@ -11,6 +11,7 @@
 
 <script>
 export default {
-  name: 'LayoutsBeforeLogin'
+  name: 'LayoutsBeforeLogin',
+  middleware: ['logged-in-redirect']
 }
 </script>
