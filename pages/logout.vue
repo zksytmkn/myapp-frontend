@@ -1,6 +1,7 @@
 <script>
 export default {
-  middleware ({ redirect }) {
+  async middleware ({ $auth, redirect }) {
+    await $auth.logout()
     return redirect('/')
   }
 }
