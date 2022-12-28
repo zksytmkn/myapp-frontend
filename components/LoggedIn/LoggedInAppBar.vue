@@ -24,6 +24,7 @@
 
     <v-spacer />
 
+    <logged-in-app-bar-cart-menu />
     <logged-in-app-bar-account-menu />
   </v-app-bar>
 </template>

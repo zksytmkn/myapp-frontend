@@ -14,9 +14,6 @@
         >
           <v-list-item-content>
             <v-list-item-action-text>
-              <v-icon>
-                mdi-chevron-double-left
-              </v-icon>
               閉じる
             </v-list-item-action-text>  
           </v-list-item-content>
