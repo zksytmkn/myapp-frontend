@@ -1,18 +1,18 @@
 <template>
   <v-container>
     <v-btn
-      v-if="!!currentProject"
+      v-if="!!currentProduct"
       small
       plain
       color="primary"
-      :to="$my.projectLinkTo(currentProject.id, dashboardPath)"
+      :to="$my.productLinkTo(currentProduct.id, productPath)"
     >
       <v-icon
         left
       >
         mdi-chevron-double-left
       </v-icon>
-      {{ $my.pageTitle(dashboardPath) }}に戻る
+      {{ $my.pageTitle(productPath) }}に戻る
     </v-btn>
     <nuxt-child />
   </v-container>
@@ -26,12 +26,12 @@ export default {
   },
   data () {
     return {
-      dashboardPath: 'project-id-dashboard'
+      productPath: 'product-id-detail'
     }
   },
   computed: {
-    currentProject () {
-      return this.$store.state.project.current
+    currentProduct () {
+      return this.$store.state.product.current
     }
   }
 }

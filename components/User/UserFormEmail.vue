@@ -1,8 +1,9 @@
 <template>
   <v-text-field
+    dense
+    :label="setLabel"
     v-model="setEmail"
     :rules="rules"
-    label="メールアドレスを入力"
     :placeholder="placeholder ? 'your@email.com' : undefined"
     outlined
   />
@@ -18,6 +19,10 @@ export default {
     placeholder: {
       type: Boolean,
       default: false
+    },
+    label: {
+      type: String,
+      default: 'メールアドレスを入力'
     }
   },
   data () {
@@ -36,6 +41,9 @@ export default {
       set (newValue) {
         return this.$emit('update:email',newValue)
       }
+    },
+    setLabel () {
+      return this.label
     }
   }
 }

@@ -1,9 +1,10 @@
 <template>
   <v-text-field
+    dense
+    :label="setLabel"
     v-model="setPassword"
     :rules="form.rules"
     :hint="form.hint"
-    label="パスワードを入力"
     :placeholder="form.placeholder"
     :hide-details="!setValidation"
     :counter="setValidation"
@@ -11,7 +12,8 @@
     :type="toggle.type"
     outlined
     autocomplete="on"
-    @click:append="show = !show"  />
+    @click:append="show = !show"
+  />
 </template>
 
 <script>
@@ -24,6 +26,10 @@ export default {
     setValidation: {
       type: Boolean,
       default: false
+    },
+    label: {
+      type: String,
+      default: 'パスワードを入力'
     }
   },
   data () {
@@ -39,6 +45,9 @@ export default {
       set (newValue) {
         return this.$emit('update:password',newValue)
       }
+    },
+    setLabel () {
+      return this.label
     },
     form () {
       const min = '8文字以上'

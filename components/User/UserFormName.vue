@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    dense
     v-model="setName"
     :rules="rules"
     :counter="max"

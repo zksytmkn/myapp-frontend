@@ -33,13 +33,13 @@ export default {
       const items = [
         { text: this.$my.pageTitle(currentRouteName) }
       ]
-      const currentProject = this.$store.state.project.current
+      const currentProduct = this.$store.state.product.current
       if (
-        currentProject &&
-        currentRouteName.match(/project/) &&
+        currentProduct &&
+        currentRouteName.match(/product/) &&
         !this.$vuetify.breakpoint.xs
       ) {
-        items.unshift({ text: currentProject.name })
+        items.unshift({ text: currentProduct.name })
       }
       return items
     }

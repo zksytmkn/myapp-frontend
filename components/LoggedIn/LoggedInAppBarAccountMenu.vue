@@ -32,7 +32,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider />
+      <v-divider/>
 
       <v-subheader>
         アカウント
@@ -55,8 +55,9 @@
           >
             <v-icon
               size="22"
-              v-text="menu.icon"
-            />
+            >
+            {{ menu.icon }}
+            </v-icon>
           </v-list-item-icon>
           <v-list-item-title>
             {{ $my.pageTitle(menu.name) }}
@@ -72,8 +73,8 @@ export default {
   data () {
     return {
       menus: [
-        { name: 'account-settings', icon: 'mdi-account-cog' },
-        { name: 'account-password', icon: 'mdi-lock-outline' },
+        { name: 'mypage', icon: 'mdi-home' },
+        { name: 'settings-profile', icon: 'mdi-account-cog' },
         { name: 'logout', icon: 'mdi-logout-variant', divider: true }
       ]
     }

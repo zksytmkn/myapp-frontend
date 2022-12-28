@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  middleware: ['authentication'],
+  middleware: ['authentication', 'get-product-list', 'get-product-current'],
   data () {
     return {
       drawer: null

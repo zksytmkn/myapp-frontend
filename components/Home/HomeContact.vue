@@ -6,6 +6,7 @@
       cols="12"
       sm="10"
       md="8"
+      class="mb-10"
     >
       <v-form
         ref="contact"
@@ -44,7 +45,7 @@
             v-model="contents"
             :rules="contentRules"
             :disabled="sentIt"
-            label="お問合せの内容をお聞かせください(必須)"
+            label="お問い合わせの内容をお聞かせください(必須)"
             rows="5"
             outlined
             auto-grow
@@ -66,13 +67,6 @@
           >
             キャンセル
           </v-btn>
-          <div
-            class="grey--text"
-          >
-            <small>
-              実際には送信されません
-            </small>
-          </div>
         </v-container>
       </v-form>
     </v-col>
@@ -81,7 +75,7 @@
       timeout="-1"
       color="primary"
     >
-      お問合せ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。
+      お問い合わせ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。
       <template
         #action="{ attrs }"
       >
@@ -114,7 +108,7 @@ export default {
       ],
       contents: '',
       contentRules: [
-        v => !!v || 'お問合せ内容を入力してください'
+        v => !!v || 'お問い合わせ内容を入力してください'
       ],
       loading: false,
       sentIt: false

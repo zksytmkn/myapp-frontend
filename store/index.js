@@ -1,4 +1,4 @@
-const homePath = 'projects'
+const homePath = 'products-list'
 
 export const state = () => ({
   styles: {
@@ -19,7 +19,15 @@ export const state = () => ({
       'login'
     ]
   },
-  project: {
+  product: {
+    current: null,
+    list: []
+  },
+  post: {
+    current: null,
+    list: []
+  },
+  community: {
     current: null,
     list: []
   },
@@ -41,11 +49,23 @@ export const state = () => ({
 export const getters = {}
 
 export const mutations = {
-  setProjectList (state, payload) {
-    state.project.list = payload
+  setProductList (state, payload) {
+    state.product.list = payload
   },
-  setCurrentProject (state, payload) {
-    state.project.current = payload
+  setCurrentProduct (state, payload) {
+    state.product.current = payload
+  },
+  setPostList (state, payload) {
+    state.post.list = payload
+  },
+  setCurrentPost (state, payload) {
+    state.post.current = payload
+  },
+  setCommunityList (state, payload) {
+    state.community.list = payload
+  },
+  setCurrentCommunity (state, payload) {
+    state.community.current = payload
   },
   setCurrentUser (state, payload) {
     state.user.current = payload
@@ -68,17 +88,41 @@ export const mutations = {
 }
 
 export const actions = {
-  getProjectList ({ commit }, projects) {
-    projects = projects || []
-    commit('setProjectList', projects)
+  getProductList ({ commit }, products) {
+    products = products || []
+    commit('setProductList', products)
   },
-  getCurrentProject ( { state, commit }, params ) {
-    let currentProject = null
+  getCurrentProduct ( { state, commit }, params ) {
+    let currentProduct = null
     if (params && params.id) {
       const id = Number(params.id)
-      currentProject = state.project.list.find(project => project.id === id) || null  
+      currentProduct = state.product.list.find(product => product.id === id) || null  
     }
-    commit('setCurrentProject', currentProject)
+    commit('setCurrentProduct', currentProduct)
+  },
+  getPostList ({ commit }, posts) {
+    posts = posts || []
+    commit('setPostList', posts)
+  },
+  getCurrentPost ( { state, commit }, params ) {
+    let currentPost = null
+    if (params && params.id) {
+      const id = Number(params.id)
+      currentPost = state.post.list.find(post => post.id === id) || null  
+    }
+    commit('setCurrentPost', currentPost)
+  },
+  getCommunityList ({ commit }, communities) {
+    communities = communities || []
+    commit('setCommunityList', communities)
+  },
+  getCurrentCommunity ( { state, commit }, params ) {
+    let currentCommunity = null
+    if (params && params.id) {
+      const id = Number(params.id)
+      currentCommunity = state.community.list.find(community => community.id === id) || null  
+    }
+    commit('setCurrentCommunity', currentCommunity)
   },
   getCurrentUser ({ commit }, user) {
     commit('setCurrentUser', user)

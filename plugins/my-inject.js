@@ -17,7 +17,11 @@ class MyInject {
     return dateTimeFormat.format(new Date(dateStr))
   }
 
-  projectLinkTo (id, name = 'project-id-dashboard') {
+  productLinkTo (id, name = 'product-id-detail') {
+    return { name, params: { id } }
+  }
+
+  postLinkTo (id, name= 'post-id-detail') {
     return { name, params: { id } }
   }
 

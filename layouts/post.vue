@@ -15,13 +15,12 @@
     <v-main>
       <nuxt />
     </v-main>
-    <app-footer />
   </v-app>
 </template>
 
 <script>
 export default {
-  middleware: ['authentication'],
+  middleware: ['authentication', 'get-post-list', 'get-post-current'],
   data () {
     return {
       drawer: null

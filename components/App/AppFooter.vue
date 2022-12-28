@@ -28,7 +28,7 @@ export default {
   data ({ $config: { appName } }) {
     return {
       appName,
-      height: 32
+      height: 33
     }
   },
   computed: {
