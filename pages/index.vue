@@ -4,12 +4,11 @@
       :menus="menus"
       :img-height="imgHeight"
     />
-
     <v-img
       id="scroll-top"
       dark
       src="https://picsum.photos/id/11/1920/1080?blur=1"
-      gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.5)"
+      gradient="to top right, rgba(19,84,122,.3), rgba(128,208,199,.3)"
       :height="imgHeight"
     >
       <v-row
@@ -21,15 +20,99 @@
           cols="12"
           class="text-center"
         >
-          <h1 class="display-1 mb-4">
-            Edible
-          </h1>
-          <h4
-            class="subheading"
-            :style="{ letterSpacing: '5px' }"
+          <v-row
+            justify="center"
+            align="center"
           >
-            廃棄される農産物とそれを必要とする消費者を繋ぐサービス
-          </h4>
+            <v-col
+              cols="6"
+            >
+              <v-list
+                color="transparent"
+                class="text-left"
+              >
+                <v-list-item>
+                  <v-list-item-title
+                    class="mb-3"
+                    style="white-space: pre-line; line-height: 1.5;"
+                  >
+                    <h2>
+                      『Edible』は規格外農産物を減らし、
+                      持続可能な社会の実現を目指します。
+                    </h2>
+                  </v-list-item-title>
+                </v-list-item>
+                <div
+                  style="background-color:white; width:90%"
+                >
+                  <v-divider/>
+                </div>
+                <v-list-item-subtitle
+                  class="font-weight-bold"
+                  style="white-space: pre-line; line-height: 1.5;"
+                >
+                  <p>
+                    世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
+                    本サービスはそういった農産物を生産する農家の方々の悩みを解消し、さらにSDGs
+                    (持続可能な開発目標)Goal12の『つくる責任、つかう責任』達成にも則しています。
+                  </p>
+                </v-list-item-subtitle>
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                    >
+                      <before-login-app-bar-signup-button>
+                        無料で会員登録する
+                      </before-login-app-bar-signup-button>
+                      <before-login-app-bar-guest-login-button>
+                        無料で機能を試す
+                      </before-login-app-bar-guest-login-button>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                    >
+                      <nuxt-link
+                        class="ml-2 font-weight-bold teal--text"
+                        to="/login"
+                      >
+                        すでにアカウントをお持ちの方はこちら
+                      </nuxt-link>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-list>
+            </v-col>
+            <v-col
+              cols="4"
+            >
+              <div
+                class="text-center"
+              >
+                <v-avatar
+                  color="teal"
+                  size="360"
+                >
+                  <v-list
+                    color="transparent"
+                    class="font-weight-bold"
+                    style="white-space: pre-line;"
+                  >
+                    <span>
+                      SDGs(持続可能な開発目標)Goal12
+                    </span>
+                    <span>
+                      『つくる責任、つかう責任』
+                    </span>
+                    <span>
+                      持続可能な方法で生産し、
+                      責任をもって消費する。
+                    </span>
+                  </v-list>
+                </v-avatar>
+              </div>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-img>
@@ -56,11 +139,7 @@
               >
                 {{ $t(`menus.${menu.title}`) }}
               </v-card-title>
-              <v-card-text
-                class="text-center"
-              >
-                {{ menu.subtitle }}
-              </v-card-text>
+              <v-divider/>
             </v-card>
           </v-col>
 
@@ -81,20 +160,17 @@
 
 <script>
 import HomeAbout from '~/components/Home/HomeAbout'
-import HomeContact from '~/components/Home/HomeContact'
 
 export default {
   middleware: ['logged-in-redirect'],
   components: {
-    HomeAbout,
-    HomeContact
+    HomeAbout
   },
   data () {
     return {
-      imgHeight: 500,
+      imgHeight: 700,
       menus: [
-        { title: 'about' },
-        { title: 'contact', subtitle: '何でもお気軽にお問い合わせください' }
+        { title: 'about' }
       ]
     }
   }

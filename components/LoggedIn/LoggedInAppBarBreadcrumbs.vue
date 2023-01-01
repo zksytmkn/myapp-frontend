@@ -9,18 +9,11 @@
       <v-breadcrumbs-item>
         <div
           class="text-truncate"
-          :style="{ maxWidth: '120px' }"
+          :style="{ maxWidth: '130px' }"
         >
           {{ item.text }}
         </div>
       </v-breadcrumbs-item>
-    </template>
-    <template
-      v-slot:divider
-    >
-      <v-icon>
-        mdi-chevron-right
-      </v-icon>
     </template>
   </v-breadcrumbs>
 </template>
@@ -33,13 +26,37 @@ export default {
       const items = [
         { text: this.$my.pageTitle(currentRouteName) }
       ]
-      const currentProduct = this.$store.state.product.current
+
       if (
-        currentProduct &&
+        currentRouteName.match(/products/) ||
         currentRouteName.match(/product/) &&
         !this.$vuetify.breakpoint.xs
       ) {
-        items.unshift({ text: currentProduct.name })
+        items.unshift({ text: "農産物" })
+      }
+
+      if (
+        currentRouteName.match(/posts/) ||
+        currentRouteName.match(/post/) &&
+        !this.$vuetify.breakpoint.xs
+      ) {
+        items.unshift({ text: "農家の呟き" })
+      }
+
+      if (
+        currentRouteName.match(/communities/) ||
+        currentRouteName.match(/community/) &&
+        !this.$vuetify.breakpoint.xs
+      ) {
+        items.unshift({ text: "コミュニティ" })
+      }
+
+      if (
+        currentRouteName.match(/settings/) &&
+        !currentRouteName.match(/information/) &&
+        !this.$vuetify.breakpoint.xs
+      ) {
+        items.unshift({ text: "設定" })
       }
       return items
     }

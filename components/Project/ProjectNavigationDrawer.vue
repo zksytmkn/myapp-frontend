@@ -38,7 +38,7 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-              {{ $my.pageTitle(nav.name) }}
+              {{ nav.name }}
             </v-list-item-title>
           </v-list-item-content>
         </template>
@@ -102,7 +102,7 @@ export default {
     return {
       mobileBreakpoint: 960,
       navMenus: [
-        { name: 'product-id-detail', icon: 'mdi-cart', color: '#CC0000',
+        { name: '農産物', icon: 'mdi-cart', color: '#CC0000',
           lists: [
             {
               name: '一覧',
@@ -136,7 +136,7 @@ export default {
             }
           ]
         },
-        { name: 'post-id-post', icon: 'mdi-file-document', color: '#336791',
+        { name: '農家の呟き', icon: 'mdi-file-document', color: '#336791',
           lists: [
             {
               name: '一覧',
@@ -165,7 +165,7 @@ export default {
             }
           ]
         },
-        { name: 'community', icon: 'mdi-charity', color: '#00C48D',
+        { name: 'コミュニティ', icon: 'mdi-charity', color: '#00C48D',
           lists: [
             {
               name: '一覧',

@@ -15,7 +15,7 @@
         <v-col
           cols="12"
         >
-          <v-sheet
+          <v-card
             rounded="lg"
           >
             <v-list>
@@ -87,7 +87,7 @@
                 </v-list-item-content>
               </v-list-item>
             </v-list>
-          </v-sheet>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>

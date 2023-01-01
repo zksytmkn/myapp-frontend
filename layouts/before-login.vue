@@ -5,6 +5,7 @@
       <app-toaster />
       <nuxt />
     </v-main>
+    <app-policy />
     <app-footer />
   </v-app>
 </template>

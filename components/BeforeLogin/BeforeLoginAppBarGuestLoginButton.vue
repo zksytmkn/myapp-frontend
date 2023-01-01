@@ -2,7 +2,7 @@
   <v-btn
     outlined
     class="ml-2 font-weight-bold"
-    color="blue"
+    color="orange"
     to="/signup"
   >
     <slot>

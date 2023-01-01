@@ -13,19 +13,50 @@
     "logout": "ログアウト",
     "mypage": "マイページ",
     "settings": {
-      "profile": "設定"
+      "deactivate":"退会する",
+      "email":"メールアドレス変更",
+      "information": "お知らせ",
+      "password": "パスワード変更",
+      "profile": "プロフィール編集"
     },
     "product": {
       "id": {
-        "detail": "農産物"
+        "detail": "詳細"
       }
     },
+    "products": {
+      "like": "いいね",
+      "list": "一覧",
+      "new": "出品",
+      "purchased": "購入済み",
+      "recommend": "おすすめ",
+      "search": "検索"
+    }
+    ,
     "post": {
       "id": {
-        "post": "農家の呟き"
+        "detail": "詳細"
       }
     },
-    "community" : "コミュニティ"
+    "posts": {
+      "like": "いいね",
+      "list": "一覧",
+      "new": "投稿",
+      "recommend": "おすすめ",
+      "search": "検索"
+    },
+    "community": {
+      "id": {
+        "detail": "詳細"
+      }
+    },
+    "communities": {
+      "invited": "招待",
+      "list": "一覧",
+      "new": "作成",
+      "participated": "参加",
+      "search": "検索"
+    }
   },
   "error": {
     "Unauthorized": "認証に失敗しました",

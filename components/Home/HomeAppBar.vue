@@ -22,6 +22,7 @@
         :key="`menu-btn-${i}`"
         text
         :class="{ 'hidden-sm-and-down': (menu.title === 'about') }"
+        class="font-weight-bold"
         @click="$vuetify.goTo(`#${menu.title}`)"
       >
         {{ $t(`menus.${menu.title}`) }}

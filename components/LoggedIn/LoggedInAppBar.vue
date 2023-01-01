@@ -18,9 +18,7 @@
       :class="{ 'hidden-mobile-and-down': isNotHomePath }"
     />
 
-    <logged-in-app-bar-breadcrumbs
-      v-if="isNotHomePath"
-    />
+    <logged-in-app-bar-breadcrumbs/>
 
     <v-spacer />
 
