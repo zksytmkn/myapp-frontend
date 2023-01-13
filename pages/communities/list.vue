@@ -28,8 +28,6 @@
       >
         <v-col
           cols="12"
-          :sm="container.sm"
-          :md="container.md"
         >
           <v-row
             align="center"
