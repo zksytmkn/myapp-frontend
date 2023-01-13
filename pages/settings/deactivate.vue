@@ -32,7 +32,7 @@
                             退会前にご確認ください。
                           </div>
                           <br>
-                          <div style="white-space: pre-line;">
+                          <div style="white-space:pre-line;">
                             ※メールアドレスや、プロフィールを変更したい場合は、下記のメニューから変更できます。
                             退会の手続きは必要ありません。引き続きEdibleをお楽しみください。
                           </div>

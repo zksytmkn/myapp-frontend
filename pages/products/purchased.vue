@@ -19,6 +19,28 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
+      <v-container
+        v-show="!purchasedProducts.length"
+      >
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p>
+              購入しておりません。
+            </p>
+            <v-btn
+              class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/products/list"
+            >
+              農産物を見てみる
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
       <v-container>
       </v-container>
     </v-container>
@@ -34,6 +56,17 @@
 
 <script>
 export default {
+  layout: 'logged-in',
+  computed: {
+    purchasedProducts () {
+      const copyProducts = Array.from(this.$store.state.product.list.filter((x) => x.purchased === true))
+      return copyProducts.sort((a, b) => {
+        if (a.updatedAt > b.updatedAt) { return -1 }
+        if (a.updatedAt < b.updatedAt) { return 1 }
+        return 0
+      })
+    }
+  }
 }
 </script>
 

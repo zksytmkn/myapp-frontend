@@ -23,7 +23,7 @@
               <v-list-item>
                 <v-list-item-title
                   class="text-h5 font-weight-bold"
-                  style="white-space: pre-line;"
+                  style="white-space:pre-line;"
                 >
                   <template>
                     <slot></slot>

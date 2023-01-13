@@ -10,7 +10,16 @@
         Please look around and enjoy it !
       </template>
     </logged-in-app-eye-catch>
+
     <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          出品
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
     </v-container>
   </div>
 </template>

@@ -12,14 +12,128 @@
     </logged-in-app-eye-catch>
 
     <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          全てのコミュニティ
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
     </v-container>
+    <v-container>
+      <v-row
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          :sm="container.sm"
+          :md="container.md"
+        >
+          <v-row
+            align="center"
+          >
+            <v-col
+              cols="12"
+              :sm="card.sm"
+              :md="card.md"
+            >
+              <v-btn
+                block
+                :height="card.height"
+                :elevation="card.elevation"
+              >
+                <div>
+                  <v-icon
+                    size="24"
+                    class="my-2"
+                  >
+                    mdi-plus
+                  </v-icon>
+                  <div
+                    class="caption"
+                  >
+                    コミュニティを作成する
+                  </div>
+                </div>
+              </v-btn>
+            </v-col>
+
+            <v-col
+              v-for="(post, i) in recentCommunities"
+              :key="`card-post-${i}`"
+              cols="12"
+              :sm="card.sm"
+              :md="card.md"
+            >
+              <v-card
+                block
+                :height="card.height"
+                :elevation="card.elevation"
+                :to="$my.postLinkTo(post.id)"
+                class="v-btn text-capitalize"
+              >
+                <v-card-title
+                  class="pb-1 d-block text-truncate"
+                >
+                  {{ post.name }}
+                </v-card-title>
+                <v-card-text
+                  class="caption"
+                >
+                  <v-icon
+                    size="14"
+                  >
+                    mdi-update
+                  </v-icon>
+                  {{ $my.dataFormat(post.updatedAt) }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-pagination
+      class="my-6"
+      v-model="page"
+      :length="6"
+      circle
+    >
+    </v-pagination>
   </div>
 </template>
 
 <script>
 export default {
   layout: 'logged-in',
-  middleware: ['get-community-list']
+  middleware: ['get-community-list'],
+  data () {
+    return {
+      page: 1,
+      container: {
+        sm: 10,
+        md: 8
+      },
+      card: {
+        sm: 6,
+        md: 4,
+        height: 110,
+        elevation: 4
+      }
+    }
+  },
+  computed: {
+    recentCommunities () {
+      const copyCommunities = Array.from(this.$store.state.community.list)
+      return copyCommunities.sort((a, b) => {
+        if (a.updatedAt > b.updatedAt) { return -1 }
+        if (a.updatedAt < b.updatedAt) { return 1 }
+        return 0
+      })
+    }
+  }
 }
 </script>
 

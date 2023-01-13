@@ -19,6 +19,30 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
+      <v-container
+        v-show="!recommendPosts.length"
+      >
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p>
+              いいねしてみましょう。
+              <br/>
+              ＊おすすめはいいねに基づいております。
+            </p>
+            <v-btn
+              class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/posts/list"
+            >
+              呟きを見てみる
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
       <v-container>
       </v-container>
     </v-container>
@@ -34,6 +58,18 @@
 
 <script>
 export default {
+  layout: 'logged-in',
+  middleware: ['get-post-list'],
+  computed: {
+    recommendPosts () {
+      const copyRecommendPosts = Array.from(this.$store.state.post.list.filter((x) => x.recommend === true))
+      return copyRecommendPosts.sort((a, b) => {
+        if (a.updatedAt > b.updatedAt) { return -1 }
+        if (a.updatedAt < b.updatedAt) { return 1 }
+        return 0
+      })
+    }
+  }
 }
 </script>
 

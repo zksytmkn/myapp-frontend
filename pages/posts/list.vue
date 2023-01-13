@@ -12,107 +12,22 @@
     </logged-in-app-eye-catch>
     
     <v-container>
-      <v-row
-        justify="center"
-        align="center"
-      >
-        <v-col
-          cols="12"
-          :sm="container.sm"
-          :md="container.md"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-card-title
-            class="font-weight-bold"
-          >
-            最近の呟き
-          </v-card-title>
-
-          <v-divider
-            class="mb-4"
-          />
-
-          <v-row
-            align="center"
-          >
-            <v-col
-              cols="12"
-              :sm="card.sm"
-              :md="card.md"
-            >
-              <v-btn
-                block
-                :height="card.height"
-                :elevation="card.elevation"
-              >
-                <div>
-                  <v-icon
-                    size="24"
-                    class="my-2"
-                  >
-                    mdi-plus
-                  </v-icon>
-                  <div
-                    class="caption"
-                  >
-                    呟きを追加する
-                  </div>
-                </div>
-              </v-btn>
-            </v-col>
-
-            <v-col
-              v-for="(post, i) in recentposts.slice(0, 5)"
-              :key="`card-post-${i}`"
-              cols="12"
-              :sm="card.sm"
-              :md="card.md"
-            >
-              <v-card
-                block
-                :height="card.height"
-                :elevation="card.elevation"
-                :to="$my.postLinkTo(post.id)"
-                class="v-btn text-capitalize"
-              >
-                <v-card-title
-                  class="pb-1 d-block text-truncate"
-                >
-                  {{ post.name }}
-                </v-card-title>
-                <v-card-text
-                  class="caption"
-                >
-                  <v-icon
-                    size="14"
-                  >
-                    mdi-update
-                  </v-icon>
-                  {{ $my.dataFormat(post.updatedAt) }}
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-
+          全ての呟き
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+    </v-container>
+    <v-container>
       <v-row
         justify="center"
       >
         <v-col
           cols="12"
-          :sm="container.sm"
-          :md="container.md"
         >
-          <v-card-title
-            class="font-weight-bold"
-          >
-            全ての呟き
-          </v-card-title>
-
-          <v-divider
-            class="mb-4"
-          />
-
           <v-data-table
             :headers="tableHeaders"
             :items="recentposts"
@@ -128,6 +43,49 @@
               >
                 {{ item.name }}
               </nuxt-link>
+            </template>
+            <template
+              v-slot:[`item.like`] = "{ item }"
+            >
+              <v-card-actions
+                class="pl-0"
+              >
+                <v-btn
+                  @click="$store.dispatch('updatePostLikeState', item)"
+                  :class="{ likeColor: item.like}"
+                  style="background:grey"
+                  fab
+                  dark
+                  x-small
+                >
+                  <v-icon>
+                    mdi-thumb-up
+                  </v-icon>
+                </v-btn>
+                <span
+                  class="font-weight-bold ml-1"
+                >
+                  Good
+                </span>
+                <v-btn
+                  @click="$store.dispatch('updatePostDislikeState', item)"
+                  :class="{ dislikeColor: item.dislike }"
+                  class="ml-2"
+                  style="background:grey"
+                  fab
+                  dark
+                  x-small
+                >
+                  <v-icon>
+                    mdi-thumb-down
+                  </v-icon>
+                </v-btn>
+                <span
+                  class="font-weight-bold ml-1"
+                >
+                  Bad
+                </span>
+              </v-card-actions>
             </template>
             <template
               v-slot:[`item.updatedAt`]="{ item }"
@@ -167,8 +125,13 @@ export default {
       },
       tableHeaders: [
         {
-          text: '表題',
+          text: 'タイトル',
           value: 'name'
+        },
+        {
+          text: 'いいね履歴',
+          width: 200,
+          value: 'like'
         },
         {
           text: '更新日',
@@ -196,5 +159,11 @@ export default {
   .v-parallax__content {
     padding: 0;
   }
+.likeColor {
+  background: #CC0000 !important;
+}
+.dislikeColor {
+  background: #336791 !important;
+}
 }
 </style>

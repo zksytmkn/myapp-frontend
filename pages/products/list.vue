@@ -10,17 +10,25 @@
         Please look around and enjoy it !
       </template>
     </logged-in-app-eye-catch>
-
+    
+    <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          全ての農産物
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+    </v-container>
     <v-container>
       <v-row>
         <v-col
-          v-for="(product, i) in products"
-          :key="`product-${i}`"
+          v-for="product in products"
+          :key="product.id"
           cols="6"
         >
-          <v-card
-            :to="$my.productLinkTo(product.id)"
-          >
+          <v-card>
             <v-container>
               <v-row>
                 <v-col
@@ -33,15 +41,27 @@
                   >
                   </v-img>
                   <v-card-title
-                    class="font-weight-bold pa-1 text-decoration-underline"
+                    class="font-weight-bold pa-1"
+                    style="max-width:360px;"
                   >
                     {{ product.name }}
+                    <v-spacer />
+                    <v-btn
+                      text
+                      outlined
+                      :to="$my.productLinkTo(product.id)"
+                      class="font-weight-bold"
+                    >
+                      詳細
+                    </v-btn>
                   </v-card-title>
-                  <v-card-action
+                  <v-card-actions
                     class="pa-1"
                   >
                     <v-btn
-                      color="pink"
+                      @click="$store.dispatch('updateLikeState', product)"
+                      :class="{ likeColor: product.like}"
+                      style="background:grey"
                       fab
                       dark
                       x-small
@@ -50,8 +70,16 @@
                         mdi-thumb-up
                       </v-icon>
                     </v-btn>
+                    <span
+                      class="font-weight-bold ml-1"
+                    >
+                      Good
+                    </span>
                     <v-btn
-                      color="indigo"
+                      @click="$store.dispatch('updateDislikeState', product)"
+                      :class="{ dislikeColor: product.dislike }"
+                      class="ml-2"
+                      style="background:grey"
                       fab
                       dark
                       x-small
@@ -60,7 +88,12 @@
                         mdi-thumb-down
                       </v-icon>
                     </v-btn>
-                  </v-card-action>
+                    <span
+                      class="font-weight-bold ml-1"
+                    >
+                      Bad
+                    </span>
+                  </v-card-actions>
                 </v-col>
 
                 <v-col
@@ -70,30 +103,49 @@
                     {{ product.text }}
                   </v-card-text>
                   <v-card-title
-                    class="font-weight-bold"
+                    class="pt-0 font-weight-bold"
                   >
-                    {{ product.price }}
+                    ¥{{ product.price }}
                   </v-card-title>
                   <v-divider/>
-                  <v-card-action>
+                  <v-card-actions
+                    class="pa-0"
+                    style="width:60%;"
+                  >
                     <v-select
+                      @change="(quantity) => $store.dispatch('updateQuantity', {product, quantity})"
+                      :value="product.quantity"
                       class="mt-6"
-                      style="width:36%;"
-                      label="1"
-                      :items="items"
+                      :items="[...Array(product.inventory).keys()].map(i => ++i)"
+                      solo
                       dense
                       rounded
                       outlined
                     >
                     </v-select>
+                    <v-card-text
+                      class="px-0 pt-0 font-weight-bold"
+                      style="color:#CC0000;"
+                      v-show="!product.inventory"
+                    >
+                      ＊在庫が残っておりません。
+                    </v-card-text>
+                  </v-card-actions>
+                  <v-card-actions
+                    class="pa-0"
+                    style="width:60%;"
+                  >
                     <v-btn
+                      @click="$store.dispatch('addProductToCart', product)"
+                      :disabled="!product.inventory"
                       class="font-weight-bold"
                       color="teal"
+                      block
                       dark
                     >
                       カートに入れる
                     </v-btn>
-                  </v-card-action>
+                  </v-card-actions>
                 </v-col>
               </v-row>
             </v-container>
@@ -113,13 +165,14 @@
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
+
 export default {
   layout: 'logged-in',
   middleware: ['get-product-list'],
   data () {
     return {
       noImg,
-      page: '1'
+      page: 1
     }
   },
   computed: {
@@ -140,5 +193,11 @@ export default {
   .v-parallax__content {
     padding: 0;
   }
+}
+.likeColor {
+  background: #CC0000 !important;
+}
+.dislikeColor {
+  background: #336791 !important;
 }
 </style>

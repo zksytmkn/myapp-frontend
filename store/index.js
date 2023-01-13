@@ -43,10 +43,35 @@ export const state = () => ({
     msg: null,
     color: 'error',
     timeout: 4000
-  }
+  },
+  items: []
 })
 
-export const getters = {}
+export const getters = {
+  cartProducts: (state) => {
+    return state.items.map((item) => {
+      const product = state.product.list.find((product) => product.id === item.id)
+      return {
+        name: product.name,
+        text: product.text,
+        price: product.price,
+        inventory: product.inventory,
+        quantity: item.quantity,
+        id: item.id
+      }
+    })
+  },
+  cartTotalPrice: (state, getters) => {
+    return getters.cartProducts.reduce((total, product) => {
+      return total + product.price * product.quantity * 1.1
+    }, 0)
+  },
+  cartTotalQuantity: (state, getters) => {
+    return getters.cartProducts.reduce((total, product) => {
+      return total + product.quantity
+    }, 0)
+  }
+}
 
 export const mutations = {
   setProductList (state, payload) {
@@ -84,6 +109,60 @@ export const mutations = {
   },
   setRememberPath (state, payload) {
     state.loggedIn.rememberPath = payload
+  },
+  pushProductToCart (state, product) {
+    state.items.push({
+      id: product.id,
+      quantity: product.quantity
+    })
+  },
+  incrementItemQuantity (state, product) {
+    state.items = state.items.map((item) => item.id === product.id ? {...item, quantity: item.quantity + product.quantity} : {...item, quantity: item.quantity})
+  },
+  pullProductFromCart (state, product) {
+    const itemQuantity = state.items.find((item) => item.id === product.id).quantity
+    state.items = state.items.filter((item) => item.id !== product.id)
+    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, inventory: x.inventory + itemQuantity} : {...x})
+  },
+  setQuantity (state, { product, quantity }) {
+    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, quantity} : {...x})
+  },
+  setCurrentQuantity (state, quantity) {
+    state.product.current.quantity = quantity 
+  },
+  decrementProductInventory (state, product) {
+    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, inventory: x.inventory - product.quantity} : {...x})
+  },
+  decrementCurrentProductInventory (state, product) {
+    state.product.current.inventory -= product.quantity
+  },
+  setLikeState (state, product) {
+    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, like: !product.like, dislike: product.dislike ? !product.dislike : product.dislike} : {...x})
+  },
+  setDislikeState (state, product) {
+    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, like: product.like ? !product.like : product.like, dislike: !product.dislike} : {...x})
+  },
+  setCurrentLikeState (state, product) {
+    state.product.current.like = !product.like
+    state.product.current.dislike = product.dislike ? !product.dislike : product.dislike
+  },
+  setCurrentDislikeState (state, product) {
+    state.product.current.dislike = !product.dislike
+    state.product.current.like = product.like ? !product.like : product.like
+  },
+  setPostLikeState (state, post) {
+    state.post.list = state.post.list.map((x) => x.id === post.id ? {...x, like: !post.like, dislike: post.dislike ? !post.dislike : post.dislike} : {...x})
+  },
+  setPostDislikeState (state, post) {
+    state.post.list = state.post.list.map((x) => x.id === post.id ? {...x, like: post.like ? !post.like : post.like, dislike: !post.dislike} : {...x})
+  },
+  setCurrentPostLikeState (state, post) {
+    state.post.current.like = !post.like
+    state.post.current.dislike = post.dislike ? !post.dislike : post.dislike
+  },
+  setCurrentPostDislikeState (state, post) {
+    state.post.current.dislike = !post.dislike
+    state.post.current.like = post.like ? !post.like : post.like
   }
 }
 
@@ -151,5 +230,48 @@ export const actions = {
     }
     params = params || {}
     commit('setRememberPath', { name, params })
+  },
+  addProductToCart ({ state, commit }, product) {
+    const cartItem = state.items.find(item => item.id === product.id)
+    if(!cartItem) {
+      commit('pushProductToCart', product)
+    } else {
+      commit('incrementItemQuantity', product)
+    }
+    commit('decrementProductInventory', product) ||
+    commit('decrementCurrentProductInventory', product)
+  },
+  removeProductFromCart ({ commit }, product) {
+    commit('pullProductFromCart', product)
+  },
+  updateQuantity ({ commit }, { product, quantity }) {
+    commit('setQuantity', { product, quantity })
+  },
+  updateCurrentQuantity ({ commit }, quantity ) {
+    commit('setCurrentQuantity', quantity )
+  },
+  updateLikeState ({ commit }, product) {
+    commit('setLikeState', product)
+  },
+  updateDislikeState ({ commit }, product) {
+    commit('setDislikeState', product)
+  },
+  updateCurrentLikeState ({ commit }, product) {
+    commit('setCurrentLikeState', product)
+  },
+  updateCurrentDislikeState ({ commit }, product) {
+    commit('setCurrentDislikeState', product)
+  },
+  updatePostLikeState ({ commit }, post ) {
+    commit('setPostLikeState', post)
+  },
+  updatePostDislikeState ({ commit }, post) {
+    commit('setPostDislikeState', post)
+  },
+  updateCurrentPostLikeState ({ commit }, post) {
+    commit('setCurrentPostLikeState', post)
+  },
+  updateCurrentPostDislikeState ({ commit }, post) {
+    commit('setCurrentPostDislikeState', post)
   }
 }

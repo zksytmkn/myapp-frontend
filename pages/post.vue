@@ -1,8 +1,5 @@
 <template>
-  <v-container>
-    {{ $store.state.post.current }}
-    <nuxt-child />
-  </v-container>
+  <nuxt-child />
 </template>
 
 <script>

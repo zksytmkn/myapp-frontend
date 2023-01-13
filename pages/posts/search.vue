@@ -11,6 +11,16 @@
       </template>
     </logged-in-app-eye-catch>
     <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          検索
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+    </v-container>
+    <v-container>
       <v-row>
         <v-col
           cols="12"
@@ -30,13 +40,13 @@
                       <v-card-title
                         class="font-weight-bold"
                       >
-                        表題から検索
+                        タイトルから検索
                       </v-card-title>
                       <v-divider/>
                       <v-card-actions>
                         <v-text-field
                           outlined
-                          placeholder="表題"
+                          placeholder="タイトル"
                         >
                         </v-text-field>
                       </v-card-actions>
@@ -48,13 +58,13 @@
                       <v-card-title
                         class="font-weight-bold"
                       >
-                        種類から検索
+                        投稿者から検索
                       </v-card-title>
                       <v-divider/>
                       <v-card-actions>
                         <v-text-field
                           outlined
-                          placeholder="種類"
+                          placeholder="投稿者"
                         >
                         </v-text-field>
                       </v-card-actions>
@@ -66,13 +76,13 @@
                       <v-card-title
                         class="font-weight-bold"
                       >
-                        都道府県から検索
+                        文章から検索
                       </v-card-title>
                       <v-divider/>
                       <v-card-actions>
                         <v-text-field
                           outlined
-                          placeholder="都道府県"
+                          placeholder="文章"
                         >
                         </v-text-field>
                       </v-card-actions>

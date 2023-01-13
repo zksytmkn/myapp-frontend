@@ -11,6 +11,16 @@
       </template>
     </logged-in-app-eye-catch>
     <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          検索
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+    </v-container>
+    <v-container>
       <v-row>
         <v-col
           cols="12"
@@ -30,18 +40,36 @@
                       <v-card-title
                         class="font-weight-bold"
                       >
-                        商品名から検索
+                        名前から検索
                       </v-card-title>
                       <v-divider/>
                       <v-card-actions>
                         <v-text-field
                           outlined
-                          placeholder="商品名"
+                          placeholder="名前"
                         >
                         </v-text-field>
                       </v-card-actions>
                     </v-col>
-    
+
+                    <v-col
+                      cols="12"
+                    >
+                      <v-card-title
+                        class="font-weight-bold"
+                      >
+                        出品者から検索
+                      </v-card-title>
+                      <v-divider/>
+                      <v-card-actions>
+                        <v-text-field
+                          outlined
+                          placeholder="出品者"
+                        >
+                        </v-text-field>
+                      </v-card-actions>
+                    </v-col>
+
                     <v-col
                       cols="12"
                     >
@@ -66,13 +94,13 @@
                       <v-card-title
                         class="font-weight-bold"
                       >
-                        都道府県から検索
+                        生産地から検索
                       </v-card-title>
                       <v-divider/>
                       <v-card-actions>
                         <v-text-field
                           outlined
-                          placeholder="都道府県"
+                          placeholder="生産地"
                         >
                         </v-text-field>
                       </v-card-actions>

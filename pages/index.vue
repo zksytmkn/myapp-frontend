@@ -34,7 +34,7 @@
                 <v-list-item>
                   <v-list-item-title
                     class="mb-3"
-                    style="white-space: pre-line; line-height: 1.5;"
+                    style="white-space:pre-line; line-height:1.5;"
                   >
                     <h2>
                       『Edible』は規格外農産物を減らし、
@@ -49,7 +49,8 @@
                 </div>
                 <v-list-item-subtitle
                   class="font-weight-bold"
-                  style="white-space: pre-line; line-height: 1.5;"
+                  style="white-space:pre-line;
+                  line-height:1.5;"
                 >
                   <p>
                     世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
@@ -96,7 +97,7 @@
                   <v-list
                     color="transparent"
                     class="font-weight-bold"
-                    style="white-space: pre-line;"
+                    style="white-space:pre-line;"
                   >
                     <span>
                       SDGs(持続可能な開発目標)Goal12

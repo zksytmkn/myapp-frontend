@@ -11,7 +11,24 @@
       </template>
     </logged-in-app-eye-catch>
     <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          招待されているコミュニティ
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-container>
+      </v-container>
     </v-container>
+    <v-pagination
+      class="my-6"
+      v-model="page"
+      :length="6"
+      circle
+    >
+    </v-pagination>
   </div>
 </template>
 
