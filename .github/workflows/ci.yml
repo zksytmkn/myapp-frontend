@@ -6,8 +6,6 @@ on:
       - main
       - master
   pull_request:
-    types:
-    - '*'
     branches:
       - main
       - master
