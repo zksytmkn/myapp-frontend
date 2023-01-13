@@ -59,8 +59,8 @@
             </v-col>
 
             <v-col
-              v-for="(post, i) in recentCommunities"
-              :key="`card-post-${i}`"
+              v-for="(community, i) in recentCommunities"
+              :key="`card-community-${i}`"
               cols="12"
               :sm="card.sm"
               :md="card.md"
@@ -69,13 +69,13 @@
                 block
                 :height="card.height"
                 :elevation="card.elevation"
-                :to="$my.postLinkTo(post.id)"
+                :to="$my.communityLinkTo(community.id)"
                 class="v-btn text-capitalize"
               >
                 <v-card-title
                   class="pb-1 d-block text-truncate"
                 >
-                  {{ post.name }}
+                  {{ community.name }}
                 </v-card-title>
                 <v-card-text
                   class="caption"
@@ -85,7 +85,7 @@
                   >
                     mdi-update
                   </v-icon>
-                  {{ $my.dataFormat(post.updatedAt) }}
+                  {{ $my.dataFormat(community.updatedAt) }}
                 </v-card-text>
               </v-card>
             </v-col>

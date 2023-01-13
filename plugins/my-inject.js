@@ -21,7 +21,11 @@ class MyInject {
     return { name, params: { id } }
   }
 
-  postLinkTo (id, name= 'post-id-detail') {
+  postLinkTo (id, name = 'post-id-detail') {
+    return { name, params: { id } }
+  }
+
+  communityLinkTo (id, name = 'community-id-detail') {
     return { name, params: { id } }
   }
 

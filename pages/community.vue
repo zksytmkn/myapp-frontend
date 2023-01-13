@@ -1,8 +1,5 @@
 <template>
-  <v-container>
-    {{ $store.state.community.current }}
-    <nuxt-child />
-  </v-container>
+  <nuxt-child />
 </template>
 
 <script>
