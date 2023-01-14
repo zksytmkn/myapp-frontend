@@ -10,6 +10,7 @@
         Please look around and enjoy it !
       </template>
     </logged-in-app-eye-catch>
+
     <v-container>
       <v-list-item>
         <v-list-item-title
@@ -71,120 +72,125 @@
           </v-col>
         </v-row>
       </v-container>
+    </v-container>
 
-      <v-container>
-        <v-row>
-          <v-col
-            v-for="(product, i) in cartProducts"
-            :key="`product-${i}`"
-            cols="6"
-          >
-            <v-card>
-              <v-container>
-                <v-row>
-                  <v-col
-                    cols="6"
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="(product, i) in cartProducts"
+          :key="`product-${i}`"
+          cols="6"
+        >
+          <v-card>
+            <v-container>
+              <v-row>
+                <v-col
+                  cols="6"
+                >
+                  <v-img
+                    :src="noImg"
+                    max-height="360px"
+                    max-width="360px"
                   >
-                    <v-img
-                      :src="noImg"
-                      max-height="360px"
-                      max-width="360px"
-                    >
-                    </v-img>
-                    <v-card-title
-                      class="font-weight-bold pa-1"
-                      style="max-width:360px;"
-                    >
-                      {{ product.name }}
-                      <v-spacer />
-                      <v-btn
-                        text
-                        outlined
-                        :to="$my.productLinkTo(product.id)"
-                        class="font-weight-bold"
-                        style="text-transform:none"
-                      >
-                        詳細
-                      </v-btn>
-                    </v-card-title>
-                    <v-card-actions
-                      class="pa-1"
-                    >
-                      <v-btn
-                        color="pink"
-                        fab
-                        dark
-                        x-small
-                      >
-                        <v-icon>
-                          mdi-thumb-up
-                        </v-icon>
-                      </v-btn>
-                      <span
-                        class="font-weight-bold ml-1"
-                      >
-                        Good
-                      </span>
-                      <v-btn
-                        class="ml-2"
-                        fab
-                        dark
-                        x-small
-                      >
-                        <v-icon>
-                          mdi-thumb-down
-                        </v-icon>
-                      </v-btn>
-                      <span
-                        class="font-weight-bold ml-1"
-                      >
-                        Bad
-                      </span>
-                    </v-card-actions>
-                  </v-col>
-  
-                  <v-col
-                    cols="6"
+                  </v-img>
+                  <v-card-title
+                    class="font-weight-bold pa-1"
+                    style="max-width:360px;"
                   >
-                    <v-card-text>
-                      {{ product.text }}
-                    </v-card-text>
-                    <v-card-text
-                      class="pb-0 font-weight-bold"
+                    {{ product.name }}
+                    <v-spacer />
+                    <v-btn
+                      text
+                      outlined
+                      :to="$my.productLinkTo(product.id)"
+                      class="font-weight-bold"
+                      style="text-transform:none"
                     >
-                      <p>
-                        ¥{{ product.price.toLocaleString() }} × {{ product.quantity }}（数量）
-                      </p>
-                    </v-card-text>
-                    <v-divider/>
-                    <v-card-text
-                      class="pb-0 font-weight-bold"
+                      詳細
+                    </v-btn>
+                  </v-card-title>
+                  <v-card-actions
+                    class="pa-1"
+                  >
+                    <v-btn
+                      @click="$store.dispatch('updateLikeState', product)"
+                      :class="{ likeColor: product.like}"
+                      style="background:grey"
+                      fab
+                      dark
+                      x-small
                     >
-                      <p>
-                        小計（税込）：¥{{ Math.floor(product.price * product.quantity * 1.1).toLocaleString() }}
-                      </p>
-                    </v-card-text>
-                    <v-card-actions
-                      class="pt-0"
-                      style="width:70%;"
+                      <v-icon>
+                        mdi-thumb-up
+                      </v-icon>
+                    </v-btn>
+                    <span
+                      class="font-weight-bold ml-1"
                     >
-                      <v-btn
-                        @click="$store.dispatch('removeProductFromCart', product)"
-                        class="font-weight-bold"
-                        color="teal"
-                        block
-                        dark
-                      >
-                        削除する
-                      </v-btn>
-                    </v-card-actions>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+                      Good
+                    </span>
+                    <v-btn
+                      @click="$store.dispatch('updateDislikeState',product)"
+                      :class="{ dislikeColor: product.dislike }"
+                      class="ml-2"
+                      style="background:grey"
+                      fab
+                      dark
+                      x-small
+                    >
+                      <v-icon>
+                        mdi-thumb-down
+                      </v-icon>
+                    </v-btn>
+                    <span
+                      class="font-weight-bold ml-1"
+                    >
+                      Bad
+                    </span>
+                  </v-card-actions>
+                </v-col>
+
+                <v-col
+                  cols="6"
+                >
+                  <v-card-text>
+                    {{ product.text }}
+                  </v-card-text>
+                  <v-card-text
+                    class="pb-0 font-weight-bold"
+                  >
+                    <p>
+                      ¥{{ product.price.toLocaleString() }}（価格） × {{product.quantity }}（数量）
+                    </p>
+                  </v-card-text>
+                  <v-divider/>
+                  <v-card-text
+                    class="pb-0 font-weight-bold"
+                  >
+                    <p>
+                      小計（税込）：¥{{ Math.floor(product.price *product.quantity * 1.1).toLocaleString() }}
+                    </p>
+                  </v-card-text>
+                  <v-card-actions
+                    class="pt-0"
+                    style="width:70%;"
+                  >
+                    <v-btn
+                      @click="$store.dispatch('removeProductFromCart',product)"
+                      class="font-weight-bold"
+                      color="teal"
+                      block
+                      dark
+                    >
+                      削除する
+                    </v-btn>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -208,5 +214,11 @@ export default {
   .v-parallax__content {
     padding: 0;
   }
+}
+.likeColor {
+  background: #CC0000 !important;
+}
+.dislikeColor {
+  background: #336791 !important;
 }
 </style>

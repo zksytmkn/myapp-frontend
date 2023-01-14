@@ -1,6 +1,6 @@
 <template>
   <div
-    id="communities"
+    id="detail"
   >
     <logged-in-app-eye-catch>
       <template
@@ -19,7 +19,114 @@
           <v-card>
             <v-container>
               <v-row>
-                <v-col>
+                <v-col
+                  cols="4"
+                >
+                  <v-img
+                    :src="noImg"
+                    max-height="360px"
+                    max-width="360px"
+                  >
+                  </v-img>
+                  <v-card-title
+                    class="font-weight-bold pa-1"
+                    style="max-width:360px;"
+                  >
+                    {{ currentCommunity.name }}
+                    <v-card-subtitle>
+                      by {{ currentCommunity.maker }}
+                    </v-card-subtitle>
+                    <v-spacer />
+                    <v-btn
+                      text
+                      outlined
+                      to="/communities/list"
+                      class="font-weight-bold"
+                    >
+                      一覧
+                    </v-btn>
+                  </v-card-title>
+                </v-col>
+
+                <v-col
+                  cols="8"
+                >
+                  <v-chip
+                    class="ma-2 font-weight-bold"
+                    outlined
+                  >
+                    <v-icon
+                      v-if="currentCommunity.type === '野菜'"
+                      left
+                    >
+                      mdi-peanut-outline
+                    </v-icon>
+                    <v-icon
+                      v-if="currentCommunity.type === '果物'"
+                      left
+                    >
+                      mdi-food-apple-outline
+                    </v-icon>
+                    {{ currentCommunity.type }}
+                  </v-chip>
+
+                  <v-chip
+                    class="ma-2 font-weight-bold"
+                    outlined
+                  >
+                    <v-icon
+                      left
+                    >
+                      mdi-map-outline
+                    </v-icon>
+                    {{ currentCommunity.region }}
+                  </v-chip>
+
+                  <v-chip
+                    class="ma-2 font-weight-bold"
+                    outlined
+                  >
+                    <v-icon
+                      left
+                    >
+                      mdi-map-marker-outline
+                    </v-icon>
+                    {{ currentCommunity.prefecture }}
+                  </v-chip>
+
+                  <v-card-subtitle>
+                    {{ currentCommunity.text }}
+                  </v-card-subtitle>
+
+                  <v-divider/>
+                  <v-card-text>
+                    <span
+                      class="font-weight-bold"
+                    >
+                      参加人数：{{ currentCommunity.member }}人
+                    </span>
+                    <br/>
+                    ＊ご自由に参加していただけます。
+                  </v-card-text>
+                  <v-card-actions
+                    style="width:30%;"
+                  >
+                    <v-btn
+                      class="font-weight-bold"
+                      color="teal"
+                      outlined
+                    >
+                      メンバーを見てみる
+                    </v-btn>
+                    <v-btn
+                      class="font-weight-bold"
+                      color="teal"
+                      block
+                      dark
+                    >
+                      コミュニティに参加する
+                    </v-btn>
+                  </v-card-actions>
                 </v-col>
               </v-row>
             </v-container>
@@ -31,14 +138,27 @@
 </template>
 
 <script>
+import noImg from '~/assets/images/logged-in/no.png'
+
 export default {
   layout: 'logged-in',
-  middleware: ['get-community-list']
+  middleware: ['get-community-list'],
+  data () {
+    return {
+      noImg
+    }
+  },
+  computed: {
+    currentCommunity () {
+      const copyCommunity = this.$store.state.community.current
+      return copyCommunity
+    }
+  }
 }
 </script>
 
 <style lang="scss">
-#communities {
+#detail {
   .v-parallax__content {
     padding: 0;
   }

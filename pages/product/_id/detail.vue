@@ -172,7 +172,7 @@
                     style="width:30%;"
                   >
                     <v-btn
-                      @click="$store.dispatch('addProductToCart', currentProduct)"
+                      @click="$store.dispatch('addCurrentProductToCart', currentProduct)"
                       :disabled="!currentProduct.inventory"
                       class="font-weight-bold"
                       color="teal"

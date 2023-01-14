@@ -52,7 +52,7 @@
                         </v-text-field>
                       </v-card-actions>
                     </v-col>
-    
+
                     <v-col
                       cols="12"
                     >
@@ -66,6 +66,42 @@
                         <v-text-field
                           outlined
                           placeholder="作成者"
+                        >
+                        </v-text-field>
+                      </v-card-actions>
+                    </v-col>
+
+                    <v-col
+                      cols="12"
+                    >
+                      <v-card-title
+                        class="font-weight-bold"
+                      >
+                        地方から検索
+                      </v-card-title>
+                      <v-divider/>
+                      <v-card-actions>
+                        <v-text-field
+                          outlined
+                          placeholder="地方"
+                        >
+                        </v-text-field>
+                      </v-card-actions>
+                    </v-col>
+
+                    <v-col
+                      cols="12"
+                    >
+                      <v-card-title
+                        class="font-weight-bold"
+                      >
+                        地域から検索
+                      </v-card-title>
+                      <v-divider/>
+                      <v-card-actions>
+                        <v-text-field
+                          outlined
+                          placeholder="地域"
                         >
                         </v-text-field>
                       </v-card-actions>

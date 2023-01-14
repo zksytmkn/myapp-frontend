@@ -124,6 +124,24 @@
                       </v-card-actions>
                     </v-col>
 
+                    <v-col
+                      cols="12"
+                    >
+                      <v-card-title
+                        class="font-weight-bold"
+                      >
+                        対象者から検索
+                      </v-card-title>
+                      <v-divider/>
+                      <v-card-actions>
+                        <v-text-field
+                          outlined
+                          placeholder="対象者"
+                        >
+                        </v-text-field>
+                      </v-card-actions>
+                    </v-col>
+
                     <v-btn
                       class="white--text font-weight-bold my-6"
                       color="primary"

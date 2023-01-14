@@ -56,6 +56,8 @@ export const getters = {
         text: product.text,
         price: product.price,
         inventory: product.inventory,
+        like: product.like,
+        dislike: product.dislike,
         quantity: item.quantity,
         id: item.id
       }
@@ -238,7 +240,15 @@ export const actions = {
     } else {
       commit('incrementItemQuantity', product)
     }
-    commit('decrementProductInventory', product) ||
+    commit('decrementProductInventory', product)
+  },
+  addCurrentProductToCart ({ state, commit }, product) {
+    const cartItem = state.items.find(item => item.id === product.id)
+    if(!cartItem) {
+      commit('pushProductToCart', product)
+    } else {
+      commit('incrementItemQuantity', product)
+    }
     commit('decrementCurrentProductInventory', product)
   },
   removeProductFromCart ({ commit }, product) {

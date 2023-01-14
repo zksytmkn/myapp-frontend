@@ -19,7 +19,27 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
-      <v-container>
+      <v-container
+        v-show="!participatedCommunities.length"
+      >
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p>
+              参加しておりません。
+            </p>
+            <v-btn
+              class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/communities/list"
+            >
+              コミュニティを見てみる
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-container>
     </v-container>
     <v-pagination
@@ -34,6 +54,18 @@
 
 <script>
 export default {
+  layout: 'logged-in',
+  middleware: ['get-community-list'],
+  computed: {
+    participatedCommunities () {
+      const copyParticipatedCommunities = Array.from(this.$store.state.community.list.filter((x) => x.participated === true))
+      return copyParticipatedCommunities.sort((a, b) => {
+        if (a.updatedAt > b.updatedAt) { return -1 }
+        if (a.updatedAt < b.updatedAt) { return 1 }
+        return 0
+      })
+    }
+  }
 }
 </script>
 
