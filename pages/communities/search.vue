@@ -59,35 +59,18 @@
                       <v-card-title
                         class="font-weight-bold"
                       >
-                        種類から検索
+                        作成者から検索
                       </v-card-title>
                       <v-divider/>
                       <v-card-actions>
                         <v-text-field
                           outlined
-                          placeholder="種類"
+                          placeholder="作成者"
                         >
                         </v-text-field>
                       </v-card-actions>
                     </v-col>
-    
-                    <v-col
-                      cols="12"
-                    >
-                      <v-card-title
-                        class="font-weight-bold"
-                      >
-                        都道府県から検索
-                      </v-card-title>
-                      <v-divider/>
-                      <v-card-actions>
-                        <v-text-field
-                          outlined
-                          placeholder="都道府県"
-                        >
-                        </v-text-field>
-                      </v-card-actions>
-                    </v-col>
+
                     <v-btn
                       class="white--text font-weight-bold my-6"
                       color="primary"

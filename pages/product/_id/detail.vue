@@ -117,6 +117,19 @@
                     </v-icon>
                     {{ currentProduct.type }}
                   </v-chip>
+
+                  <v-chip
+                    class="ma-2 font-weight-bold"
+                    outlined
+                  >
+                    <v-icon
+                      left
+                    >
+                      mdi-map-outline
+                    </v-icon>
+                    {{ currentProduct.region }}
+                  </v-chip>
+
                   <v-chip
                     class="ma-2 font-weight-bold"
                     outlined
@@ -126,8 +139,9 @@
                     >
                       mdi-map-marker-outline
                     </v-icon>
-                    {{ currentProduct.producer }}
+                    {{ currentProduct.prefecture }}
                   </v-chip>
+
                   <v-card-text>
                     {{ currentProduct.text }}
                   </v-card-text>

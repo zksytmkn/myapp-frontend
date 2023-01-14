@@ -12,6 +12,20 @@
     </logged-in-app-eye-catch>
 
     <v-container>
+      <v-row>
+        <v-col
+          cols="12"
+        >
+          <v-card>
+            <v-container>
+              <v-row>
+                <v-col>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>

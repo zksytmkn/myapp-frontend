@@ -67,7 +67,62 @@
                       </v-col>
                     </v-row>
                   </v-container>
+
                   <v-container>
+                    <v-chip
+                      class="ma-2 font-weight-bold"
+                      outlined
+                    >
+                      <v-icon
+                        v-if="currentPost.type === '野菜'"
+                        left
+                      >
+                        mdi-peanut-outline
+                      </v-icon>
+                      <v-icon
+                        v-if="currentPost.type === '果物'"
+                        left
+                      >
+                        mdi-food-apple-outline
+                      </v-icon>
+                      {{ currentPost.type }}
+                    </v-chip>
+
+                    <v-chip
+                      class="ma-2 font-weight-bold"
+                      outlined
+                    >
+                      <v-icon
+                        left
+                      >
+                        mdi-map-outline
+                      </v-icon>
+                      {{ currentPost.region }}
+                    </v-chip>
+
+                    <v-chip
+                      class="ma-2 font-weight-bold"
+                      outlined
+                    >
+                      <v-icon
+                        left
+                      >
+                        mdi-map-marker-outline
+                      </v-icon>
+                      {{ currentPost.prefecture }}
+                    </v-chip>
+
+                    <v-chip
+                      class="ma-2 font-weight-bold"
+                      outlined
+                    >
+                      <v-icon
+                        left
+                      >
+                        mdi-account-outline
+                      </v-icon>
+                      {{ currentPost.target }}
+                    </v-chip>
                     <v-card-text>
                       <h3
                         style="font-weight:normal;"

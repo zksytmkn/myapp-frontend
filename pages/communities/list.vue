@@ -41,8 +41,11 @@
                 block
                 :height="card.height"
                 :elevation="card.elevation"
+                to="/communities/new"
               >
-                <div>
+                <div
+                  class="text-center"
+                >
                   <v-icon
                     size="24"
                     class="my-2"
@@ -70,23 +73,20 @@
                 :height="card.height"
                 :elevation="card.elevation"
                 :to="$my.communityLinkTo(community.id)"
-                class="v-btn text-capitalize"
+                class="v-btn text-capitalize align-center"
               >
-                <v-card-title
-                  class="pb-1 d-block text-truncate"
-                >
-                  {{ community.name }}
-                </v-card-title>
-                <v-card-text
-                  class="caption"
-                >
-                  <v-icon
-                    size="14"
+                <v-container>
+                  <v-card-title
+                    class="pb-1 d-block text-truncate font-weight-bold"
                   >
-                    mdi-update
-                  </v-icon>
-                  {{ $my.dataFormat(community.updatedAt) }}
-                </v-card-text>
+                    {{ community.name }}
+                  </v-card-title>
+                  <v-card-text
+                    class="caption grey--text text--darken-1"
+                  >
+                    {{ community.text.substring(0, 30)+'...'}}
+                  </v-card-text>
+                </v-container>
               </v-card>
             </v-col>
           </v-row>
@@ -94,7 +94,7 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-6"
+      class="my-10"
       v-model="page"
       :length="6"
       circle
