@@ -16,7 +16,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          全ての呟き
+          全ての呟き（{{ recentposts.length }}件）
         </v-list-item-title>
       </v-list-item>
       <v-divider/>

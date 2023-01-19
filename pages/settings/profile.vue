@@ -48,17 +48,21 @@
                       >
                       </v-file-input>
                       <v-btn
-                        class="mr-2"
+                        dark
+                        outlined
+                        class="mr-2 font-weight-bold"
                         color="primary"
                         @click="upload"
                       >
-                        アップロード
+                        画像をアップロードする
                       </v-btn>
                       <v-btn
-                        class="mr-2"
+                        dark
+                        outlined
+                        class="mr-2 font-weight-bold"
                         color="primary"
                       >
-                        画像削除
+                        画像を削除する
                       </v-btn>
                     </v-col>
                     <v-col
@@ -102,10 +106,11 @@
                     </v-textarea>
                   </v-col>
                   <v-btn
-                    class="mr-2"
+                    class="mb-6 font-weight-bold"
                     color="primary"
+                    dark
                   >
-                    変更
+                    変更する
                   </v-btn>
                 </v-row>
               </v-list-item-content>

@@ -8,40 +8,40 @@
       <template
         #user-form-card-content
       >
-      <v-form
-        ref="form"
-        v-model="isValid"
-        @submit.prevent="login"
-      >
-        <user-form-email
-          :email.sync="params.auth.email"
-        />
-        <user-form-password
-          :password.sync="params.auth.password"
-        />
-        <v-card-actions>
-          <nuxt-link
-            to="/auth/forget-password"
-            class="body-2 text-decoration-none"
+        <v-form
+          ref="form"
+          v-model="isValid"
+          @submit.prevent="login"
+        >
+          <user-form-email
+            :email.sync="params.auth.email"
+          />
+          <user-form-password
+            :password.sync="params.auth.password"
+          />
+          <v-card-actions>
+            <nuxt-link
+              to="/auth/forget-password"
+              class="body-2 text-decoration-none"
+            >
+              パスワードを忘れた？
+            </nuxt-link>
+          </v-card-actions>
+          <v-card-text
+            class="px-0"
           >
-            パスワードを忘れた？
-          </nuxt-link>
-        </v-card-actions>
-        <v-card-text
-          class="px-0"
-        >
-        <v-btn
-          type="submit"
-          :disabled="!isValid || loading"
-          :loading="loading"
-          block
-          color="appblue"
-          class="white--text"
-        >
-          ログインする
-        </v-btn>
-        </v-card-text>
-      </v-form>
+            <v-btn
+              type="submit"
+              :disabled="!isValid || loading"
+              :loading="loading"
+              block
+              color="appblue"
+              class="white--text"
+            >
+              ログインする
+            </v-btn>
+          </v-card-text>
+        </v-form>
       </template>
     </user-form-card>
   </v-container>
