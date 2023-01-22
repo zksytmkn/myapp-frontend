@@ -140,6 +140,34 @@
                       <v-col
                         cols="11"
                       >
+                        <v-row>
+                          <v-col
+                            cols="6"
+                          >
+                            <v-text-field
+                              dense
+                              outlined
+                              label="価格"
+                              v-model="inputtedPrice"
+                            >
+                            </v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="6"
+                          >
+                            <v-text-field
+                              dense
+                              outlined
+                              label="数量"
+                              v-model="inputtedInventory"
+                            >
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                      <v-col
+                        cols="11"
+                      >
                         <v-textarea
                           dense
                           outlined
@@ -193,6 +221,8 @@ export default {
       inputtedType: '',
       inputtedRegion: '',
       inputtedPrefecture: '',
+      inputtedPrice: '',
+      inputtedInventory: '',
       inputtedText: '',
       typeItems: [
         '野菜',
@@ -271,11 +301,8 @@ export default {
       const res = await this.$axios.post('', formData, config)
       console.log(res)
     },
-    async addProduct () {
+    addProduct () {
       this.loading = true
-      if (this.isValid) {
-        await this.$axios.$post('api/v1/products', this.)
-      }
       this.loading = false
     }
   },
