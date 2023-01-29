@@ -15,7 +15,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          購入済み
+          購入済み（{{ purchasedProducts.length }}件）
         </v-list-item-title>
       </v-list-item>
       <v-divider/>

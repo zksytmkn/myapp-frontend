@@ -139,7 +139,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          検索結果 {{ searchedProducts.length }}件
+          検索結果（{{ searchedProducts.length }}件）
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
@@ -228,7 +228,7 @@
                   <v-card-title
                     class="pt-0 font-weight-bold"
                   >
-                    ¥{{ product.price }}
+                    ¥{{ product.price.toLocaleString() }}
                   </v-card-title>
                   <v-divider/>
                   <v-card-actions

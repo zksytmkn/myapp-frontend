@@ -148,7 +148,7 @@
                   <v-card-title
                     class="font-weight-bold"
                   >
-                    ¥{{ currentProduct.price }}
+                    ¥{{ currentProduct.price.toLocaleString() }}
                   </v-card-title>
                   <v-divider/>
                   <v-card-actions

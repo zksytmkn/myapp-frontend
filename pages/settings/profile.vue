@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import noImg from '~/assets/images/logged-in/no.png'
+import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 export default {
   layout: 'logged-in',
   data () {
@@ -150,7 +150,7 @@ export default {
   computed: {
     url() {
       if(this.image===null) {
-        return noImg
+        return noPersonImg
       } else {
         return URL.createObjectURL(this.image)
       }

@@ -85,6 +85,7 @@
                           </v-col>
                         </v-row>
                         <v-file-input
+                          multiple
                           :rules="rules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
