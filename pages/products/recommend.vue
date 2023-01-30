@@ -49,7 +49,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="recommendProducts.length"
+      :length="7"
       circle
     >
     </v-pagination>
@@ -60,14 +61,20 @@
 export default {
   layout: 'logged-in',
   middleware: ['get-product-list'],
+  data () {
+    return {
+      page: 1,
+      pageSize: 10
+    }
+  },
   computed: {
     recommendProducts () {
       const copyRecommendProducts = Array.from(this.$store.state.product.list.filter((x) => x.recommend === true))
       return copyRecommendProducts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
-      })
+      }).slice(this.pageSize*(this.page-1),this.pageSize*(this.page))
     }
   }
 }

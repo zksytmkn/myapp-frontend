@@ -68,47 +68,12 @@
                       sm="6"
                       md="9"
                     >
-                      <v-combobox
-                        label="種類"
-                        v-model="searchedType"
-                        :items="typeItems"
-                        multiple
-                        chips
+                      <v-text-field
+                        label="紹介文"
+                        v-model="searchedText"
                         dense
                       >
-                      </v-combobox>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-combobox
-                        label="地方"
-                        v-model="searchedRegion"
-                        :items="regionItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-combobox>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-combobox
-                        label="地域"
-                        v-model="searchedPrefecture"
-                        :items="prefectureItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-combobox>
+                      </v-text-field>
                     </v-col>
 
                     <v-col
@@ -118,7 +83,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updateCommunitySearchCondition', { name: searchedName, maker: searchedMaker, type: searchedType, region: searchedRegion, prefecture: searchedPrefecture })"
+                          @click="$store.dispatch('updateCommunitySearchCondition', { name: searchedName, maker: searchedMaker, text: searchedText })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           outlined
@@ -160,7 +125,7 @@
             align="center"
           >
             <v-col
-              v-for="(community, i) in searchedCommunities"
+              v-for="(community, i) in searchedCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
               :key="`card-community-${i}`"
               cols="12"
               :sm="card.sm"
@@ -192,9 +157,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-10"
+      class="my-6"
       v-model="page"
-      :length="6"
+      v-show="searchedCommunities.length"
+      :length="Math.ceil(this.searchedCommunities.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -207,6 +173,8 @@ export default {
   middleware: ['get-community-list'],
   data () {
     return {
+      page: 1,
+      pageSize: 9,
       container: {
         sm: 10,
         md: 8
@@ -219,94 +187,19 @@ export default {
       },
       searchedName: '',
       searchedMaker: '',
-      searchedType: [],
-      searchedRegion: [],
-      searchedPrefecture: [],
-      typeItems: [
-        '野菜',
-        '果物'
-      ],
-      regionItems: [
-        '北海道地方',
-        '東北地方',
-        '関東地方',
-        '中部地方',
-        '近畿地方',
-        '中国地方',
-        '四国地方',
-        '九州地方'
-      ],
-      prefectureItems: [
-        '北海道',
-        '青森県',
-        '岩手県',
-        '宮城県',
-        '秋田県',
-        '山形県',
-        '福島県',
-        '茨城県',
-        '栃木県',
-        '群馬県',
-        '埼玉県',
-        '千葉県',
-        '東京都',
-        '神奈川県',
-        '新潟県',
-        '富山県',
-        '石川県',
-        '福井県',
-        '山梨県',
-        '長野県',
-        '岐阜県',
-        '静岡県',
-        '愛知県',
-        '三重県',
-        '滋賀県',
-        '京都府',
-        '大阪府',
-        '兵庫県',
-        '奈良県',
-        '和歌山県',
-        '鳥取県',
-        '島根県',
-        '岡山県',
-        '広島県',
-        '山口県',
-        '徳島県',
-        '香川県',
-        '愛媛県',
-        '高知県',
-        '福岡県',
-        '佐賀県',
-        '長崎県',
-        '熊本県',
-        '大分県',
-        '宮崎県',
-        '鹿児島県',
-        '沖縄県'
-      ]
+      searchedText: '',
     }
   },
   computed: {
     searchedCommunities () {
       const searchCondition = this.$store.state.community.searchCondition
 
-      let copySearchedCommunities = Array.from(this.$store.state.community.list).
+      const copySearchedCommunities = Array.from(this.$store.state.community.list).
       filter((x) => x.name.includes(searchCondition.name) && x.maker.includes(searchCondition.maker))
 
-      if (searchCondition.type.length !== 0) {
-        copySearchedCommunities = copySearchedCommunities.filter((x) => searchCondition.type.some(str => x.type.includes(str)))
-      }
-      if (searchCondition.region.length !== 0) {
-        copySearchedCommunities = copySearchedCommunities.filter((x) => searchCondition.region.some(str => x.region.includes(str)))
-      }
-      if (searchCondition.prefecture.length !== 0) {
-        copySearchedCommunities = copySearchedCommunities.filter((x) => searchCondition.prefecture.some(str => x.prefecture.includes(str)))
-      }
-
       return copySearchedCommunities.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

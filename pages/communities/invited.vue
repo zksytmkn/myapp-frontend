@@ -47,7 +47,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="invitedCommunities.length"
+      :length="7"
       circle
     >
     </v-pagination>
@@ -58,14 +59,20 @@
 export default {
   layout: 'logged-in',
   middleware: ['get-community-list'],
+  data () {
+    return {
+      page: 1,
+      pageSize: 9
+    }
+  },
   computed: {
     invitedCommunities () {
       const copyInvitedCommunities = Array.from(this.$store.state.community.list.filter((x) => x.invited === true))
       return copyInvitedCommunities.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
-      })
+      }).slice(this.pageSize*(this.page-1),this.pageSize*(this.page))
     }
   }
 }

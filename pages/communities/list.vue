@@ -16,7 +16,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          全てのコミュニティ（{{ recentCommunities.length }}件）
+          全てのコミュニティ（{{ communities.length }}件）
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
@@ -33,36 +33,7 @@
             align="center"
           >
             <v-col
-              cols="12"
-              :sm="card.sm"
-              :md="card.md"
-            >
-              <v-btn
-                block
-                :height="card.height"
-                :elevation="card.elevation"
-                to="/communities/new"
-              >
-                <div
-                  class="text-center"
-                >
-                  <v-icon
-                    size="24"
-                    class="my-2"
-                  >
-                    mdi-plus
-                  </v-icon>
-                  <div
-                    class="caption"
-                  >
-                    コミュニティを作成する
-                  </div>
-                </div>
-              </v-btn>
-            </v-col>
-
-            <v-col
-              v-for="(community, i) in recentCommunities"
+              v-for="(community, i) in communities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
               :key="`card-community-${i}`"
               cols="12"
               :sm="card.sm"
@@ -94,9 +65,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-10"
+      class="my-6"
       v-model="page"
-      :length="6"
+      v-show="communities.length"
+      :length="Math.ceil(this.communities.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -110,6 +82,7 @@ export default {
   data () {
     return {
       page: 1,
+      pageSize: 9,
       container: {
         sm: 10,
         md: 8
@@ -123,11 +96,11 @@ export default {
     }
   },
   computed: {
-    recentCommunities () {
+    communities () {
       const copyCommunities = Array.from(this.$store.state.community.list)
       return copyCommunities.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

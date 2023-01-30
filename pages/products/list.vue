@@ -24,7 +24,7 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="product in products"
+          v-for="product in products.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
           :key="product.id"
           cols="6"
         >
@@ -156,7 +156,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="products.length"
+      :length="Math.ceil(this.products.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -172,15 +173,16 @@ export default {
   data () {
     return {
       noImg,
-      page: 1
+      page: 1,
+      pageSize: 10
     }
   },
   computed: {
     products () {
-      const copyproducts = Array.from(this.$store.state.product.list)
-      return copyproducts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+      const copyProducts = Array.from(this.$store.state.product.list)
+      return copyProducts.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

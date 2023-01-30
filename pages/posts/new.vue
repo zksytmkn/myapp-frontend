@@ -30,6 +30,8 @@
         >
           <v-card>
             <v-form
+              ref="new"
+              v-model="isValid"
               @submit.prevent="addPost"
             >
               <v-list>
@@ -86,7 +88,7 @@
                         </v-row>
                         <v-file-input
                           multiple
-                          :rules="rules"
+                          :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
@@ -119,62 +121,12 @@
                           dense
                           outlined
                           class="mt-6"
-                          label="名前"
-                          v-model="inputtedName"
+                          label="タイトル"
+                          v-model="inputted.name"
+                          :rules="nameRules"
+                          :disabled="sentIt"
                         >
                         </v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="種類"
-                          :items="typeItems"
-                          v-model="inputtedType"
-                          small-chips
-                        >
-                        </v-combobox>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="地方"
-                          :items="regionItems"
-                          v-model="inputtedRegion"
-                          small-chips
-                        >
-                        </v-combobox>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="地域"
-                          :items="prefectureItems"
-                          v-model="inputtedPrefecture"
-                          small-chips
-                        >
-                        </v-combobox>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="対象者"
-                          :items="targetItems"
-                          v-model="inputtedTarget"
-                          small-chips
-                        >
-                        </v-combobox>
                       </v-col>
                       <v-col
                         cols="11"
@@ -183,7 +135,9 @@
                           dense
                           outlined
                           label="呟き"
-                          v-model="inputtedText"
+                          v-model="inputted.text"
+                          :rules="textRules"
+                          :disabled="sentIt"
                         >
                         </v-textarea>
                       </v-col>
@@ -197,10 +151,17 @@
                             type="submit"
                             :disabled="!isValid || loading"
                             :loading="loading"
-                            class="mb-6 font-weight-bold white--text"
+                            class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
                           >
                             呟きを投稿する
+                          </v-btn>
+
+                          <v-btn
+                            text
+                            @click="formReset"
+                          >
+                            キャンセル
                           </v-btn>
                         </v-row>
                       </v-col>
@@ -213,6 +174,118 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          投稿済み（{{ newPosts.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-container
+        v-show="!newPosts.length"
+      >
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p>
+              投稿しておりません。
+            </p>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-container>
+    <v-container>
+      <v-row
+        justify="center"
+      >
+        <v-col
+          cols="12"
+        >
+          <v-data-table
+            v-show="newPosts.length"
+            :headers="tableHeaders"
+            :items="newPosts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+            item-key="id"
+            hide-default-footer
+          >
+            <template
+              v-slot:[`item.title`]="{ item }"
+            >
+              <nuxt-link
+                :to="$my.postLinkTo(item.id)"
+                class="text-decoration-none"
+              >
+                {{ item.name }}
+              </nuxt-link>
+            </template>
+            <template
+              v-slot:[`item.text`]="{ item }"
+            >
+              {{ item.text }}
+            </template>
+            <template
+              v-slot:[`item.like`] = "{ item }"
+            >
+              <v-card-actions
+                class="pl-0"
+              >
+                <v-btn
+                  @click="$store.dispatch('updatePostLikeState', item)"
+                  :class="{ likeColor: item.like}"
+                  style="background:grey"
+                  fab
+                  dark
+                  x-small
+                >
+                  <v-icon>
+                    mdi-thumb-up
+                  </v-icon>
+                </v-btn>
+                <span
+                  class="font-weight-bold ml-1"
+                >
+                  Good
+                </span>
+                <v-btn
+                  @click="$store.dispatch('updatePostDislikeState', item)"
+                  :class="{ dislikeColor: item.dislike }"
+                  class="ml-2"
+                  style="background:grey"
+                  fab
+                  dark
+                  x-small
+                >
+                  <v-icon>
+                    mdi-thumb-down
+                  </v-icon>
+                </v-btn>
+                <span
+                  class="font-weight-bold ml-1"
+                >
+                  Bad
+                </span>
+              </v-card-actions>
+            </template>
+            <template
+              v-slot:[`item.updatedAt`]="{ item }"
+            >
+              {{ $my.dataFormat(item.updated_at) }}
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-pagination
+      class="my-6"
+      v-model="page"
+      v-show="newPosts.length"
+      :length="Math.ceil(this.newPosts.length/this.pageSize)"
+      circle
+    >
+    </v-pagination>
   </div>
 </template>
 
@@ -220,87 +293,55 @@
 import noImg from '~/assets/images/logged-in/no.png'
 export default {
   layout: 'logged-in',
+  middleware: ['get-post-list'],
   data () {
     return {
+      page: 1,
+      pageSize: 10,
+      container: {
+        sm: 10,
+        md: 8
+      },
+      card: {
+        sm: 6,
+        md: 4,
+        height: 110,
+        elevation: 4
+      },
+      tableHeaders: [
+        {
+          text: 'タイトル',
+          value: 'title'
+        },
+        {
+          text: '呟き',
+          value: 'text'
+        },
+        {
+          text: 'いいね履歴',
+          width: 200,
+          value: 'like'
+        },
+        {
+          text: '更新日',
+          width: 150,
+          value: 'updatedAt'
+        }
+      ],
+      noImg,
       image: null,
       isValid: false,
       loading: false,
-      rules: [
+      imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
-      inputtedName: '',
-      inputtedType: '',
-      inputtedRegion: '',
-      inputtedPrefecture: '',
-      inputtedTarget: '',
-      inputtedText: '',
-      typeItems: [
-        '野菜',
-        '果物'
+      nameRules: [
+        v => !!v || '名前を入力してください'
       ],
-      regionItems: [
-        '北海道地方',
-        '東北地方',
-        '関東地方',
-        '中部地方',
-        '近畿地方',
-        '中国地方',
-        '四国地方',
-        '九州地方'
+      textRules: [
+        v => !!v || '呟きを入力してください'
       ],
-      prefectureItems: [
-        '北海道',
-        '青森県',
-        '岩手県',
-        '宮城県',
-        '秋田県',
-        '山形県',
-        '福島県',
-        '茨城県',
-        '栃木県',
-        '群馬県',
-        '埼玉県',
-        '千葉県',
-        '東京都',
-        '神奈川県',
-        '新潟県',
-        '富山県',
-        '石川県',
-        '福井県',
-        '山梨県',
-        '長野県',
-        '岐阜県',
-        '静岡県',
-        '愛知県',
-        '三重県',
-        '滋賀県',
-        '京都府',
-        '大阪府',
-        '兵庫県',
-        '奈良県',
-        '和歌山県',
-        '鳥取県',
-        '島根県',
-        '岡山県',
-        '広島県',
-        '山口県',
-        '徳島県',
-        '香川県',
-        '愛媛県',
-        '高知県',
-        '福岡県',
-        '佐賀県',
-        '長崎県',
-        '熊本県',
-        '大分県',
-        '宮崎県',
-        '鹿児島県',
-        '沖縄県'
-      ],
-      targetItems: [
-        '農家対象',
-        '消費者対象'
-      ]
+      inputted: { name: '', poster: this.$auth.user.name, text: '' }
     }
   },
   methods: {
@@ -318,9 +359,24 @@ export default {
     async addPost () {
       this.loading = true
       if (this.isValid) {
-        await this.$axios.$post()
+        await this.$axios.$post('/api/v1/posts', this.inputted)
+        .then(response => {
+          this.$router.go({path: '/posts/new', force: true})
+          const msg = '呟きを投稿しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = '呟きの投稿に失敗しました'
+          return this.$store.dispatch('getToast', { msg })
+        })
       }
       this.loading = false
+    },
+    formReset () {
+      this.sentIt = false
+      this.$refs.new.reset()
     }
   },
   computed: {
@@ -330,6 +386,14 @@ export default {
       } else {
         return URL.createObjectURL(this.image)
       }
+    },
+    newPosts () {
+      const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.poster === this.$auth.user.name))
+      return copyNewPosts.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
+        return 0
+      })
     }
   }
 }
@@ -340,5 +404,11 @@ export default {
   .v-parallax__content {
     padding: 0;
   }
+.likeColor {
+  background: #CC0000 !important;
+}
+.dislikeColor {
+  background: #336791 !important;
+}
 }
 </style>

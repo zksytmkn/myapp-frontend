@@ -47,7 +47,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="purchasedProducts.length"
+      :length="7"
       circle
     >
     </v-pagination>
@@ -57,14 +58,20 @@
 <script>
 export default {
   layout: 'logged-in',
+  data () {
+    return {
+      page: 1,
+      pageSize: 10
+    }
+  },
   computed: {
     purchasedProducts () {
       const copyProducts = Array.from(this.$store.state.product.list.filter((x) => x.purchased === true))
       return copyProducts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
-      })
+      }).slice(this.pageSize*(this.page-1),this.pageSize*(this.page))
     }
   }
 }

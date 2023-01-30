@@ -25,6 +25,7 @@ export const state = () => ({
     searchCondition: {
       name: '',
       seller: '',
+      text: '',
       type: [],
       region: [],
       prefecture: []
@@ -36,10 +37,7 @@ export const state = () => ({
     searchCondition: {
       name: '',
       poster: '',
-      type: [],
-      region: [],
-      prefecture: [],
-      target: []
+      text: ''
     }
   },
   community: {
@@ -48,9 +46,7 @@ export const state = () => ({
     searchCondition: {
       name: '',
       maker: '',
-      type: [],
-      region: [],
-      prefecture: []
+      text: ''
     }
   },
   user: {
@@ -188,20 +184,18 @@ export const mutations = {
     state.post.current.dislike = !post.dislike
     state.post.current.like = post.like ? !post.like : post.like
   },
-  setProductSearchCondition (state, { name, seller, type, region, prefecture }) {
+  setProductSearchCondition (state, { name, seller, text, type, region, prefecture }) {
     state.product.searchCondition.name = name
     state.product.searchCondition.seller = seller
+    state.product.searchCondition.text = text
     state.product.searchCondition.type = type
     state.product.searchCondition.region = region
     state.product.searchCondition.prefecture = prefecture
   },
-  setPostSearchCondition (state, { name, poster, type, region, prefecture, target }) {
+  setPostSearchCondition (state, { name, poster, text }) {
     state.post.searchCondition.name = name
     state.post.searchCondition.poster = poster
-    state.post.searchCondition.type = type
-    state.post.searchCondition.region = region
-    state.post.searchCondition.prefecture = prefecture
-    state.post.searchCondition.target = target
+    state.post.searchCondition.text = text
   },
   setCommunitySearchCondition (state, { name, maker, type, region, prefecture }) {
     state.community.searchCondition.name = name
@@ -328,11 +322,11 @@ export const actions = {
   updateCurrentPostDislikeState ({ commit }, post) {
     commit('setCurrentPostDislikeState', post)
   },
-  updateProductSearchCondition ({ commit }, { name, seller, type, region, prefecture }) {
-    commit('setProductSearchCondition', { name, seller, type, region, prefecture })
+  updateProductSearchCondition ({ commit }, { name, seller, text, type, region, prefecture }) {
+    commit('setProductSearchCondition', { name, seller, text, type, region, prefecture })
   },
-  updatePostSearchCondition ({ commit }, { name, poster, type, region, prefecture, target }) {
-    commit('setPostSearchCondition', { name, poster, type, region, prefecture, target })
+  updatePostSearchCondition ({ commit }, { name, poster, text }) {
+    commit('setPostSearchCondition', { name, poster, text })
   },
   updateCommunitySearchCondition ({ commit }, { name, maker, type, region, prefecture }) {
     commit('setCommunitySearchCondition', { name, maker, type, region, prefecture })

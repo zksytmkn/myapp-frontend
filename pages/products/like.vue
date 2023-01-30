@@ -45,7 +45,7 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="product in likeProducts"
+          v-for="product in likeProducts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
           :key="product.id"
           cols="6"
         >
@@ -176,7 +176,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="likeProducts.length"
+      :length="Math.ceil(this.likeProducts.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -192,15 +193,16 @@ export default {
   data () {
     return {
       noImg,
-      page: 1
+      page: 1,
+      pageSize: 10
     }
   },
   computed: {
     likeProducts () {
       const copyLikeProducts = Array.from(this.$store.state.product.list.filter((x) => x.like === true))
       return copyLikeProducts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

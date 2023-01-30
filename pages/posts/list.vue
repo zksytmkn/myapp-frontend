@@ -16,7 +16,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          全ての呟き（{{ recentposts.length }}件）
+          全ての呟き（{{ posts.length }}件）
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
@@ -30,12 +30,12 @@
         >
           <v-data-table
             :headers="tableHeaders"
-            :items="recentposts"
+            :items="posts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
             item-key="id"
             hide-default-footer
           >
             <template
-              v-slot:[`item.name`]="{ item }"
+              v-slot:[`item.title`]="{ item }"
             >
               <nuxt-link
                 :to="$my.postLinkTo(item.id)"
@@ -43,6 +43,11 @@
               >
                 {{ item.name }}
               </nuxt-link>
+            </template>
+            <template
+              v-slot:[`item.text`]="{ item }"
+            >
+              {{ item.text }}
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"
@@ -90,7 +95,7 @@
             <template
               v-slot:[`item.updatedAt`]="{ item }"
             >
-              {{ $my.dataFormat(item.updatedAt) }}
+              {{ $my.dataFormat(item.updated_at) }}
             </template>
           </v-data-table>
         </v-col>
@@ -99,7 +104,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="4"
+      v-show="posts.length"
+      :length="Math.ceil(this.posts.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -112,7 +118,8 @@ export default {
   middleware: ['get-post-list'],
   data () {
     return {
-      page: '1',
+      page: 1,
+      pageSize: 10,
       container: {
         sm: 10,
         md: 8
@@ -126,7 +133,11 @@ export default {
       tableHeaders: [
         {
           text: 'タイトル',
-          value: 'name'
+          value: 'title'
+        },
+        {
+          text: '呟き',
+          value: 'text'
         },
         {
           text: 'いいね履歴',
@@ -142,11 +153,11 @@ export default {
     }
   },
   computed: {
-    recentposts () {
-      const copyposts = Array.from(this.$store.state.post.list)
-      return copyposts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+    posts () {
+      const copyPosts = Array.from(this.$store.state.post.list)
+      return copyPosts.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

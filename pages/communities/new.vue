@@ -30,6 +30,8 @@
         >
           <v-card>
             <v-form
+              ref="new"
+              v-model="isValid"
               @submit.prevent="addCommunity"
             >
               <v-list>
@@ -59,7 +61,7 @@
                         >
                         </v-img>
                         <v-file-input
-                          :rules="rules"
+                          :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
@@ -93,48 +95,11 @@
                           outlined
                           class="mt-6"
                           label="名前"
-                          v-model="inputtedName"
+                          v-model="inputted.name"
+                          :rules="nameRules"
+                          :disabled="sentIt"
                         >
                         </v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="種類"
-                          :items="typeItems"
-                          v-model="inputtedType"
-                          small-chips
-                        >
-                        </v-combobox>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="地方"
-                          :items="regionItems"
-                          v-model="inputtedRegion"
-                          small-chips
-                        >
-                        </v-combobox>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-combobox
-                          dense
-                          outlined
-                          label="地域"
-                          :items="prefectureItems"
-                          v-model="inputtedPrefecture"
-                          small-chips
-                        >
-                        </v-combobox>
                       </v-col>
                       <v-col
                         cols="11"
@@ -143,7 +108,9 @@
                           dense
                           outlined
                           label="紹介文"
-                          v-model="inputtedText"
+                          v-model="inputted.text"
+                          :rules="textRules"
+                          :disabled="sentIt"
                         >
                         </v-textarea>
                       </v-col>
@@ -157,10 +124,17 @@
                             type="submit"
                             :disabled="!isValid || loading"
                             :loading="loading"
-                            class="mb-6 font-weight-bold white-text"
+                            class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
                           >
                             コミュニティを作成する
+                          </v-btn>
+
+                          <v-btn
+                            text
+                            @click="formReset"
+                          >
+                            キャンセル
                           </v-btn>
                         </v-row>
                       </v-col>
@@ -173,6 +147,80 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          作成済み（{{ newCommunities.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-container
+        v-show="!newCommunities.length"
+      >
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p>
+              作成しておりません。
+            </p>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-container>
+    <v-container>
+      <v-row
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+        >
+          <v-row
+            align="center"
+          >
+            <v-col
+              v-for="(community, i) in newCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+              :key="`card-community-${i}`"
+              cols="12"
+              :sm="card.sm"
+              :md="card.md"
+            >
+              <v-card
+                block
+                :height="card.height"
+                :elevation="card.elevation"
+                :to="$my.communityLinkTo(community.id)"
+                class="v-btn text-capitalize align-center"
+              >
+                <v-container>
+                  <v-card-title
+                    class="pb-1 d-block text-truncate font-weight-bold"
+                  >
+                    {{ community.name }}
+                  </v-card-title>
+                  <v-card-text
+                    class="caption grey--text text--darken-1"
+                  >
+                    {{ community.text.substring(0, 30)+'...'}}
+                  </v-card-text>
+                </v-container>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-pagination
+      class="my-6"
+      v-model="page"
+      v-show="newCommunities.length"
+      :length="Math.ceil(this.newCommunities.length/this.pageSize)"
+      circle
+    >
+    </v-pagination>
   </div>
 </template>
 
@@ -180,85 +228,41 @@
 import noImg from '~/assets/images/logged-in/no.png'
 export default {
   layout: 'logged-in',
+  middleware: ['get-community-list'],
   data () {
     return {
+      noImg,
+      page: 1,
+      pageSize: 10,
       image: null,
-      rules: [
+      isValid: false,
+      loading: false,
+      imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
-      inputtedName: '',
-      inputtedType: '',
-      inputtedRegion: '',
-      inputtedPrefecture: '',
-      typeItems: [
-        '野菜',
-        '果物'
+      nameRules: [
+        v => !!v || '名前を入力してください'
       ],
-      regionItems: [
-        '北海道地方',
-        '東北地方',
-        '関東地方',
-        '中部地方',
-        '近畿地方',
-        '中国地方',
-        '四国地方',
-        '九州地方'
+      textRules: [
+        v => !!v || '紹介文を入力してください'
       ],
-      prefectureItems: [
-        '北海道',
-        '青森県',
-        '岩手県',
-        '宮城県',
-        '秋田県',
-        '山形県',
-        '福島県',
-        '茨城県',
-        '栃木県',
-        '群馬県',
-        '埼玉県',
-        '千葉県',
-        '東京都',
-        '神奈川県',
-        '新潟県',
-        '富山県',
-        '石川県',
-        '福井県',
-        '山梨県',
-        '長野県',
-        '岐阜県',
-        '静岡県',
-        '愛知県',
-        '三重県',
-        '滋賀県',
-        '京都府',
-        '大阪府',
-        '兵庫県',
-        '奈良県',
-        '和歌山県',
-        '鳥取県',
-        '島根県',
-        '岡山県',
-        '広島県',
-        '山口県',
-        '徳島県',
-        '香川県',
-        '愛媛県',
-        '高知県',
-        '福岡県',
-        '佐賀県',
-        '長崎県',
-        '熊本県',
-        '大分県',
-        '宮崎県',
-        '鹿児島県',
-        '沖縄県'
-      ]
+      inputted: { name: '', maker: this.$auth.user.name, text: '' },
+      container: {
+        sm: 10,
+        md: 8
+      },
+      card: {
+        sm: 6,
+        md: 4,
+        height: 110,
+        elevation: 4
+      }
     }
   },
   methods: {
     async upload() {
       const formData = new FormData()
-      formData.append("image", this.image)
+      formData.append("image", this.inputted.FormDataimage)
       const config = {
         header: {
           "Content-Type": "multipart/form-data"
@@ -270,9 +274,24 @@ export default {
     async addCommunity () {
       this.loading = true
       if (this.isValid) {
-        await this.$axios.$post()
+        await this.$axios.$post('api/v1/communities', this.inputted)
+        .then(response => {
+          this.$router.go({path: '/communities/new', force: true})
+          const msg = 'コミュニティを作成しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コミュニティの作成に失敗しました'
+          return this.$store.dispatch('getToast', { msg })
+        })
       }
       this.loading = false
+    },
+    formReset () {
+      this.sentIt = false
+      this.$refs.new.reset()
     }
   },
   computed: {
@@ -282,6 +301,14 @@ export default {
       } else {
         return URL.createObjectURL(this.image)
       }
+    },
+    newCommunities () {
+      const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.maker === this.$auth.user.name))
+      return copyNewCommunities.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
+        return 0
+      })
     }
   }
 }

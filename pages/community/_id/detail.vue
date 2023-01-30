@@ -51,49 +51,6 @@
                 <v-col
                   cols="8"
                 >
-                  <v-chip
-                    class="ma-2 font-weight-bold"
-                    outlined
-                  >
-                    <v-icon
-                      v-if="currentCommunity.type === '野菜'"
-                      left
-                    >
-                      mdi-peanut-outline
-                    </v-icon>
-                    <v-icon
-                      v-if="currentCommunity.type === '果物'"
-                      left
-                    >
-                      mdi-food-apple-outline
-                    </v-icon>
-                    {{ currentCommunity.type }}
-                  </v-chip>
-
-                  <v-chip
-                    class="ma-2 font-weight-bold"
-                    outlined
-                  >
-                    <v-icon
-                      left
-                    >
-                      mdi-map-outline
-                    </v-icon>
-                    {{ currentCommunity.region }}
-                  </v-chip>
-
-                  <v-chip
-                    class="ma-2 font-weight-bold"
-                    outlined
-                  >
-                    <v-icon
-                      left
-                    >
-                      mdi-map-marker-outline
-                    </v-icon>
-                    {{ currentCommunity.prefecture }}
-                  </v-chip>
-
                   <v-card-subtitle>
                     {{ currentCommunity.text }}
                   </v-card-subtitle>

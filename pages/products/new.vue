@@ -127,6 +127,7 @@
                           :items="regionItems"
                           v-model="inputted.region"
                           :rules="regionRules"
+                          :disabled="sentIt"
                           small-chips
 
                         >
@@ -187,7 +188,7 @@
                         <v-textarea
                           dense
                           outlined
-                          label="紹介文"
+                          label="説明文"
                           v-model="inputted.text"
                           :rules="textRules"
                           :disabled="sentIt"
@@ -253,7 +254,7 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="product in newProducts"
+          v-for="product in newProducts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
           :key="product.id"
           cols="6"
         >
@@ -383,7 +384,9 @@
     </v-container>
     <v-pagination
       class="my-6"
-      :length="6"
+      v-model="page"
+      v-show="newProducts.length"
+      :length="Math.ceil(this.newProducts.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -398,6 +401,8 @@ export default {
   data () {
     return {
       noImg,
+      page: 1,
+      pageSize: 10,
       image: null,
       isValid: false,
       loading: false,
@@ -423,9 +428,9 @@ export default {
         v => !!v || '数量を入力してください'
       ],
       textRules: [
-        v => !!v || '紹介文を入力してください'
+        v => !!v || '説明文を入力してください'
       ],
-      inputted: { name: '', seller: this.$auth.user.name, type: '', region: '', prefecture: '', price: null, quantity: 1, inventory: null, text: '', image: [] },
+      inputted: { name: '', seller: this.$auth.user.name, type: '', region: '', prefecture: '', price: null, quantity: 1, inventory: null, text: '' },
       typeItems: [
         '野菜',
         '果物'
@@ -500,7 +505,7 @@ export default {
           "Content-Type": "multipart/form-data"
         }
       }
-      const res = await this.$axios.post('post', formData, config)
+      const res = await this.$axios.post('', formData, config)
       console.log(res)
     },
     async addProduct () {
@@ -515,7 +520,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = '農産物の出品に失敗にしました'
+          const msg = '農産物の出品に失敗しました'
           return this.$store.dispatch('getToast', { msg })
         })
       }
@@ -537,8 +542,8 @@ export default {
     newProducts () {
       const copyNewProducts = Array.from(this.$store.state.product.list.filter((x) => x.seller === this.$auth.user.name))
       return copyNewProducts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

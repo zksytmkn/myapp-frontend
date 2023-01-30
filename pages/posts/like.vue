@@ -52,13 +52,13 @@
         >
           <v-data-table
             v-show="likePosts.length"
-            :items="likePosts"
+            :items="likePosts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
             :headers="tableHeaders"
             item-key="id"
             hide-default-footer
           >
             <template
-              v-slot:[`item.name`]="{ item }"
+              v-slot:[`item.title`]="{ item }"
             >
               <nuxt-link
                 :to="$my.postLinkTo(item.id)"
@@ -66,6 +66,11 @@
               >
                 {{ item.name }}
               </nuxt-link>
+            </template>
+            <template
+              v-slot:[`item.text`]="{ item }"
+            >
+              {{ item.text }}
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"
@@ -113,7 +118,7 @@
             <template
               v-slot:[`item.updatedAt`]="{ item }"
             >
-              {{ $my.dataFormat(item.updatedAt) }}
+              {{ $my.dataFormat(item.updated_at) }}
             </template>
           </v-data-table>
         </v-col>
@@ -122,7 +127,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="likePosts.length"
+      :length="Math.ceil(this.likePosts.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -135,7 +141,8 @@ export default {
   middleware: ['get-post-list'],
   data () {
     return {
-      page: '1',
+      page: 1,
+      pageSize: 10,
       container: {
         sm: 10,
         md: 8
@@ -149,7 +156,11 @@ export default {
       tableHeaders: [
         {
           text: 'タイトル',
-          value: 'name'
+          value: 'title'
+        },
+        {
+          text: '呟き',
+          value: 'text'
         },
         {
           text: 'いいね履歴',
@@ -168,8 +179,8 @@ export default {
     likePosts () {
       const copyLikePosts = Array.from(this.$store.state.post.list.filter((x) => x.like === true))
       return copyLikePosts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

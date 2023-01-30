@@ -66,63 +66,12 @@
                       sm="6"
                       md="9"
                     >
-                      <v-combobox
-                        label="種類"
-                        v-model="searchedType"
-                        :items="typeItems"
-                        multiple
-                        chips
+                      <v-text-field
+                        label="呟き"
+                        v-model="searchedText"
                         dense
                       >
-                      </v-combobox>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-combobox
-                        label="地方"
-                        v-model="searchedRegion"
-                        :items="regionItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-combobox>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-combobox
-                        label="地域"
-                        v-model="searchedPrefecture"
-                        :items="prefectureItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-combobox>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-combobox
-                        label="対象者"
-                        v-model="searchedTarget"
-                        :items="targetItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-combobox>
+                      </v-text-field>
                     </v-col>
 
                     <v-col
@@ -132,7 +81,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updatePostSearchCondition', { name: searchedName, poster: searchedPoster, type: searchedType, region: searchedRegion, prefecture: searchedPrefecture, target: searchedTarget })"
+                          @click="$store.dispatch('updatePostSearchCondition', { name: searchedName, poster: searchedPoster, text: searchedText })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           outlined
@@ -172,12 +121,12 @@
         >
           <v-data-table
             :headers="tableHeaders"
-            :items="searchedPosts"
+            :items="searchedPosts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
             item-key="id"
             hide-default-footer
           >
             <template
-              v-slot:[`item.name`]="{ item }"
+              v-slot:[`item.title`]="{ item }"
             >
               <nuxt-link
                 :to="$my.postLinkTo(item.id)"
@@ -185,6 +134,11 @@
               >
                 {{ item.name }}
               </nuxt-link>
+            </template>
+            <template
+              v-slot:[`item.text`]="{ item }"
+            >
+              {{ item.text }}
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"
@@ -232,7 +186,7 @@
             <template
               v-slot:[`item.updatedAt`]="{ item }"
             >
-              {{ $my.dataFormat(item.updatedAt) }}
+              {{ $my.dataFormat(item.updated_at) }}
             </template>
           </v-data-table>
         </v-col>
@@ -241,7 +195,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="4"
+      v-show="searchedPosts.length"
+      :length="Math.ceil(this.searchedPosts.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -254,10 +209,16 @@ export default {
   middleware: ['get-post-list'],
   data () {
     return {
+      page: 1,
+      pageSize: 10,
       tableHeaders: [
         {
           text: 'タイトル',
-          value: 'name'
+          value: 'title'
+        },
+        {
+          text: '呟き',
+          value: 'text'
         },
         {
           text: 'いいね履歴',
@@ -272,102 +233,19 @@ export default {
       ],
       searchedName: '',
       searchedPoster: '',
-      searchedType: [],
-      searchedRegion: [],
-      searchedPrefecture: [],
-      searchedTarget: [],
-      typeItems: [
-        '野菜',
-        '果物'
-      ],
-      regionItems: [
-        '北海道地方',
-        '東北地方',
-        '関東地方',
-        '中部地方',
-        '近畿地方',
-        '中国地方',
-        '四国地方',
-        '九州地方'
-      ],
-      prefectureItems: [
-        '北海道',
-        '青森県',
-        '岩手県',
-        '宮城県',
-        '秋田県',
-        '山形県',
-        '福島県',
-        '茨城県',
-        '栃木県',
-        '群馬県',
-        '埼玉県',
-        '千葉県',
-        '東京都',
-        '神奈川県',
-        '新潟県',
-        '富山県',
-        '石川県',
-        '福井県',
-        '山梨県',
-        '長野県',
-        '岐阜県',
-        '静岡県',
-        '愛知県',
-        '三重県',
-        '滋賀県',
-        '京都府',
-        '大阪府',
-        '兵庫県',
-        '奈良県',
-        '和歌山県',
-        '鳥取県',
-        '島根県',
-        '岡山県',
-        '広島県',
-        '山口県',
-        '徳島県',
-        '香川県',
-        '愛媛県',
-        '高知県',
-        '福岡県',
-        '佐賀県',
-        '長崎県',
-        '熊本県',
-        '大分県',
-        '宮崎県',
-        '鹿児島県',
-        '沖縄県'
-      ],
-      targetItems: [
-        '農家対象',
-        '消費者対象'
-      ]
+      searchedText: ''
     }
   },
   computed: {
     searchedPosts () {
       const searchCondition = this.$store.state.post.searchCondition
 
-      let copySearchedPosts = Array.from(this.$store.state.post.list).
+      const copySearchedPosts = Array.from(this.$store.state.post.list).
       filter((x) => x.name.includes(searchCondition.name) && x.poster.includes(searchCondition.poster))
 
-      if (searchCondition.type.length !== 0) {
-        copySearchedPosts = copySearchedPosts.filter((x) => searchCondition.type.some(str => x.type.includes(str)))
-      }
-      if (searchCondition.region.length !== 0) {
-        copySearchedPosts = copySearchedPosts.filter((x) => searchCondition.region.some(str => x.region.includes(str)))
-      }
-      if (searchCondition.prefecture.length !== 0) {
-        copySearchedPosts = copySearchedPosts.filter((x) => searchCondition.prefecture.some(str => x.prefecture.includes(str)))
-      }
-      if (searchCondition.target.length !== 0) {
-        copySearchedPosts = copySearchedPosts.filter((x) => searchCondition.target.some(str => x.target.includes(str)))
-      }
-
       return copySearchedPosts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }

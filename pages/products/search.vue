@@ -66,31 +66,12 @@
                       sm="6"
                       md="9"
                     >
-                      <v-combobox
-                        label="種類"
-                        v-model="searchedType"
-                        :items="typeItems"
-                        multiple
-                        chips
+                      <v-text-field
+                        label="説明文"
+                        v-model="searchedText"
                         dense
                       >
-                      </v-combobox>
-                    </v-col>
-    
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-combobox
-                        label="地方"
-                        v-model="searchedRegion"
-                        :items="regionItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-combobox>
+                      </v-text-field>
                     </v-col>
 
                     <v-col
@@ -98,7 +79,39 @@
                       sm="6"
                       md="9"
                     >
-                      <v-combobox
+                      <v-select
+                        label="種類"
+                        v-model="searchedType"
+                        :items="typeItems"
+                        multiple
+                        chips
+                        dense
+                      >
+                      </v-select>
+                    </v-col>
+    
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="9"
+                    >
+                      <v-select
+                        label="地方"
+                        v-model="searchedRegion"
+                        :items="regionItems"
+                        multiple
+                        chips
+                        dense
+                      >
+                      </v-select>
+                    </v-col>
+
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="9"
+                    >
+                      <v-select
                         label="地域"
                         v-model="searchedPrefecture"
                         :items="prefectureItems"
@@ -106,7 +119,7 @@
                         chips
                         dense
                       >
-                      </v-combobox>
+                      </v-select>
                     </v-col>
                     <v-col
                       cols="12"
@@ -115,7 +128,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updateProductSearchCondition', { name: searchedName, seller: searchedSeller, type: searchedType, region: searchedRegion, prefecture: searchedPrefecture })"
+                          @click="$store.dispatch('updateProductSearchCondition', { name: searchedName, seller: searchedSeller, text: searchedText, type: searchedType, region: searchedRegion, prefecture: searchedPrefecture })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           outlined
@@ -147,7 +160,7 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="product in searchedProducts"
+          v-for="product in searchedProducts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
           :key="product.id"
           cols="6"
         >
@@ -279,7 +292,8 @@
     <v-pagination
       class="my-6"
       v-model="page"
-      :length="6"
+      v-show="searchedProducts.length"
+      :length="Math.ceil(this.searchedProducts.length/this.pageSize)"
       circle
     >
     </v-pagination>
@@ -295,8 +309,11 @@ export default {
   data () {
     return {
       noImg,
+      page: 1,
+      pageSize: 10,
       searchedName: '',
       searchedSeller: '',
+      searchedText: '',
       searchedType: [],
       searchedRegion: [],
       searchedPrefecture: [],
@@ -383,8 +400,8 @@ export default {
       }
 
       return copySearchedProducts.sort((a, b) => {
-        if (a.updatedAt > b.updatedAt) { return -1 }
-        if (a.updatedAt < b.updatedAt) { return 1 }
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
     }
