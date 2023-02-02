@@ -171,9 +171,10 @@
                   cols="6"
                 >
                   <v-img
-                    :src="noImg"
+                    :src="product.image_url ? product.image_url : noImg"
                     max-height="360px"
                     max-width="360px"
+                    aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title

@@ -69,23 +69,6 @@
                           v-model="inputted.image"
                         >
                         </v-file-input>
-                        <v-btn
-                          dark
-                          outlined
-                          class="mr-2 font-weight-bold"
-                          color="teal"
-                          @click="upload"
-                        >
-                          画像をアップロードする
-                        </v-btn>
-                        <v-btn
-                          dark
-                          outlined
-                          class="mr-2 font-weight-bold"
-                          color="teal"
-                        >
-                          画像を削除する
-                        </v-btn>
                       </v-col>
                       <v-col
                         cols="11"
@@ -93,7 +76,6 @@
                         <v-text-field
                           dense
                           outlined
-                          class="mt-6"
                           label="名前"
                           v-model="inputted.name"
                           :rules="nameRules"
@@ -265,9 +247,10 @@
                   cols="6"
                 >
                   <v-img
-                    :src="noImg"
+                    :src="product.image_url ? product.image_url : noImg"
                     max-height="360px"
                     max-width="360px"
+                    aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
@@ -403,7 +386,6 @@ export default {
       noImg,
       page: 1,
       pageSize: 10,
-      image: null,
       isValid: false,
       loading: false,
       imgRules: [
@@ -430,7 +412,7 @@ export default {
       textRules: [
         v => !!v || '説明文を入力してください'
       ],
-      inputted: { name: '', seller: this.$auth.user.name, type: '', region: '', prefecture: '', price: null, quantity: 1, inventory: null, text: '' },
+      inputted: { name: '', seller: this.$auth.user.name, type: '', region: '', prefecture: '', price: null, quantity: 1, inventory: null, text: '', image: null },
       typeItems: [
         '野菜',
         '果物'
@@ -497,21 +479,28 @@ export default {
     }
   },
   methods: {
-    async upload () {
-      const formData = new FormData()
-      formData.append("image", this.inputted.image)
-      const config = {
-        header: {
-          "Content-Type": "multipart/form-data"
-        }
-      }
-      const res = await this.$axios.post('', formData, config)
-      console.log(res)
-    },
     async addProduct () {
       this.loading = true
       if (this.isValid) {
-        await this.$axios.$post('/api/v1/products', this.inputted)
+        const formData = new FormData()
+        formData.append('name', this.inputted.name)
+        formData.append('seller', this.inputted.seller)
+        formData.append('type', this.inputted.type)
+        formData.append('region', this.inputted.region)
+        formData.append('prefecture', this.inputted.prefecture)
+        formData.append('price', this.inputted.price)
+        formData.append('quantity', this.inputted.quantity)
+        formData.append('inventory', this.inputted.inventory)
+        formData.append('text', this.inputted.text)
+        if (this.inputted.image !== null) {
+        formData.append('image', this.inputted.image)
+        }
+        const config = {
+          header: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+        await this.$axios.$post('/api/v1/products', formData, config)
         .then(response => {
           this.$router.go({path: '/products/new', force: true})
           const msg = '農産物を出品しました'
@@ -533,10 +522,10 @@ export default {
   },
   computed: {
     url() {
-      if(this.image===null) {
+      if(this.inputted.image===null) {
         return noImg
       } else {
-        return URL.createObjectURL(this.image)
+        return URL.createObjectURL(this.inputted.image)
       }
     },
     newProducts () {
