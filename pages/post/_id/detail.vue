@@ -40,32 +40,13 @@
                   <v-container
                     class="mt-8"
                   >
-                    <v-row>
-                      <v-col
-                        cols="4"
-                      >
-                        <v-img
-                          :src="noImg"
-                        >
-                        </v-img>
-                      </v-col>
-                      <v-col
-                        cols="4"
-                      >
-                        <v-img
-                          :src="noImg"
-                        >
-                        </v-img>
-                      </v-col>
-                      <v-col
-                        cols="4"
-                      >
-                        <v-img
-                          :src="noImg"
-                        >
-                        </v-img>
-                      </v-col>
-                    </v-row>
+                    <v-img
+                      :src="currentPost.image_url ? currentPost.image_url : noImg"
+                      max-height="360px"
+                      max-width="360px"
+                      aspect-ratio="1"
+                    >
+                    </v-img>
                   </v-container>
 
                   <v-container>

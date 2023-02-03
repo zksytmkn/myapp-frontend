@@ -493,7 +493,7 @@ export default {
         formData.append('inventory', this.inputted.inventory)
         formData.append('text', this.inputted.text)
         if (this.inputted.image !== null) {
-        formData.append('image', this.inputted.image)
+          formData.append('image', this.inputted.image)
         }
         const config = {
           header: {
@@ -522,6 +522,7 @@ export default {
   },
   computed: {
     url() {
+      console.log(this.inputted.image)
       if(this.inputted.image===null) {
         return noImg
       } else {

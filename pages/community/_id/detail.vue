@@ -23,9 +23,10 @@
                   cols="4"
                 >
                   <v-img
-                    :src="noImg"
+                    :src="currentCommunity.image_url ? currentCommunity.image_url : noImg"
                     max-height="360px"
                     max-width="360px"
+                    aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title

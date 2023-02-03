@@ -54,65 +54,21 @@
                         cols="11"
                         class="mt-9"
                       >
-                        <v-row>
-                          <v-col
-                            cols="4"
-                          >
-                            <v-img
-                              :src="url"
-                              height=300px
-                              width=300px
-                            >
-                            </v-img>
-                          </v-col>
-                          <v-col
-                            cols="4"
-                          >
-                            <v-img
-                              :src="url"
-                              height=300px
-                              width=300px
-                            >
-                            </v-img>
-                          </v-col>
-                          <v-col
-                            cols="4"
-                          >
-                            <v-img
-                              :src="url"
-                              height=300px
-                              width=300px
-                            >
-                            </v-img>
-                          </v-col>
-                        </v-row>
+                        <v-img
+                          :src="url"
+                          height=300px
+                          width=300px
+                        >
+                        </v-img>
                         <v-file-input
-                          multiple
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
                           label="画像ファイル"
-                          v-model="image"
+                          v-model="inputted.image"
                         >
                         </v-file-input>
-                        <v-btn
-                          dark
-                          outlined
-                          class="mr-2 font-weight-bold"
-                          color="teal"
-                          @click="upload"
-                        >
-                          画像をアップロードする
-                        </v-btn>
-                        <v-btn
-                          dark
-                          outlined
-                          class="mr-2 font-weight-bold"
-                          color="teal"
-                        >
-                          画像を削除する
-                        </v-btn>
                       </v-col>
                       <v-col
                         cols="11"
@@ -120,7 +76,6 @@
                         <v-text-field
                           dense
                           outlined
-                          class="mt-6"
                           label="タイトル"
                           v-model="inputted.name"
                           :rules="nameRules"
@@ -296,8 +251,11 @@ export default {
   middleware: ['get-post-list'],
   data () {
     return {
+      noImg,
       page: 1,
       pageSize: 10,
+      isValid: false,
+      loading: false,
       container: {
         sm: 10,
         md: 8
@@ -328,10 +286,6 @@ export default {
           value: 'updatedAt'
         }
       ],
-      noImg,
-      image: null,
-      isValid: false,
-      loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
@@ -341,25 +295,26 @@ export default {
       textRules: [
         v => !!v || '呟きを入力してください'
       ],
-      inputted: { name: '', poster: this.$auth.user.name, text: '' }
+      inputted: { name: '', poster: this.$auth.user.name, text: '', image: null }
     }
   },
   methods: {
-    async upload() {
-      const formData = new FormData()
-      formData.append("image", this.image)
-      const config = {
-        header: {
-          "Content-Type": "multipart/form-data"
-        }
-      }
-      const res = await this.$axios.post('', formData, config)
-      console.log(res)
-    },
     async addPost () {
       this.loading = true
       if (this.isValid) {
-        await this.$axios.$post('/api/v1/posts', this.inputted)
+        const formData = new FormData()
+        formData.append('name', this.inputted.name)
+        formData.append('poster', this.inputted.poster)
+        formData.append('text', this.inputted.text)
+        if (this.inputted.image !== null) {
+          formData.append('image', this.inputted.image)
+        }
+        const config = {
+          header: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+        await this.$axios.$post('/api/v1/posts', formData, config)
         .then(response => {
           this.$router.go({path: '/posts/new', force: true})
           const msg = '呟きを投稿しました'
@@ -381,10 +336,11 @@ export default {
   },
   computed: {
     url() {
-      if(this.image===null) {
+      console.log(this.inputted.image)
+      if(this.inputted.image===null) {
         return noImg
       } else {
-        return URL.createObjectURL(this.image)
+        return URL.createObjectURL(this.inputted.image);
       }
     },
     newPosts () {

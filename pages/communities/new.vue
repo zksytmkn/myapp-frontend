@@ -66,26 +66,9 @@
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
                           label="画像ファイル"
-                          v-model="image"
+                          v-model="inputted.image"
                         >
                         </v-file-input>
-                        <v-btn
-                          dark
-                          outlined
-                          class="mr-2 font-weight-bold"
-                          color="teal"
-                          @click="upload"
-                        >
-                          画像をアップロードする
-                        </v-btn>
-                        <v-btn
-                          dark
-                          outlined
-                          class="mr-2 font-weight-bold"
-                          color="teal"
-                        >
-                          画像を削除する
-                        </v-btn>
                       </v-col>
                       <v-col
                         cols="11"
@@ -93,7 +76,6 @@
                         <v-text-field
                           dense
                           outlined
-                          class="mt-6"
                           label="名前"
                           v-model="inputted.name"
                           :rules="nameRules"
@@ -234,7 +216,6 @@ export default {
       noImg,
       page: 1,
       pageSize: 10,
-      image: null,
       isValid: false,
       loading: false,
       imgRules: [
@@ -246,7 +227,7 @@ export default {
       textRules: [
         v => !!v || '紹介文を入力してください'
       ],
-      inputted: { name: '', maker: this.$auth.user.name, text: '' },
+      inputted: { name: '', maker: this.$auth.user.name, text: '', image: null },
       container: {
         sm: 10,
         md: 8
@@ -260,21 +241,22 @@ export default {
     }
   },
   methods: {
-    async upload() {
-      const formData = new FormData()
-      formData.append("image", this.inputted.FormDataimage)
-      const config = {
-        header: {
-          "Content-Type": "multipart/form-data"
-        }
-      }
-      const res = await this.$axios.post('', formData, config)
-      console.log(res)
-    },
     async addCommunity () {
       this.loading = true
       if (this.isValid) {
-        await this.$axios.$post('api/v1/communities', this.inputted)
+        const formData = new FormData()
+        formData.append('name', this.inputted.name)
+        formData.append('maker', this.inputted.maker)
+        formData.append('text', this.inputted.text)
+        if (this.inputted.image !== null) {
+          formData.append('image', this.inputted.image)
+        }
+        const config = {
+          header: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+        await this.$axios.$post('api/v1/communities', formData, config)
         .then(response => {
           this.$router.go({path: '/communities/new', force: true})
           const msg = 'コミュニティを作成しました'
@@ -296,10 +278,10 @@ export default {
   },
   computed: {
     url() {
-      if(this.image===null) {
+      if(this.inputted.image===null) {
         return noImg
       } else {
-        return URL.createObjectURL(this.image)
+        return URL.createObjectURL(this.inputted.image)
       }
     },
     newCommunities () {
