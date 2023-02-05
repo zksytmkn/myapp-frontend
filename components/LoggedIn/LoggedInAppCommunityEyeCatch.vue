@@ -4,7 +4,7 @@
   >
     <v-img
       dark
-      src="https://picsum.photos/id/56/1920/1080?blur=1"
+      src="https://picsum.photos/id/222/1920/1080?blur=1"
       :aspect-ratio="16/9"
     >
       <v-container
@@ -23,7 +23,7 @@
               <v-list-item>
                 <v-list-item-title
                   class="text-h5 font-weight-bold"
-                  style="white-space:pre-line;"
+                  style="white-space:pre-line; text-shadow:1px 1px 1px black;"
                 >
                   <template>
                     <slot></slot>
@@ -31,11 +31,6 @@
                 </v-list-item-title>
               </v-list-item>
             </v-list>
-            <div
-              style="background-color:white; width:40%"
-            >
-              <v-divider/>
-            </div>
           </v-col>
         </v-row>
       </v-container>

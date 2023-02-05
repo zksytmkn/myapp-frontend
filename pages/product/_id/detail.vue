@@ -2,14 +2,14 @@
   <div
     id="detail"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-product-eye-catch>
       <template
         v-slot
       >
         Various vegetables or fruits are here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-product-eye-catch>
 
     <v-container>
       <v-row>
@@ -152,37 +152,72 @@
                     ¥{{ currentProduct.price.toLocaleString() }}
                   </v-card-title>
                   <v-divider/>
-                  <v-card-actions
-                    class="pa-0"
-                    style="width:30%;"
+                  <v-container
+                    v-if="currentProduct.seller!==$auth.user.name"
                   >
-                    <v-select
-                      @change="(quantity) => $store.dispatch('updateCurrentQuantity', quantity)"
-                      :value="currentProduct.quantity"
-                      class="mt-6"
-                      :items="[...Array(currentProduct.inventory).keys()].map(i => ++i)"
-                      solo
-                      dense
-                      rounded
-                      outlined
+                    <v-card-actions
+                      class="pa-0"
+                      style="width:40%;"
                     >
-                    </v-select>
-                  </v-card-actions>
-                  <v-card-actions
-                    class="pa-0"
-                    style="width:30%;"
+                      <v-select
+                        @change="(quantity) => $store.dispatch('updateCurrentQuantity', quantity)"
+                        :value="currentProduct.quantity"
+                        class="mt-6"
+                        :items="[...Array(currentProduct.inventory).keys()].map(i => ++i)"
+                        solo
+                        dense
+                        rounded
+                        outlined
+                      >
+                      </v-select>
+                    </v-card-actions>
+                    <v-card-actions
+                      class="pa-0"
+                      style="width:40%;"
+                    >
+                      <v-btn
+                        @click="$store.dispatch('addCurrentProductToCart', currentProduct)"
+                        :disabled="!currentProduct.inventory"
+                        class="font-weight-bold"
+                        color="teal"
+                        block
+                        dark
+                      >
+                        カートに入れる
+                      </v-btn>
+                    </v-card-actions>
+                  </v-container>
+                  <v-container
+                    v-if="currentProduct.seller===$auth.user.name"
                   >
-                    <v-btn
-                      @click="$store.dispatch('addCurrentProductToCart', currentProduct)"
-                      :disabled="!currentProduct.inventory"
-                      class="font-weight-bold"
-                      color="teal"
-                      block
-                      dark
+                    <v-card-actions
+                      style="width:40%;"
                     >
-                      カートに入れる
-                    </v-btn>
-                  </v-card-actions>
+                      <v-btn
+                        @click="editCurrentProduct"
+                        class="font-weight-bold"
+                        color="deep-orange"
+                        block
+                        dark
+                        outlined
+                      >
+                        編集する
+                      </v-btn>
+                    </v-card-actions>
+                    <v-card-actions
+                      style="width:40%;"
+                    >
+                      <v-btn
+                        @click="deleteCurrentProduct(currentProduct.id)"
+                        class="font-weight-bold"
+                        color="deep-orange"
+                        block
+                        dark
+                      >
+                        削除する
+                      </v-btn>
+                    </v-card-actions>
+                  </v-container>
                 </v-col>
               </v-row>
             </v-container>
@@ -201,6 +236,24 @@ export default {
   data () {
     return {
       noImg
+    }
+  },
+  methods: {
+    async editCurrentProduct() {
+    },
+    async deleteCurrentProduct(id) {
+      await this.$axios.$delete(`/api/v1/products/${id}`)
+      .then(response => {
+        this.$router.back()
+        const msg = '農産物を削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = '農産物の削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
     }
   },
   computed: {

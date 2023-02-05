@@ -7,8 +7,7 @@
     <v-img
       id="scroll-top"
       dark
-      src="https://picsum.photos/id/11/1920/1080?blur=1"
-      gradient="to top right, rgba(19,84,122,.3), rgba(128,208,199,.3)"
+      src="https://picsum.photos/id/11/1920/1080"
       :height="imgHeight"
     >
       <v-row
@@ -34,7 +33,8 @@
                 <v-list-item>
                   <v-list-item-title
                     class="mb-3"
-                    style="white-space:pre-line; line-height:1.5;"
+                    style="white-space:pre-line; line-height:1.5; 
+                    text-shadow:1px 1px 1px black;"
                   >
                     <h2>
                       『Edible』は規格外農産物を減らし、
@@ -49,8 +49,7 @@
                 </div>
                 <v-list-item-subtitle
                   class="font-weight-bold"
-                  style="white-space:pre-line;
-                  line-height:1.5;"
+                  style="white-space:pre-line; line-height:1.5; text-shadow:1px 1px 1px black;"
                 >
                   <p>
                     世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
@@ -92,12 +91,12 @@
               >
                 <v-avatar
                   color="teal"
-                  size="360"
+                  size="400"
                 >
                   <v-list
                     color="transparent"
                     class="font-weight-bold"
-                    style="white-space:pre-line;"
+                    style="white-space:pre-line; text-shadow:1px 1px 1px black;"
                   >
                     <span>
                       SDGs(持続可能な開発目標)Goal12

@@ -2,14 +2,14 @@
   <div
     id="products"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-product-eye-catch>
       <template
         v-slot
       >
         Various vegetables or fruits are here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-product-eye-catch>
 
     <v-container>
       <v-list-item>

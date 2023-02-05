@@ -2,14 +2,14 @@
   <div
     id="products"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-product-eye-catch>
       <template
         v-slot
       >
         Various vegetables or fruits are here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-product-eye-catch>
     
     <v-container>
       <v-list-item>
@@ -110,6 +110,7 @@
                   </v-card-title>
                   <v-divider/>
                   <v-container
+                    class="pt-0"
                     v-if="product.seller!==$auth.user.name"
                   >
                     <v-card-actions
@@ -160,7 +161,7 @@
                       <v-btn
                         @click="editProduct"
                         class="font-weight-bold"
-                        color="teal"
+                        color="deep-orange"
                         block
                         dark
                         outlined
@@ -172,9 +173,9 @@
                       style="width:80%;"
                     >
                       <v-btn
-                        @click="deleteProduct"
+                        @click="deleteProduct(product.id)"
                         class="font-weight-bold"
-                        color="teal"
+                        color="deep-orange"
                         block
                         dark
                       >
@@ -214,6 +215,22 @@ export default {
     }
   },
   methods: {
+    async editProduct () {
+    },
+    async deleteProduct(id) {
+      await this.$axios.$delete(`/api/v1/products/${id}`)
+      .then(response => {
+        this.$router.go({path: this.$router.currentRoute.path, force: true})
+        const msg = '農産物を削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = '農産物の削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
+    }
   },
   computed: {
     products () {

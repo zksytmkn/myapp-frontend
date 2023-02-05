@@ -2,14 +2,14 @@
   <div
     id="posts"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-post-eye-catch>
       <template
         v-slot
       >
         Many farmers post about agriculture here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-post-eye-catch>
 
     <v-container>
       <v-row>
@@ -35,6 +35,30 @@
                     >
                       一覧
                     </v-btn>
+                    <v-card-actions
+                      v-if="currentPost.poster===$auth.user.name"
+                      class="ml-2"
+                    >
+                      <v-btn
+                        @click="editCurrentPost"
+                        class="font-weight-bold"
+                        color="deep-orange"
+                        block
+                        dark
+                        outlined
+                      >
+                        編集する
+                      </v-btn>
+                      <v-btn
+                        @click="deleteCurrentPost(currentPost.id)"
+                        class="font-weight-bold"
+                        color="deep-orange"
+                        block
+                        dark
+                      >
+                        削除する
+                      </v-btn>
+                    </v-card-actions>
                   </v-card-title>
                   <v-divider />
                   <v-container
@@ -126,6 +150,24 @@ export default {
   data () {
     return {
       noImg
+    }
+  },
+  methods: {
+    async editCurrentPost() {
+    },
+    async deleteCurrentPost(id) {
+      await this.$axios.$delete(`/api/v1/posts/${id}`)
+      .then(response => {
+        this.$router.back()
+        const msg = '呟きを削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = '呟きの削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
     }
   },
   computed: {

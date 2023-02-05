@@ -2,14 +2,14 @@
   <div
     id="detail"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-community-eye-catch>
       <template
         v-slot
       >
-        Many farmers post about agriculture here !
+        Different kinds of communities are here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-community-eye-catch>
 
     <v-container>
       <v-row>
@@ -67,6 +67,7 @@
                     ＊ご自由に参加していただけます。
                   </v-card-text>
                   <v-card-actions
+                    v-if="currentCommunity.maker!==$auth.user.name"
                     style="width:30%;"
                   >
                     <v-btn
@@ -83,6 +84,30 @@
                       dark
                     >
                       コミュニティに参加する
+                    </v-btn>
+                  </v-card-actions>
+                  <v-card-actions
+                    v-if="currentCommunity.maker===$auth.user.name"
+                    style="width:30%;"
+                  >
+                    <v-btn
+                      @click="editCurrentCommunity"
+                      class="font-weight-bold"
+                      color="deep-orange"
+                      block
+                      dark
+                      outlined
+                    >
+                      編集する
+                    </v-btn>
+                    <v-btn
+                      @click="deleteCurrentCommunity(currentCommunity.id)"
+                      class="font-weight-bold"
+                      color="deep-orange"
+                      block
+                      dark
+                    >
+                      削除する
                     </v-btn>
                   </v-card-actions>
                 </v-col>
@@ -104,6 +129,24 @@ export default {
   data () {
     return {
       noImg
+    }
+  },
+  methods: {
+    async editCurrentCommunity() {
+    },
+    async deleteCurrentCommunity(id) {
+      await this.$axios.$delete(`/api/v1/communities/${id}`)
+      .then(response => {
+        this.$router.back()
+        const msg = 'コミュニティを削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = 'コミュニティの削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
     }
   },
   computed: {

@@ -2,14 +2,14 @@
   <div
     id="posts"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-post-eye-catch>
       <template
         v-slot
       >
         Many farmers post about agriculture here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-post-eye-catch>
 
     <v-container>
       <v-list-item>
@@ -316,7 +316,7 @@ export default {
         }
         await this.$axios.$post('/api/v1/posts', formData, config)
         .then(response => {
-          this.$router.go({path: '/posts/new', force: true})
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
           const msg = '呟きを投稿しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })

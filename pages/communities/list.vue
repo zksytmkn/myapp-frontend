@@ -2,14 +2,14 @@
   <div
     id="communities"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-community-eye-catch>
       <template
         v-slot
       >
         Different kinds of communities are here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-community-eye-catch>
 
     <v-container>
       <v-list-item>

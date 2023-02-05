@@ -2,14 +2,14 @@
   <div
     id="products"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-product-eye-catch>
       <template
         v-slot
       >
         Various vegetables or fruits are here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-product-eye-catch>
     <v-container>
       <v-list-item>
         <v-list-item-title
@@ -131,7 +131,6 @@
                           @click="$store.dispatch('updateProductSearchCondition', { name: searchedName, seller: searchedSeller, text: searchedText, type: searchedType, region: searchedRegion, prefecture: searchedPrefecture })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
-                          outlined
                           dark
                         >
                           農産物を検索する
@@ -245,44 +244,80 @@
                     ¥{{ product.price.toLocaleString() }}
                   </v-card-title>
                   <v-divider/>
-                  <v-card-actions
-                    class="pa-0"
-                    style="width:60%;"
+                  <v-container
+                    class="pt-0"
+                    v-if="product.seller!==$auth.user.name"
                   >
-                    <v-select
-                      @change="(quantity) => $store.dispatch('updateQuantity', {product, quantity})"
-                      :value="product.quantity"
-                      class="mt-6"
-                      :items="[...Array(product.inventory).keys()].map(i => ++i)"
-                      solo
-                      dense
-                      rounded
-                      outlined
+                    <v-card-actions
+                      class="pa-0"
+                      style="width:80%;"
                     >
-                    </v-select>
-                    <v-card-text
-                      class="px-0 pt-0 font-weight-bold"
-                      style="color:#CC0000;"
-                      v-show="!product.inventory"
+                      <v-select
+                        @change="(quantity) => $store.dispatch('updateQuantity', {product, quantity})"
+                        :value="product.quantity"
+                        class="mt-6"
+                        :items="[...Array(product.inventory).keys()].map(i => ++i)"
+                        solo
+                        dense
+                        rounded
+                        outlined
+                      >
+                      </v-select>
+                      <v-card-text
+                        class="px-0 pt-0 font-weight-bold"
+                        style="color:#CC0000;"
+                        v-show="!product.inventory"
+                      >
+                        ＊在庫が残っておりません。
+                      </v-card-text>
+                    </v-card-actions>
+                    <v-card-actions
+                      class="pa-0"
+                      style="width:80%;"
                     >
-                      ＊在庫が残っておりません。
-                    </v-card-text>
-                  </v-card-actions>
-                  <v-card-actions
-                    class="pa-0"
-                    style="width:60%;"
+                      <v-btn
+                        @click="$store.dispatch('addProductToCart', product)"
+                        :disabled="!product.inventory"
+                        class="font-weight-bold"
+                        color="teal"
+                        block
+                        dark
+                      >
+                        カートに入れる
+                      </v-btn>
+                    </v-card-actions>
+                  </v-container>
+                  <v-container
+                    v-if="product.seller===$auth.user.name"
                   >
-                    <v-btn
-                      @click="$store.dispatch('addProductToCart', product)"
-                      :disabled="!product.inventory"
-                      class="font-weight-bold"
-                      color="teal"
-                      block
-                      dark
+                    <v-card-actions
+                      style="width:80%;"
                     >
-                      カートに入れる
-                    </v-btn>
-                  </v-card-actions>
+                      <v-btn
+                        @click="editProduct"
+                        class="font-weight-bold"
+                        color="deep-orange"
+                        block
+                        dark
+                        outlined
+                      >
+                        編集する
+                      </v-btn>
+                    </v-card-actions>
+                    <v-card-actions
+                      style="width:80%;"
+                    >
+                      <v-btn
+                        @click="deleteProduct(product.id)"
+                        class="font-weight-bold"
+                        color="deep-orange"
+                        block
+                        dark
+                      >
+                        削除する
+                      </v-btn>
+                    </v-card-actions>
+                  </v-container>
                 </v-col>
               </v-row>
             </v-container>
@@ -381,6 +416,24 @@ export default {
         '鹿児島県',
         '沖縄県'
       ]
+    }
+  },
+  methods: {
+    async editProduct() {
+    },
+    async deleteProduct(id) {
+      await this.$axios.$delete(`/api/v1/products/${id}`)
+      .then(response => {
+        this.$router.go({path: this.$router.currentRoute.path, force: true})
+        const msg = '農産物を削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = '農産物の削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
     }
   },
   computed: {

@@ -30,9 +30,7 @@
           v-slot:activator
         >
           <v-list-item-avatar left>
-            <v-icon
-              :color="nav.color"
-            >
+            <v-icon>
               {{ nav.icon }}
             </v-icon>
           </v-list-item-avatar>
@@ -102,7 +100,7 @@ export default {
     return {
       mobileBreakpoint: 960,
       navMenus: [
-        { name: '農産物', icon: 'mdi-cart', color: '#CC0000',
+        { name: '農産物', icon: 'mdi-cart',
           lists: [
             {
               name: '一覧',
@@ -136,7 +134,7 @@ export default {
             }
           ]
         },
-        { name: '農家の呟き', icon: 'mdi-file-document', color: '#336791',
+        { name: '農家の呟き', icon: 'mdi-file-document',
           lists: [
             {
               name: '一覧',
@@ -165,7 +163,7 @@ export default {
             }
           ]
         },
-        { name: 'コミュニティ', icon: 'mdi-charity', color: '#00C48D',
+        { name: 'コミュニティ', icon: 'mdi-charity',
           lists: [
             {
               name: '一覧',

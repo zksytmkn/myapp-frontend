@@ -2,14 +2,14 @@
   <div
     id="posts"
   >
-    <logged-in-app-eye-catch>
+    <logged-in-app-post-eye-catch>
       <template
         v-slot
       >
         Many farmers post about agriculture here !
         Please look around and enjoy it !
       </template>
-    </logged-in-app-eye-catch>
+    </logged-in-app-post-eye-catch>
     
     <v-container>
       <v-list-item>
