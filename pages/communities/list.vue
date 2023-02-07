@@ -43,7 +43,7 @@
                 block
                 :height="card.height"
                 :elevation="card.elevation"
-                :to="$my.communityLinkTo(community.id)"
+                :to="$my.communityLinkToDetail(community.id)"
                 class="v-btn text-capitalize align-center"
               >
                 <v-container>

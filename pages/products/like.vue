@@ -71,7 +71,7 @@
                     <v-btn
                       text
                       outlined
-                      :to="$my.productLinkTo(product.id)"
+                      :to="$my.productLinkToDetail(product.id)"
                       class="font-weight-bold"
                     >
                       詳細
@@ -175,12 +175,12 @@
                     v-if="product.seller===$auth.user.name"
                   >
                     <v-card-actions
-                      style="width:80%;"
+                      style="width:86%;"
                     >
                       <v-btn
-                        @click="editProduct"
-                        class="font-weight-bold"
-                        color="deep-orange"
+                        :to="$my.productLinkToEdit(product.id)"
+                        class="font-weight-bold mt-2"
+                        color="teal"
                         block
                         dark
                         outlined
@@ -189,12 +189,12 @@
                       </v-btn>
                     </v-card-actions>
                     <v-card-actions
-                      style="width:80%;"
+                      style="width:86%;"
                     >
                       <v-btn
                         @click="deleteProduct(product.id)"
-                        class="font-weight-bold"
-                        color="deep-orange"
+                        class="font-weight-bold mt-2"
+                        color="teal"
                         block
                         dark
                       >
@@ -234,8 +234,6 @@ export default {
     }
   },
   methods: {
-    async editProduct () {
-    },
     async deleteProduct (id) {
       await this.$axios.$delete(`/api/v1/products/${id}`)
       .then(response => {

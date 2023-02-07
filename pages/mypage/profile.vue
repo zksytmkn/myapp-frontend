@@ -10,7 +10,7 @@
       >
         <v-list-item>
           <v-list-item-title>
-            設定
+            マイページ
           </v-list-item-title>
         </v-list-item>
 
@@ -41,13 +41,13 @@
 
 <script>
 export default {
+  layout: 'logged-in',
   data () {
     return {
       setMenus: [
-        { name: 'プロフィール編集', icon: 'mdi-account-edit', link: '/settings/profile' },
-        { name: 'パスワード変更', icon: 'mdi-lock', link: '/settings/password' },
-        { name: 'メールアドレス変更', icon: 'mdi-email', link: '/settings/email' },
-        { name: '退会する', icon: 'mdi-account-remove', link: '/settings/deactivate' }
+        { name: 'プロフィール', icon: 'mdi-account', link: '/mypage/profile' },
+        { name: 'フォロー', icon: 'mdi-account-arrow-right', link: '/mypage/following' },
+        { name: 'フォロワー', icon: 'mdi-account-arrow-left', link: '/mypage/followed' },
       ]
     }
   }

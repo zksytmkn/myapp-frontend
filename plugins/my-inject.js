@@ -17,15 +17,27 @@ class MyInject {
     return dateTimeFormat.format(new Date(dateStr))
   }
 
-  productLinkTo (id, name = 'product-id-detail') {
+  productLinkToDetail (id, name = 'product-id-detail') {
     return { name, params: { id } }
   }
 
-  postLinkTo (id, name = 'post-id-detail') {
+  productLinkToEdit (id, name = 'product-id-edit') {
     return { name, params: { id } }
   }
 
-  communityLinkTo (id, name = 'community-id-detail') {
+  postLinkToDetail (id, name = 'post-id-detail') {
+    return { name, params: { id } }
+  }
+
+  postLinkToEdit (id, name = 'post-id-edit') {
+    return { name, params: { id } }
+  }
+
+  communityLinkToDetail (id, name = 'community-id-detail') {
+    return { name, params: { id } }
+  }
+
+  communityLinkToEdit (id, name = 'community-id-edit') {
     return { name, params: { id } }
   }
 

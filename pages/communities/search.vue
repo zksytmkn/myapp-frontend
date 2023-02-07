@@ -86,7 +86,6 @@
                           @click="$store.dispatch('updateCommunitySearchCondition', { name: searchedName, maker: searchedMaker, text: searchedText })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
-                          outlined
                           dark
                         >
                           コミュニティを検索する
@@ -135,7 +134,7 @@
                 block
                 :height="card.height"
                 :elevation="card.elevation"
-                :to="$my.communityLinkTo(community.id)"
+                :to="$my.communityLinkToDetail(community.id)"
                 class="v-btn text-capitalize align-center"
               >
                 <v-container>

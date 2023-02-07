@@ -1,6 +1,6 @@
 <template>
   <div
-    id="posts"
+    id="post"
   >
     <logged-in-app-post-eye-catch>
       <template
@@ -16,7 +16,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          投稿
+          編集
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
@@ -30,9 +30,9 @@
         >
           <v-card>
             <v-form
-              ref="new"
+              ref="edit"
               v-model="isValid"
-              @submit.prevent="addPost"
+              @submit.prevent="editPost($store.state.post.current.id)"
             >
               <v-list>
                 <v-list-item>
@@ -42,11 +42,11 @@
                     農家の呟き
                   </v-list-item-title>
                 </v-list-item>
-  
+
                 <v-divider/>
-  
+
                 <v-list-item>
-                  <v-list-item-content>
+                  <v-list-item-container>
                     <v-row
                       justify="center"
                     >
@@ -109,7 +109,7 @@
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
                           >
-                            呟きを投稿する
+                            呟きを編集する
                           </v-btn>
 
                           <v-btn
@@ -121,7 +121,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                  </v-list-item-content>
+                  </v-list-item-container>
                 </v-list-item>
               </v-list>
             </v-form>
@@ -129,163 +129,19 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          投稿済み（{{ newPosts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container
-        v-show="!newPosts.length"
-      >
-        <v-row>
-          <v-col
-            cols="12"
-          >
-            <p>
-              投稿しておりません。
-            </p>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-container>
-    <v-container>
-      <v-row
-        justify="center"
-      >
-        <v-col
-          cols="12"
-        >
-          <v-data-table
-            v-show="newPosts.length"
-            :headers="tableHeaders"
-            :items="newPosts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
-            item-key="id"
-            hide-default-footer
-          >
-            <template
-              v-slot:[`item.title`]="{ item }"
-            >
-              <nuxt-link
-                :to="$my.postLinkToDetail(item.id)"
-                class="text-decoration-none"
-              >
-                {{ item.name }}
-              </nuxt-link>
-            </template>
-            <template
-              v-slot:[`item.text`]="{ item }"
-            >
-              {{ item.text }}
-            </template>
-            <template
-              v-slot:[`item.like`] = "{ item }"
-            >
-              <v-card-actions
-                class="pl-0"
-              >
-                <v-btn
-                  @click="$store.dispatch('updatePostLikeState', item)"
-                  :class="{ likeColor: item.like}"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-up
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Good
-                </span>
-                <v-btn
-                  @click="$store.dispatch('updatePostDislikeState', item)"
-                  :class="{ dislikeColor: item.dislike }"
-                  class="ml-2"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-down
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Bad
-                </span>
-              </v-card-actions>
-            </template>
-            <template
-              v-slot:[`item.updatedAt`]="{ item }"
-            >
-              {{ $my.dataFormat(item.updated_at) }}
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-pagination
-      class="my-6"
-      v-model="page"
-      v-show="newPosts.length"
-      :length="Math.ceil(this.newPosts.length/this.pageSize)"
-      circle
-    >
-    </v-pagination>
   </div>
 </template>
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
+
 export default {
   layout: 'logged-in',
-  middleware: ['get-post-list'],
   data () {
     return {
       noImg,
-      page: 1,
-      pageSize: 10,
       isValid: false,
       loading: false,
-      container: {
-        sm: 10,
-        md: 8
-      },
-      card: {
-        sm: 6,
-        md: 4,
-        height: 110,
-        elevation: 4
-      },
-      tableHeaders: [
-        {
-          text: 'タイトル',
-          value: 'title'
-        },
-        {
-          text: '呟き',
-          value: 'text'
-        },
-        {
-          text: 'いいね履歴',
-          width: 200,
-          value: 'like'
-        },
-        {
-          text: '更新日',
-          width: 150,
-          value: 'updatedAt'
-        }
-      ],
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
@@ -299,7 +155,7 @@ export default {
     }
   },
   methods: {
-    async addPost () {
+    async editPost(id) {
       this.loading = true
       if (this.isValid) {
         const formData = new FormData()
@@ -314,57 +170,38 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         }
-        await this.$axios.$post('/api/v1/posts', formData, config)
+        await this.$axios.$patch(`/api/v1/posts/${id}`, formData, config)
         .then(response => {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = '呟きを投稿しました'
+          this.$router.back()
+          const msg = '呟きを編集しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
           console.log(error)
-          const msg = '呟きの投稿に失敗しました'
+          const msg = '呟きの編集に失敗しました'
           return this.$store.dispatch('getToast', { msg })
         })
       }
       this.loading = false
     },
-    formReset () {
+    formReset() {
       this.sentIt = false
-      this.$refs.new.reset()
+      this.$refs.edit.reset()
     }
   },
   computed: {
     url() {
-      console.log(this.inputted.image)
       if(this.inputted.image===null) {
-        return noImg
+        return this.$store.state.post.current.image_url ? this.$store.state.post.current.image_url : noImg
       } else {
-        return URL.createObjectURL(this.inputted.image);
+        return URL.createObjectURL(this.inputted.image)
       }
-    },
-    newPosts () {
-      const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.poster === this.$auth.user.name))
-      return copyNewPosts.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
-        return 0
-      })
     }
+  },
+  mounted() {
+    this.inputted.name = this.$store.state.post.current.name
+    this.inputted.text = this.$store.state.post.current.text
   }
 }
 </script>
-
-<style lang="scss">
-#posts {
-  .v-parallax__content {
-    padding: 0;
-  }
-.likeColor {
-  background: #CC0000 !important;
-}
-.dislikeColor {
-  background: #336791 !important;
-}
-}
-</style>

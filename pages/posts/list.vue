@@ -38,7 +38,7 @@
               v-slot:[`item.title`]="{ item }"
             >
               <nuxt-link
-                :to="$my.postLinkTo(item.id)"
+                :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
                 {{ item.name }}

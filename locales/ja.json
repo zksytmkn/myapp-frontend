@@ -11,7 +11,11 @@
     "signup": "会員登録",
     "login": "ログイン",
     "logout": "ログアウト",
-    "mypage": "マイページ",
+    "mypage": {
+      "followed": "フォロワー",
+      "following": "フォロー",
+      "profile": "プロフィール"
+    },
     "settings": {
       "deactivate":"退会する",
       "email":"メールアドレス変更",
@@ -21,7 +25,8 @@
     },
     "product": {
       "id": {
-        "detail": "詳細"
+        "detail": "詳細",
+        "edit": "編集"
       }
     },
     "products": {
@@ -36,7 +41,8 @@
     },
     "post": {
       "id": {
-        "detail": "詳細"
+        "detail": "詳細",
+        "edit": "編集"
       }
     },
     "posts": {
@@ -48,7 +54,8 @@
     },
     "community": {
       "id": {
-        "detail": "詳細"
+        "detail": "詳細",
+        "edit": "編集"
       }
     },
     "communities": {

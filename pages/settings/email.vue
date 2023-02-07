@@ -8,47 +8,63 @@
         <v-sheet
           rounded="lg"
         >
-          <v-list
-            color="transparent"
+          <v-form
+            ref="edit"
+            v-model="isValid"
+            @submit.prevent="editEmail($store.state.user.current.id)"
           >
-            <v-list-item>
-              <v-list-item-content>
+            <v-list
+              color="transparent"
+            >
+              <v-list-item>
                 <v-list-item-title>
                   メールアドレス変更
                 </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider/>
-
-            <v-list-item>
-              <v-list-item-content>
-                <v-row
-                  justify="center"
-                >
-                  <v-col
-                    cols="12"
+              </v-list-item>
+  
+              <v-divider/>
+              <v-list-item>
+                <v-container>
+                  <v-row
+                    justify="center"
                   >
-                    <user-form-email
-                      label="メールアドレス"
-                    />
-                    <user-form-email
-                      label="現在のパスワード"
-                    />
-                  </v-col>
-                  <v-btn
-                    type="submit"
-                    :disabled="!isValid || loading"
-                    :loading="loading"
-                    color="appblue"
-                    class="white--text"
-                  >
-                    変更
-                  </v-btn>
-                </v-row>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+                    <v-col
+                      cols="11"
+                      class="mt-6"
+                    >
+                      <user-form-email
+                        label="メールアドレス"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <user-form-email
+                        label="現在のパスワード"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-row
+                        justify="center"
+                      >
+                        <v-btn
+                          type="submit"
+                          :disabled="!isValid || loading"
+                          :loading="loading"
+                          color="appblue"
+                          class="white--text mt-3 mb-3"
+                        >
+                          変更する
+                        </v-btn>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-list-item>
+            </v-list>
+          </v-form>
         </v-sheet>
       </v-col>
     </v-row>
@@ -56,9 +72,22 @@
 </template>
 
 <script>
-import UserFormEmail from '../../components/User/UserFormEmail.vue'
 export default {
-  components: { UserFormEmail },
-  layout: 'logged-in'
+  layout: 'logged-in',
+  data () {
+    return {
+      isValid: false,
+      loading: false
+    }
+  },
+  methods: {
+    async editEmail(id) {
+      this.loading = true
+      if (this.isValid) {
+        await this.$axios
+      }
+      this.loading = false
+    }
+  }
 }
 </script>

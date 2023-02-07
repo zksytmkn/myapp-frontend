@@ -52,7 +52,6 @@
                 <v-btn
                   class="font-weight-bold"
                   color="teal"
-                  outlined
                   dark
                   to="/products/register"
                 >
@@ -60,7 +59,7 @@
                 </v-btn>
                 <v-btn
                   class="font-weight-bold ml-2"
-                  color="orange"
+                  color="teal"
                   outlined
                   dark
                   to="/products/list"
@@ -102,7 +101,7 @@
                     <v-btn
                       text
                       outlined
-                      :to="$my.productLinkTo(product.id)"
+                      :to="$my.productLinkToDetail(product.id)"
                       class="font-weight-bold"
                       style="text-transform:none"
                     >
@@ -153,38 +152,34 @@
                 <v-col
                   cols="6"
                 >
-                  <v-card-text>
+                  <v-card-text
+                    class="pb-0"
+                  >
                     {{ product.text }}
                   </v-card-text>
-                  <v-card-text
-                    class="pb-0 font-weight-bold"
+                  <v-card-subtitle
+                    class="pt-0 font-weight-bold"
+                    style="white-space:pre-line; line-height:2;"
                   >
-                    <p>
-                      ¥{{ product.price.toLocaleString() }}（価格） × {{product.quantity }}（数量）
-                    </p>
-                  </v-card-text>
+                    ¥{{ product.price.toLocaleString() }} × {{product.quantity }}
+                    小計（税込）：¥{{ Math.floor(product.price *product.quantity * 1.1).toLocaleString() }}
+                  </v-card-subtitle>
                   <v-divider/>
-                  <v-card-text
-                    class="pb-0 font-weight-bold"
-                  >
-                    <p>
-                      小計（税込）：¥{{ Math.floor(product.price *product.quantity * 1.1).toLocaleString() }}
-                    </p>
-                  </v-card-text>
-                  <v-card-actions
-                    class="pt-0"
-                    style="width:70%;"
-                  >
-                    <v-btn
-                      @click="$store.dispatch('removeProductFromCart',product)"
-                      class="font-weight-bold"
-                      color="teal"
-                      block
-                      dark
+                  <v-container>
+                    <v-card-actions
+                      style="width:86%;"
                     >
-                      削除する
-                    </v-btn>
-                  </v-card-actions>
+                      <v-btn
+                        @click="$store.dispatch('removeProductFromCart',product)"
+                        class="font-weight-bold"
+                        color="teal"
+                        block
+                        dark
+                      >
+                        削除する
+                      </v-btn>
+                    </v-card-actions>
+                  </v-container>
                 </v-col>
               </v-row>
             </v-container>
@@ -192,6 +187,14 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-pagination
+      class="my-6"
+      v-model="page"
+      v-show="cartProducts.length"
+      :length="Math.ceil(this.cartProducts.length/this.pageSize)"
+      circle
+    >
+    </v-pagination>
   </div>
 </template>
 
@@ -202,7 +205,9 @@ import noImg from '~/assets/images/logged-in/no.png'
 export default {
   data () {
     return {
-      noImg
+      noImg,
+      page: 1,
+      pageSize: 10
     }
   },
   computed: mapGetters(['cartProducts','cartTotalPrice']),

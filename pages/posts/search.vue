@@ -84,7 +84,6 @@
                           @click="$store.dispatch('updatePostSearchCondition', { name: searchedName, poster: searchedPoster, text: searchedText })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
-                          outlined
                           dark
                         >
                           呟きを検索する
@@ -129,7 +128,7 @@
               v-slot:[`item.title`]="{ item }"
             >
               <nuxt-link
-                :to="$my.postLinkTo(item.id)"
+                :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
                 {{ item.name }}

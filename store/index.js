@@ -27,7 +27,6 @@ export const state = () => ({
       seller: '',
       text: '',
       type: [],
-      region: [],
       prefecture: []
     }
   },
@@ -50,7 +49,8 @@ export const state = () => ({
     }
   },
   user: {
-    current: null
+    current: null,
+    list: []
   },
   auth: {
     token: null,
@@ -111,6 +111,9 @@ export const mutations = {
   },
   setCurrentCommunity (state, payload) {
     state.community.current = payload
+  },
+  setUserList (state, payload) {
+    state.user.list = payload
   },
   setCurrentUser (state, payload) {
     state.user.current = payload
@@ -184,12 +187,11 @@ export const mutations = {
     state.post.current.dislike = !post.dislike
     state.post.current.like = post.like ? !post.like : post.like
   },
-  setProductSearchCondition (state, { name, seller, text, type, region, prefecture }) {
+  setProductSearchCondition (state, { name, seller, text, type, prefecture }) {
     state.product.searchCondition.name = name
     state.product.searchCondition.seller = seller
     state.product.searchCondition.text = text
     state.product.searchCondition.type = type
-    state.product.searchCondition.region = region
     state.product.searchCondition.prefecture = prefecture
   },
   setPostSearchCondition (state, { name, poster, text }) {
@@ -197,11 +199,10 @@ export const mutations = {
     state.post.searchCondition.poster = poster
     state.post.searchCondition.text = text
   },
-  setCommunitySearchCondition (state, { name, maker, type, region, prefecture }) {
+  setCommunitySearchCondition (state, { name, maker, type, prefecture }) {
     state.community.searchCondition.name = name
     state.community.searchCondition.maker = maker
     state.community.searchCondition.type = type
-    state.community.searchCondition.region = region
     state.community.searchCondition.prefecture = prefecture
   }
 }
@@ -242,6 +243,10 @@ export const actions = {
       currentCommunity = state.community.list.find(community => community.id === id) || null  
     }
     commit('setCurrentCommunity', currentCommunity)
+  },
+  getUserList ({ commit }, users) {
+    users = users || []
+    commit('setUserList', users)
   },
   getCurrentUser ({ commit }, user) {
     commit('setCurrentUser', user)
@@ -322,13 +327,13 @@ export const actions = {
   updateCurrentPostDislikeState ({ commit }, post) {
     commit('setCurrentPostDislikeState', post)
   },
-  updateProductSearchCondition ({ commit }, { name, seller, text, type, region, prefecture }) {
-    commit('setProductSearchCondition', { name, seller, text, type, region, prefecture })
+  updateProductSearchCondition ({ commit }, { name, seller, text, type, prefecture }) {
+    commit('setProductSearchCondition', { name, seller, text, type, prefecture })
   },
   updatePostSearchCondition ({ commit }, { name, poster, text }) {
     commit('setPostSearchCondition', { name, poster, text })
   },
-  updateCommunitySearchCondition ({ commit }, { name, maker, type, region, prefecture }) {
-    commit('setCommunitySearchCondition', { name, maker, type, region, prefecture })
+  updateCommunitySearchCondition ({ commit }, { name, maker, type, prefecture }) {
+    commit('setCommunitySearchCondition', { name, maker, type, prefecture })
   }
 }

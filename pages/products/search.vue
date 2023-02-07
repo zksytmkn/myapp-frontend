@@ -89,22 +89,6 @@
                       >
                       </v-select>
                     </v-col>
-    
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-select
-                        label="地方"
-                        v-model="searchedRegion"
-                        :items="regionItems"
-                        multiple
-                        chips
-                        dense
-                      >
-                      </v-select>
-                    </v-col>
 
                     <v-col
                       cols="12"
@@ -112,7 +96,7 @@
                       md="9"
                     >
                       <v-select
-                        label="地域"
+                        label="都道府県"
                         v-model="searchedPrefecture"
                         :items="prefectureItems"
                         multiple
@@ -128,7 +112,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updateProductSearchCondition', { name: searchedName, seller: searchedSeller, text: searchedText, type: searchedType, region: searchedRegion, prefecture: searchedPrefecture })"
+                          @click="$store.dispatch('updateProductSearchCondition', { name: searchedName, seller: searchedSeller, text: searchedText, type: searchedType, prefecture: searchedPrefecture })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           dark
@@ -185,7 +169,7 @@
                     <v-btn
                       text
                       outlined
-                      :to="$my.productLinkTo(product.id)"
+                      :to="$my.productLinkToDetail(product.id)"
                       class="font-weight-bold"
                     >
                       詳細
@@ -291,12 +275,12 @@
                     v-if="product.seller===$auth.user.name"
                   >
                     <v-card-actions
-                      style="width:80%;"
+                      style="width:86%;"
                     >
                       <v-btn
-                        @click="editProduct"
-                        class="font-weight-bold"
-                        color="deep-orange"
+                        :to="$my.productLinkToEdit(product.id)"
+                        class="font-weight-bold mt-2"
+                        color="teal"
                         block
                         dark
                         outlined
@@ -305,12 +289,12 @@
                       </v-btn>
                     </v-card-actions>
                     <v-card-actions
-                      style="width:80%;"
+                      style="width:86%;"
                     >
                       <v-btn
                         @click="deleteProduct(product.id)"
-                        class="font-weight-bold"
-                        color="deep-orange"
+                        class="font-weight-bold mt-2"
+                        color="teal"
                         block
                         dark
                       >
@@ -351,21 +335,10 @@ export default {
       searchedSeller: '',
       searchedText: '',
       searchedType: [],
-      searchedRegion: [],
       searchedPrefecture: [],
       typeItems: [
         '野菜',
         '果物'
-      ],
-      regionItems: [
-        '北海道地方',
-        '東北地方',
-        '関東地方',
-        '中部地方',
-        '近畿地方',
-        '中国地方',
-        '四国地方',
-        '九州地方'
       ],
       prefectureItems: [
         '北海道',
@@ -419,8 +392,6 @@ export default {
     }
   },
   methods: {
-    async editProduct() {
-    },
     async deleteProduct(id) {
       await this.$axios.$delete(`/api/v1/products/${id}`)
       .then(response => {
@@ -445,9 +416,6 @@ export default {
 
       if (searchCondition.type.length !== 0) {
         copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.type.some(str => x.type.includes(str)))
-      }
-      if (searchCondition.region.length !== 0) {
-        copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.region.some(str => x.region.includes(str)))
       }
       if (searchCondition.prefecture.length !== 0) {
         copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.prefecture.some(str => x.prefecture.includes(str)))

@@ -73,7 +73,7 @@ export default {
   data () {
     return {
       menus: [
-        { name: 'mypage', icon: 'mdi-home' },
+        { name: 'mypage-profile', icon: 'mdi-home' },
         { name: 'settings-profile', icon: 'mdi-account-cog' },
         { name: 'logout', icon: 'mdi-logout-variant', divider: true }
       ]

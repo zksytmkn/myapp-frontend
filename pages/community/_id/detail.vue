@@ -1,6 +1,6 @@
 <template>
   <div
-    id="detail"
+    id="community"
   >
     <logged-in-app-community-eye-catch>
       <template
@@ -91,9 +91,9 @@
                     style="width:30%;"
                   >
                     <v-btn
-                      @click="editCurrentCommunity"
+                      :to="$my.communityLinkToEdit(currentCommunity.id)"
                       class="font-weight-bold"
-                      color="deep-orange"
+                      color="teal"
                       block
                       dark
                       outlined
@@ -103,7 +103,7 @@
                     <v-btn
                       @click="deleteCurrentCommunity(currentCommunity.id)"
                       class="font-weight-bold"
-                      color="deep-orange"
+                      color="teal"
                       block
                       dark
                     >
@@ -132,8 +132,6 @@ export default {
     }
   },
   methods: {
-    async editCurrentCommunity() {
-    },
     async deleteCurrentCommunity(id) {
       await this.$axios.$delete(`/api/v1/communities/${id}`)
       .then(response => {
@@ -159,7 +157,7 @@ export default {
 </script>
 
 <style lang="scss">
-#detail {
+#community {
   .v-parallax__content {
     padding: 0;
   }

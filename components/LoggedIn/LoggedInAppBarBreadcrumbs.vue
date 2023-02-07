@@ -58,6 +58,13 @@ export default {
       ) {
         items.unshift({ text: "設定" })
       }
+
+      if (
+        currentRouteName.match(/mypage/) &&
+        !this.$vuetify.breakpoint.xs
+      ) {
+        items.unshift({ text: "マイページ" })
+      }
       return items
     }
   }

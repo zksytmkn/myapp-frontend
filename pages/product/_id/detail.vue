@@ -1,6 +1,6 @@
 <template>
   <div
-    id="detail"
+    id="product"
   >
     <logged-in-app-product-eye-catch>
       <template
@@ -126,18 +126,6 @@
                     <v-icon
                       left
                     >
-                      mdi-map-outline
-                    </v-icon>
-                    {{ currentProduct.region }}
-                  </v-chip>
-
-                  <v-chip
-                    class="ma-2 font-weight-bold"
-                    outlined
-                  >
-                    <v-icon
-                      left
-                    >
                       mdi-map-marker-outline
                     </v-icon>
                     {{ currentProduct.prefecture }}
@@ -194,9 +182,9 @@
                       style="width:40%;"
                     >
                       <v-btn
-                        @click="editCurrentProduct"
+                        :to="$my.productLinkToEdit(currentProduct.id)"
                         class="font-weight-bold"
-                        color="deep-orange"
+                        color="teal"
                         block
                         dark
                         outlined
@@ -210,7 +198,7 @@
                       <v-btn
                         @click="deleteCurrentProduct(currentProduct.id)"
                         class="font-weight-bold"
-                        color="deep-orange"
+                        color="teal"
                         block
                         dark
                       >
@@ -239,8 +227,6 @@ export default {
     }
   },
   methods: {
-    async editCurrentProduct() {
-    },
     async deleteCurrentProduct(id) {
       await this.$axios.$delete(`/api/v1/products/${id}`)
       .then(response => {
@@ -257,7 +243,7 @@ export default {
     }
   },
   computed: {
-    currentProduct () {
+    currentProduct() {
       const copyProduct = this.$store.state.product.current
       return copyProduct
     }
@@ -266,7 +252,7 @@ export default {
 </script>
 
 <style lang="scss">
-#detail {
+#product {
   .v-parallax__content {
     padding: 0;
   }

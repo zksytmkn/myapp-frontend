@@ -1,6 +1,6 @@
 <template>
   <div
-    id="posts"
+    id="post"
   >
     <logged-in-app-post-eye-catch>
       <template
@@ -40,9 +40,9 @@
                       class="ml-2"
                     >
                       <v-btn
-                        @click="editCurrentPost"
+                        :to="$my.postLinkToEdit(currentPost.id)"
                         class="font-weight-bold"
-                        color="deep-orange"
+                        color="teal"
                         block
                         dark
                         outlined
@@ -52,7 +52,7 @@
                       <v-btn
                         @click="deleteCurrentPost(currentPost.id)"
                         class="font-weight-bold"
-                        color="deep-orange"
+                        color="teal"
                         block
                         dark
                       >
@@ -62,7 +62,7 @@
                   </v-card-title>
                   <v-divider />
                   <v-container
-                    class="mt-8"
+                    class="mt-9"
                   >
                     <v-img
                       :src="currentPost.image_url ? currentPost.image_url : noImg"
@@ -153,8 +153,6 @@ export default {
     }
   },
   methods: {
-    async editCurrentPost() {
-    },
     async deleteCurrentPost(id) {
       await this.$axios.$delete(`/api/v1/posts/${id}`)
       .then(response => {
@@ -180,7 +178,7 @@ export default {
 </script>
 
 <style lang="scss">
-#posts {
+#post {
   .v-parallax__content {
     padding: 0;
   }

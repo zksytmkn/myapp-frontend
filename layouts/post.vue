@@ -13,6 +13,7 @@
       :drawer.sync="drawer"
     />
     <v-main>
+      <app-toaster />
       <nuxt />
     </v-main>
     <app-footer />
