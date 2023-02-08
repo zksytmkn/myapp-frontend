@@ -42,7 +42,7 @@
                       <v-text-field
                         class="mt-10"
                         label="名前"
-                        v-model="searchedName"
+                        v-model="searched.name"
                         dense
                       >
                       </v-text-field>
@@ -55,7 +55,7 @@
                     >
                       <v-text-field
                         label="出品者"
-                        v-model="searchedSeller"
+                        v-model="searched.seller"
                         dense
                       >
                       </v-text-field>
@@ -68,7 +68,7 @@
                     >
                       <v-text-field
                         label="説明文"
-                        v-model="searchedText"
+                        v-model="searched.text"
                         dense
                       >
                       </v-text-field>
@@ -81,7 +81,7 @@
                     >
                       <v-select
                         label="種類"
-                        v-model="searchedType"
+                        v-model="searched.type"
                         :items="typeItems"
                         multiple
                         chips
@@ -97,7 +97,7 @@
                     >
                       <v-select
                         label="都道府県"
-                        v-model="searchedPrefecture"
+                        v-model="searched.prefecture"
                         :items="prefectureItems"
                         multiple
                         chips
@@ -112,7 +112,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updateProductSearchCondition', { name: searchedName, seller: searchedSeller, text: searchedText, type: searchedType, prefecture: searchedPrefecture })"
+                          @click="$store.dispatch('updateProductSearchCondition', { name: searched.name, seller: searched.seller, text: searched.text, type: searched.type, prefecture: searched.prefecture })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           dark
@@ -331,11 +331,7 @@ export default {
       noImg,
       page: 1,
       pageSize: 10,
-      searchedName: '',
-      searchedSeller: '',
-      searchedText: '',
-      searchedType: [],
-      searchedPrefecture: [],
+      searched: { name: '', seller: '', text: '', type: [], prefecture: [] },
       typeItems: [
         '野菜',
         '果物'
@@ -427,6 +423,13 @@ export default {
         return 0
       })
     }
+  },
+  mounted() {
+    this.searched.name = this.$store.state.product.searchCondition.name
+    this.searched.seller = this.$store.state.product.searchCondition.seller
+    this.searched.text = this.$store.state.product.searchCondition.text
+    this.searched.type = this.$store.state.product.searchCondition.type
+    this.searched.prefecture = this.$store.state.product.searchCondition.prefecture
   }
 }
 </script>

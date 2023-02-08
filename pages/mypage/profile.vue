@@ -57,10 +57,68 @@
                         <v-list>
                           <v-card-text>
                             {{ currentUser.text }}
+                            {{ currentUser.text }}
+                            {{ currentUser.text }}
+                            {{ currentUser.text }}
+                            {{ currentUser.text }}
+                            {{ currentUser.text }}
                           </v-card-text>
                         </v-list>
                       </v-col>
                     </v-row>
+                  </v-col>
+                  <v-col
+                    cols="11"
+                  >
+                    <v-list>
+                      <v-list-item
+                        to="/products/search"
+                        @click="$store.dispatch('updateProductSearchCondition', { name: '', seller: $auth.user.name, text: '', type: [], prefecture: [] })"
+                      >
+                        <v-list-item-avatar
+                          left
+                        >
+                          <v-icon>
+                            mdi-account
+                          </v-icon>
+                        </v-list-item-avatar>
+                        <v-list-item-title>
+                          あなたの出品した農産物を見てみる
+                        </v-list-item-title>
+                      </v-list-item>
+
+                      <v-list-item
+                        to="/posts/search"
+                        @click="$store.dispatch('updatePostSearchCondition', { name: '', poster: $auth.user.name, text: '' })"
+                      >
+                        <v-list-item-avatar
+                          left
+                        >
+                          <v-icon>
+                            mdi-account
+                          </v-icon>
+                        </v-list-item-avatar>
+                        <v-list-item-title>
+                          あなたの投稿した呟きを見てみる
+                        </v-list-item-title>
+                      </v-list-item>
+
+                      <V-list-item
+                        to="/communities/search"
+                        @click="$store.dispatch('updateCommunitySearchCondition', { name: '', maker: $auth.user.name, text: '' })"
+                      >
+                        <v-list-item-avatar
+                          left
+                        >
+                          <v-icon>
+                            mdi-account
+                          </v-icon>
+                        </v-list-item-avatar>
+                        <v-list-item-title>
+                          あなたの作成したコミュニティを見てみる
+                        </v-list-item-title>
+                      </V-list-item>
+                    </v-list>
                   </v-col>
                 </v-row>
               </v-container>
@@ -79,8 +137,7 @@ export default {
   layout: 'logged-in',
   data () {
     return {
-      noPersonImg,
-      inputted: { name: '', prefecture: '', city: '', text: '', image: null }
+      noPersonImg
     }
   },
   computed: {

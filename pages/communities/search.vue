@@ -44,7 +44,7 @@
                       <v-text-field
                         class="mt-10"
                         label="名前"
-                        v-model="searchedName"
+                        v-model="searched.name"
                         dense
                       >
                       </v-text-field>
@@ -57,7 +57,7 @@
                     >
                       <v-text-field
                         label="作成者"
-                        v-model="searchedMaker"
+                        v-model="searched.maker"
                         dense
                       >
                       </v-text-field>
@@ -70,7 +70,7 @@
                     >
                       <v-text-field
                         label="紹介文"
-                        v-model="searchedText"
+                        v-model="searched.text"
                         dense
                       >
                       </v-text-field>
@@ -83,7 +83,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updateCommunitySearchCondition', { name: searchedName, maker: searchedMaker, text: searchedText })"
+                          @click="$store.dispatch('updateCommunitySearchCondition', { name: searched.name, maker: searched.maker, text: searched.text })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           dark
@@ -184,9 +184,7 @@ export default {
         height: 110,
         elevation: 4
       },
-      searchedName: '',
-      searchedMaker: '',
-      searchedText: '',
+      searched: { name: '', maker: '', text: '' }
     }
   },
   computed: {
@@ -202,6 +200,11 @@ export default {
         return 0
       })
     }
+  },
+  mounted() {
+    this.searched.name = this.$store.state.community.searchCondition.name
+    this.searched.maker = this.$store.state.community.searchCondition.maker
+    this.searched.text = this.$store.state.community.searchCondition.text
   }
 }
 </script>

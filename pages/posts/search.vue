@@ -42,7 +42,7 @@
                       <v-text-field
                         class="mt-10"
                         label="タイトル"
-                        v-model="searchedName"
+                        v-model="searched.name"
                         dense
                       >
                       </v-text-field>
@@ -55,7 +55,7 @@
                     >
                       <v-text-field
                         label="投稿者"
-                        v-model="searchedPoster"
+                        v-model="searched.poster"
                         dense
                       >
                       </v-text-field>
@@ -68,7 +68,7 @@
                     >
                       <v-text-field
                         label="呟き"
-                        v-model="searchedText"
+                        v-model="searched.text"
                         dense
                       >
                       </v-text-field>
@@ -81,7 +81,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="$store.dispatch('updatePostSearchCondition', { name: searchedName, poster: searchedPoster, text: searchedText })"
+                          @click="$store.dispatch('updatePostSearchCondition', { name: searched.name, poster: searched.poster, text: searched.text })"
                           class="font-weight-bold mt-3 mb-9"
                           color="teal"
                           dark
@@ -230,9 +230,7 @@ export default {
           value: 'updatedAt'
         }
       ],
-      searchedName: '',
-      searchedPoster: '',
-      searchedText: ''
+      searched: {name: '', poster: '', text: ''}
     }
   },
   computed: {
@@ -248,6 +246,11 @@ export default {
         return 0
       })
     }
+  },
+  mounted() {
+    this.searched.name = this.$store.state.post.searchCondition.name
+    this.searched.poster = this.$store.state.post.searchCondition.poster
+    this.searched.text = this.$store.state.post.searchCondition.text
   }
 }
 </script>

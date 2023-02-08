@@ -357,9 +357,6 @@ export default {
       typeRules: [
         v => !!v || '種類を選択してください'
       ],
-      prefectureRules: [
-        v => !!v || '都道府県を選択してください'
-      ],
       priceRules: [
         v => !!v || '価格を入力してください'
       ],
@@ -369,7 +366,7 @@ export default {
       textRules: [
         v => !!v || '説明文を入力してください'
       ],
-      inputted: { name: '', seller: this.$auth.user.name, type: '', prefecture: '', price: null, quantity: 1, inventory: null, text: '', image: null },
+      inputted: { name: '', seller: this.$auth.user.name, type: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, inventory: null, text: '', image: null },
       typeItems: [
         '野菜',
         '果物'
