@@ -25,7 +25,7 @@
               <v-divider/>
 
               <v-list-item>
-                <v-list-item-container>
+                <v-container>
                   <v-row
                     justify="center"
                   >
@@ -34,8 +34,8 @@
                       class="mt-9"
                     >
                       <v-avatar
-                        height=230px
-                        width=230px
+                        height=260px
+                        width=260px
                       >
                         <v-img
                           :src="url"
@@ -58,7 +58,7 @@
                       <v-text-field
                         dense
                         outlined
-                        label="氏名"
+                        label="ユーザー名"
                         v-model="inputted.name"
                         :rules="nameRules"
                         :disabled="sentIt"
@@ -130,7 +130,7 @@
                       </v-row>
                     </v-col>
                   </v-row>
-                </v-list-item-container>
+                </v-container>
               </v-list-item>
             </v-list>
           </v-form>
@@ -154,7 +154,7 @@ export default {
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
       nameRules: [
-        v => !!v || '名前を入力してください'
+        v => !!v || 'ユーザー名を入力してください'
       ],
       prefectureRules: [
         v => !!v || '都道府県を選択してください'

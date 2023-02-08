@@ -10,26 +10,26 @@
       >
         <v-list-item>
           <v-list-item-title>
-            設定
+            マイページ
           </v-list-item-title>
         </v-list-item>
 
         <v-divider/>
 
         <v-list-item
-          v-for="(set, i) in setMenus"
-          :key="`set-${i}`"
-          :to="set.link"
+          v-for="(mypage, i) in mypageMenus"
+          :key="`mypage-${i}`"
+          :to="mypage.link"
         >
           <v-list-item-avatar
             left
           >
             <v-icon>
-              {{ set.icon }}
+              {{ mypage.icon }}
             </v-icon>
           </v-list-item-avatar>
           <v-list-item-title>
-            {{ set.name }}
+            {{ mypage.name }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -41,11 +41,10 @@
 export default {
   data () {
     return {
-      setMenus: [
-        { name: 'プロフィール編集', icon: 'mdi-account-edit', link: '/settings/profile' },
-        { name: 'パスワード変更', icon: 'mdi-lock', link: '/settings/password' },
-        { name: 'メールアドレス変更', icon: 'mdi-email', link: '/settings/email' },
-        { name: '退会する', icon: 'mdi-account-remove', link: '/settings/deactivate' }
+      mypageMenus: [
+        { name: 'プロフィール', icon: 'mdi-account', link: '/mypage/profile' },
+        { name: 'フォロー', icon: 'mdi-account-arrow-right', link: '/mypage/following' },
+        { name: 'フォロワー', icon: 'mdi-account-arrow-left', link: '/mypage/followed' },
       ]
     }
   }

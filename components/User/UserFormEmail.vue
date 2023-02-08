@@ -6,7 +6,6 @@
     :rules="rules"
     :placeholder="placeholder ? 'your@email.com' : undefined"
     outlined
-    :hide-details="auto"
   />
 </template>
 

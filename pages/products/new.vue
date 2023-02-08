@@ -6,7 +6,7 @@
       <template
         v-slot
       >
-        Various vegetables or fruits are here !
+        Various agricultural products are here !
         Please look around and enjoy it !
       </template>
     </logged-in-app-product-eye-catch>

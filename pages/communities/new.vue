@@ -6,7 +6,7 @@
       <template
         v-slot
       >
-        Different kinds of communities are here !
+        Various agricultural communities are here !
         Please look around and enjoy it !
       </template>
     </logged-in-app-community-eye-catch>

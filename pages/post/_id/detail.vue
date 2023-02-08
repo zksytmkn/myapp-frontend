@@ -6,7 +6,7 @@
       <template
         v-slot
       >
-        Many farmers post about agriculture here !
+        Various agricultural posts are here !
         Please look around and enjoy it !
       </template>
     </logged-in-app-post-eye-catch>

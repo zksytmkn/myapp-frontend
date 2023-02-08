@@ -1,54 +1,92 @@
 <template>
-  <v-col
-    cols="3"
-  >
-    <v-sheet
-      rounded="lg"
-    >
-      <v-list
-        color="transparent"
+  <v-container>
+    <v-row>
+      <mypage-menu />
+      <v-col
+        cols="9"
       >
-        <v-list-item>
-          <v-list-item-title>
-            マイページ
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-divider/>
-
-        <v-list-item
-          v-for="(set, i) in setMenus"
-          :key="`set-${i}`"
-          :to="set.link"
+        <v-card
+          flat
+          rounded="lg"
         >
-          <v-list-item-avatar
-            left
+          <v-list
+            color="transparent"
           >
-            <v-icon>
-              {{ set.icon }}
-            </v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ set.name }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-sheet>
-  </v-col>
+            <v-list-item>
+              <v-list-item-title>
+                プロフィール
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-divider/>
+
+            <v-list-item>
+              <v-container>
+                <v-row
+                  justify="center"
+                >
+                  <v-col
+                    cols="11"
+                    class="mt-9 mb-9"
+                  >
+                    <v-row>
+                      <v-col
+                        cols="5"
+                      >
+                        <v-avatar
+                          height=260px
+                          width=260px
+                        >
+                          <v-img
+                            :src="currentUser.image_url ? currentUser.image_url : noPersonImg"
+                          >
+                          </v-img>
+                        </v-avatar>
+                      </v-col>
+                      <v-col
+                        cols="7"
+                      >
+                        <v-list>
+                          <v-card-title>
+                            {{ currentUser.name }}
+                          </v-card-title>
+                          <v-card-subtitle>
+                            {{ currentUser.prefecture }}
+                          </v-card-subtitle>
+                        </v-list>
+                        <v-list>
+                          <v-card-text>
+                            {{ currentUser.text }}
+                          </v-card-text>
+                        </v-list>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
+import noPersonImg from '~/assets/images/logged-in/noPerson.png'
+
 export default {
   layout: 'logged-in',
   data () {
     return {
-      setMenus: [
-        { name: 'プロフィール', icon: 'mdi-account', link: '/mypage/profile' },
-        { name: 'フォロー', icon: 'mdi-account-arrow-right', link: '/mypage/following' },
-        { name: 'フォロワー', icon: 'mdi-account-arrow-left', link: '/mypage/followed' },
-      ]
+      noPersonImg,
+      inputted: { name: '', prefecture: '', city: '', text: '', image: null }
+    }
+  },
+  computed: {
+    currentUser() {
+      const copyCurrentUser = this.$store.state.user.current
+      return copyCurrentUser
     }
   }
 }

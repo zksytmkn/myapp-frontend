@@ -11,11 +11,9 @@
             color="transparent"
           >
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  通知一覧
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title>
+                お知らせ
+              </v-list-item-title>
             </v-list-item>
 
             <v-divider/>
