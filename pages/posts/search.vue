@@ -86,7 +86,7 @@
                           color="teal"
                           dark
                         >
-                          呟きを検索する
+                          農家の呟きを検索する
                         </v-btn>
                       </v-row>
                     </v-col>

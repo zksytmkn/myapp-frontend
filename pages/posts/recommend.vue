@@ -38,7 +38,7 @@
               dark
               to="/posts/list"
             >
-              呟きを見てみる
+              農家の呟きを見てみる
             </v-btn>
           </v-col>
         </v-row>

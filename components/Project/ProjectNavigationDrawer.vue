@@ -100,7 +100,7 @@ export default {
     return {
       mobileBreakpoint: 960,
       navMenus: [
-        { name: '農産物', icon: 'mdi-cart',
+        { name: '農産物', icon: 'mdi-food-apple',
           lists: [
             {
               name: '一覧',

@@ -16,7 +16,7 @@
         <v-list-item-title
           class="font-weight-bold"
         >
-          全ての呟き（{{ posts.length }}件）
+          全ての農家の呟き（{{ posts.length }}件）
         </v-list-item-title>
       </v-list-item>
       <v-divider/>

@@ -25,11 +25,9 @@
       </v-subheader>
 
       <v-list-item>
-        <v-list-item-content>
-          <v-list-item-subtitle>
-            {{ $auth.user.name }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
+        <v-list-item-subtitle>
+          {{ $auth.user.name }}
+        </v-list-item-subtitle>
       </v-list-item>
 
       <v-divider/>

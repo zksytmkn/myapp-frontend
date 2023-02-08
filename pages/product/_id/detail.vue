@@ -108,7 +108,7 @@
                       v-if="currentProduct.type === '野菜'"
                       left
                     >
-                      mdi-peanut-outline
+                      mdi-seed-outline
                     </v-icon>
                     <v-icon
                       v-if="currentProduct.type === '果物'"

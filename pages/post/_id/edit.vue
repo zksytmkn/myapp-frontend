@@ -109,7 +109,7 @@
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
                           >
-                            呟きを編集する
+                            農家の呟きを編集する
                           </v-btn>
 
                           <v-btn
@@ -173,13 +173,13 @@ export default {
         await this.$axios.$patch(`/api/v1/posts/${id}`, formData, config)
         .then(response => {
           this.$router.back()
-          const msg = '呟きを編集しました'
+          const msg = '農家の呟きを編集しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
           console.log(error)
-          const msg = '呟きの編集に失敗しました'
+          const msg = '農家の呟きの編集に失敗しました'
           return this.$store.dispatch('getToast', { msg })
         })
       }

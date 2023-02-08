@@ -109,7 +109,7 @@
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
                           >
-                            呟きを投稿する
+                            農家の呟きを投稿する
                           </v-btn>
 
                           <v-btn
@@ -317,13 +317,13 @@ export default {
         await this.$axios.$post('/api/v1/posts', formData, config)
         .then(response => {
           this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = '呟きを投稿しました'
+          const msg = '農家の呟きを投稿しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
           console.log(error)
-          const msg = '呟きの投稿に失敗しました'
+          const msg = '農家の呟きの投稿に失敗しました'
           return this.$store.dispatch('getToast', { msg })
         })
       }

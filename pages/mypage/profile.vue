@@ -27,7 +27,7 @@
                 >
                   <v-col
                     cols="11"
-                    class="mt-9 mb-9"
+                    class="mt-9"
                   >
                     <v-row>
                       <v-col
@@ -79,7 +79,7 @@
                           left
                         >
                           <v-icon>
-                            mdi-account
+                            mdi-food-apple
                           </v-icon>
                         </v-list-item-avatar>
                         <v-list-item-title>
@@ -95,11 +95,11 @@
                           left
                         >
                           <v-icon>
-                            mdi-account
+                            mdi-file-document
                           </v-icon>
                         </v-list-item-avatar>
                         <v-list-item-title>
-                          あなたの投稿した呟きを見てみる
+                          あなたの投稿した農家の呟きを見てみる
                         </v-list-item-title>
                       </v-list-item>
 
@@ -111,7 +111,7 @@
                           left
                         >
                           <v-icon>
-                            mdi-account
+                            mdi-charity
                           </v-icon>
                         </v-list-item-avatar>
                         <v-list-item-title>

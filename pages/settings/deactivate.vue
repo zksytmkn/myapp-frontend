@@ -56,24 +56,24 @@
                           {{ set.icon }}
                         </v-icon>
                       </v-list-item-avatar>
-                      <v-list-item-content>
+                      <v-list-item>
                         <v-list-item-title>
                           {{ set.name }}
                         </v-list-item-title>
-                      </v-list-item-content>
+                      </v-list-item>
                     </v-list-item>
                   </v-col>
                   <v-col
                     cols="11"
                   >
                     <v-list-item>
-                      <v-list-item-content>
+                      <v-list-item>
                         <v-list-item-title>
                           <div class="red--text">
                             ※Edibleを退会すると、これまでに登録したデータなどが失われ、元に戻すことはできません。
                           </div>
                         </v-list-item-title>
-                      </v-list-item-content>
+                      </v-list-item>
                     </v-list-item>
                   </v-col>
                   <v-col
