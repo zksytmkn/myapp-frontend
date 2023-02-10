@@ -12,11 +12,11 @@
         <v-list-item
           @click="$emit('update:drawer', false)"
         >
-          <v-list-item-content>
+          <v-list-item-action>
             <v-list-item-action-text>
               閉じる
             </v-list-item-action-text>  
-          </v-list-item-content>
+          </v-list-item-action>
         </v-list-item>
         <v-divider/>
       </template>
@@ -29,7 +29,9 @@
         <template
           v-slot:activator
         >
-          <v-list-item-avatar left>
+          <v-list-item-avatar
+            left
+          >
             <v-icon>
               {{ nav.icon }}
             </v-icon>
@@ -72,7 +74,9 @@
         :key="`other-${i}`"
         :to="other.link"
       >
-        <v-list-item-avatar left>
+        <v-list-item-avatar
+          left
+        >
           <v-icon>
             {{ other.icon }}
           </v-icon>
@@ -83,7 +87,6 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-
     </v-list>
   </v-navigation-drawer>
 </template>

@@ -2,25 +2,30 @@
   <div
     id="post"
   >
-    <logged-in-app-post-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural posts are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-post-eye-catch>
-
+    <logged-in-app-post-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          編集
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  編集
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-container>
       <v-row
         justify="center"
@@ -36,17 +41,19 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    農家の呟き
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-bold"
+                    >
+                      農家の呟き
+                    </v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
 
                 <v-divider/>
 
                 <v-list-item>
-                  <v-list-item-container>
+                  <v-container>
                     <v-row
                       justify="center"
                     >
@@ -121,7 +128,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                  </v-list-item-container>
+                  </v-container>
                 </v-list-item>
               </v-list>
             </v-form>
@@ -152,6 +159,15 @@ export default {
         v => !!v || '呟きを入力してください'
       ],
       inputted: { name: '', poster: this.$auth.user.name, text: '', image: null }
+    }
+  },
+  computed: {
+    url() {
+      if(this.inputted.image===null) {
+        return this.$store.state.post.current.image_url ? this.$store.state.post.current.image_url : noImg
+      } else {
+        return URL.createObjectURL(this.inputted.image)
+      }
     }
   },
   methods: {
@@ -188,15 +204,6 @@ export default {
     formReset() {
       this.sentIt = false
       this.$refs.edit.reset()
-    }
-  },
-  computed: {
-    url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.post.current.image_url ? this.$store.state.post.current.image_url : noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
-      }
     }
   },
   mounted() {

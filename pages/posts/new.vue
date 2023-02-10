@@ -2,24 +2,28 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural posts are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-post-eye-catch>
-
+    <logged-in-app-post-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          投稿
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  投稿
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
     <v-container>
       <v-row
@@ -36,17 +40,19 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    農家の呟き
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-bold"
+                    >
+                      農家の呟き
+                    </v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
   
                 <v-divider/>
   
                 <v-list-item>
-                  <v-list-item-content>
+                  <v-container>
                     <v-row
                       justify="center"
                     >
@@ -121,7 +127,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                  </v-list-item-content>
+                  </v-container>
                 </v-list-item>
               </v-list>
             </v-form>
@@ -130,29 +136,40 @@
       </v-row>
     </v-container>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          投稿済み（{{ newPosts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container
-        v-show="!newPosts.length"
-      >
-        <v-row>
-          <v-col
-            cols="12"
+      <v-row>
+        <v-col>
+          <v-list
+            color="transparent"
           >
-            <p>
-              投稿しておりません。
-            </p>
-          </v-col>
-        </v-row>
-      </v-container>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  投稿済み（{{ newPosts.length }}件）
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-list
+            v-show="!newPosts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  投稿しておりません。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-container>
-    <v-container>
+    <v-container
+      v-show="newPosts.length"
+    >
       <v-row
         justify="center"
       >
@@ -184,45 +201,41 @@
             <template
               v-slot:[`item.like`] = "{ item }"
             >
-              <v-card-actions
-                class="pl-0"
+              <v-btn
+                @click="$store.dispatch('updatePostLikeState', item)"
+                :class="{ likeColor: item.like}"
+                style="background:grey"
+                fab
+                dark
+                x-small
               >
-                <v-btn
-                  @click="$store.dispatch('updatePostLikeState', item)"
-                  :class="{ likeColor: item.like}"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-up
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Good
-                </span>
-                <v-btn
-                  @click="$store.dispatch('updatePostDislikeState', item)"
-                  :class="{ dislikeColor: item.dislike }"
-                  class="ml-2"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-down
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Bad
-                </span>
-              </v-card-actions>
+                <v-icon>
+                  mdi-thumb-up
+                </v-icon>
+              </v-btn>
+              <span
+                class="font-weight-bold ml-1"
+              >
+                Good
+              </span>
+              <v-btn
+                @click="$store.dispatch('updatePostDislikeState', item)"
+                :class="{ dislikeColor: item.dislike }"
+                class="ml-2"
+                style="background:grey"
+                fab
+                dark
+                x-small
+              >
+                <v-icon>
+                  mdi-thumb-down
+                </v-icon>
+              </v-btn>
+              <span
+                class="font-weight-bold ml-1"
+              >
+                Bad
+              </span>
             </template>
             <template
               v-slot:[`item.updatedAt`]="{ item }"
@@ -246,6 +259,7 @@
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
+
 export default {
   layout: 'logged-in',
   middleware: ['get-post-list'],
@@ -298,6 +312,24 @@ export default {
       inputted: { name: '', poster: this.$auth.user.name, text: '', image: null }
     }
   },
+  computed: {
+    url() {
+      console.log(this.inputted.image)
+      if(this.inputted.image===null) {
+        return noImg
+      } else {
+        return URL.createObjectURL(this.inputted.image);
+      }
+    },
+    newPosts () {
+      const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.poster === this.$auth.user.name))
+      return copyNewPosts.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
+        return 0
+      })
+    }
+  },
   methods: {
     async addPost () {
       this.loading = true
@@ -332,24 +364,6 @@ export default {
     formReset () {
       this.sentIt = false
       this.$refs.new.reset()
-    }
-  },
-  computed: {
-    url() {
-      console.log(this.inputted.image)
-      if(this.inputted.image===null) {
-        return noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image);
-      }
-    },
-    newPosts () {
-      const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.poster === this.$auth.user.name))
-      return copyNewPosts.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
-        return 0
-      })
     }
   }
 }

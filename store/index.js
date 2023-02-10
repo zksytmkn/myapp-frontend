@@ -50,6 +50,7 @@ export const state = () => ({
   },
   user: {
     current: null,
+    selected: null,
     list: []
   },
   auth: {
@@ -114,6 +115,9 @@ export const mutations = {
   },
   setUserList (state, payload) {
     state.user.list = payload
+  },
+  setUserSelected (state, payload) {
+    state.user.selected = payload
   },
   setCurrentUser (state, payload) {
     state.user.current = payload
@@ -247,6 +251,14 @@ export const actions = {
   getUserList ({ commit }, users) {
     users = users || []
     commit('setUserList', users)
+  },
+  getUserSelected ({ state, commit }, params) {
+    let userSelected = null
+    if (params && params.id) {
+      const id = Number(params.id)
+      userSelected = state.user.list.find(user => user.id === id) || null  
+    }
+    commit('setUserSelected', userSelected)
   },
   getCurrentUser ({ commit }, user) {
     commit('setCurrentUser', user)

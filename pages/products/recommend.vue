@@ -2,50 +2,60 @@
   <div
     id="products"
   >
-    <logged-in-app-product-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural products are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-product-eye-catch>
+    <logged-in-app-product-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          おすすめ（{{ recommendProducts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container
-        v-show="!recommendProducts.length"
-      >
-        <v-row>
-          <v-col
-            cols="12"
+          <v-list
+            color="transparent"
           >
-            <p>
-              いいねしてみましょう。
-              <br/>
-              ＊おすすめはいいねに基づいております。
-            </p>
-            <v-btn
-              class="font-weight-bold"
-              color="orange"
-              outlined
-              dark
-              to="/products/list"
-            >
-              農産物を見てみる
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  おすすめ（{{ recommendProducts.length }}件）
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-list
+            v-show="!recommendProducts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  いいねしてみましょう。
+                  <br/>
+                  ＊おすすめはいいねに基づいております。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
+                <v-btn
+                  class="font-weight-bold"
+                  color="orange"
+                  outlined
+                  dark
+                  to="/products/list"
+                >
+                  農産物を見る
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-container>
     </v-container>
+
     <v-pagination
       class="my-6"
       v-model="page"

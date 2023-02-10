@@ -41,6 +41,10 @@ class MyInject {
     return { name, params: { id } }
   }
 
+  userLinkToProfile (id, name = "mypage-id-profile") {
+    return { name, params: {id} }
+  }
+
   // apiエラーハンドラー
   apiErrorHandler (response) {
     // ネットワークエラーの場合はresponseが存在しないので500を代入

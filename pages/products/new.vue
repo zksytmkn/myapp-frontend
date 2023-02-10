@@ -2,15 +2,7 @@
   <div
     id="products"
   >
-    <logged-in-app-product-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural products are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-product-eye-catch>
-
+    <logged-in-app-product-eye-catch/>
     <v-container>
       <v-list-item>
         <v-list-item-title
@@ -36,17 +28,19 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    農産物
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-bold"
+                    >
+                      農産物
+                    </v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
   
                 <v-divider/>
   
                 <v-list-item>
-                  <v-list-item-content>
+                  <v-container>
                     <v-row
                       justify="center"
                     >
@@ -169,7 +163,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                  </v-list-item-content>
+                  </v-container>
                 </v-list-item>
               </v-list>
             </v-form>

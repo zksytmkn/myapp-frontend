@@ -2,25 +2,30 @@
   <div
     id="community"
   >
-    <logged-in-app-community-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural communities are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-community-eye-catch>
-
+    <logged-in-app-community-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          編集
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  編集
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-container>
       <v-row
         justify="center"
@@ -36,17 +41,19 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    コミュニティ
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-bold"
+                    >
+                      コミュニティ
+                    </v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
   
                 <v-divider/>
   
                 <v-list-item>
-                  <v-list-item-content>
+                  <v-container>
                     <v-row
                       justify="center"
                     >
@@ -121,7 +128,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                  </v-list-item-content>
+                  </v-container>
                 </v-list-item>
               </v-list>
             </v-form>
@@ -152,6 +159,15 @@ export default {
         v => !!v || '紹介文を入力してください'
       ],
       inputted: { name: '', maker: this.$auth.user.name, text: '', image: null }
+    }
+  },
+  computed: {
+    url() {
+      if(this.inputted.image===null) {
+        return this.$store.state.community.current.image_url ? this.$store.state.community.current.image_url : noImg
+      } else {
+        return URL.createObjectURL(this.inputted.image)
+      }
     }
   },
   methods: {
@@ -190,18 +206,17 @@ export default {
       this.$refs.edit.reset()
     }
   },
-  computed: {
-    url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.community.current.image_url ? this.$store.state.community.current.image_url : noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
-      }
-    }
-  },
   mounted() {
     this.inputted.name = this.$store.state.community.current.name
     this.inputted.text = this.$store.state.community.current.text
   }
 }
 </script>
+
+<style lang="scss">
+#community {
+  .v-parallax__content {
+    padding: 0;
+  }
+}
+</style>

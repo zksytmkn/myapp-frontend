@@ -12,13 +12,16 @@
     "login": "ログイン",
     "logout": "ログアウト",
     "mypage": {
+      "id": {
+        "profile": "プロフィール"
+      },
       "followed": "フォロワー",
       "following": "フォロー",
       "profile": "プロフィール"
     },
     "settings": {
-      "deactivate":"退会する",
-      "email":"メールアドレス変更",
+      "deactivate": "退会する",
+      "email": "メールアドレス変更",
       "information": "お知らせ",
       "password": "パスワード変更",
       "profile": "プロフィール編集"

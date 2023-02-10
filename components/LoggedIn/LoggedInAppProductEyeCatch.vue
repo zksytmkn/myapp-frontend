@@ -21,14 +21,15 @@
               color="transparent"
             >
               <v-list-item>
-                <v-list-item-title
-                  class="text-h5 font-weight-bold"
-                  style="white-space:pre-line; text-shadow:1px 1px 1px black;"
-                >
-                  <template>
-                    <slot></slot>
-                  </template>
-                </v-list-item-title>
+                <v-list-item-content>
+                  <v-list-item-title
+                    class="text-h5 font-weight-bold"
+                    style="white-space:pre-line; text-shadow:1px 1px 1px black;"
+                  >
+                    Various agricultural products are here !
+                    Please look around and enjoy it !
+                  </v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-col>

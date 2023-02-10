@@ -2,24 +2,28 @@
   <div
     id="communities"
   >
-    <logged-in-app-community-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural communities are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-community-eye-catch>
-
+    <logged-in-app-community-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          作成
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  作成
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
     <v-container>
       <v-row
@@ -36,165 +40,197 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    コミュニティ
-                  </v-list-item-title>
-                </v-list-item>
-  
-                <v-divider/>
-  
-                <v-list-item>
                   <v-list-item-content>
-                    <v-row
-                      justify="center"
+                    <v-list-item-title
+                      class="font-weight-bold"
                     >
-                      <v-col
-                        cols="11"
-                        class="mt-9"
-                      >
-                        <v-img
-                          :src="url"
-                          height=300px
-                          width=300px
-                        >
-                        </v-img>
-                        <v-file-input
-                          :rules="imgRules"
-                          accept="image/png, image/jpeg, image/bmp"
-                          placeholder="画像を選択して下さい"
-                          prepend-icon="mdi-camera"
-                          label="画像ファイル"
-                          v-model="inputted.image"
-                        >
-                        </v-file-input>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-text-field
-                          dense
-                          outlined
-                          label="名前"
-                          v-model="inputted.name"
-                          :rules="nameRules"
-                          :disabled="sentIt"
-                        >
-                        </v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-textarea
-                          dense
-                          outlined
-                          label="紹介文"
-                          v-model="inputted.text"
-                          :rules="textRules"
-                          :disabled="sentIt"
-                        >
-                        </v-textarea>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-row
-                          justify="center"
-                        >
-                          <v-btn
-                            type="submit"
-                            :disabled="!isValid || loading"
-                            :loading="loading"
-                            class="mb-6 mr-2 font-weight-bold white--text"
-                            color="teal"
-                          >
-                            コミュニティを作成する
-                          </v-btn>
-
-                          <v-btn
-                            text
-                            @click="formReset"
-                          >
-                            キャンセル
-                          </v-btn>
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                      コミュニティ
+                    </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
+  
+              <v-divider/>
+  
+              <v-container>
+                <v-row
+                  justify="center"
+                >
+                  <v-col
+                    cols="11"
+                    class="mt-9"
+                  >
+                    <v-img
+                      :src="url"
+                      height=300px
+                      width=300px
+                    >
+                    </v-img>
+                    <v-file-input
+                      :rules="imgRules"
+                      accept="image/png, image/jpeg, image/bmp"
+                      placeholder="画像を選択して下さい"
+                      prepend-icon="mdi-camera"
+                      label="画像ファイル"
+                      v-model="inputted.image"
+                    >
+                    </v-file-input>
+                  </v-col>
+                  <v-col
+                    cols="11"
+                  >
+                    <v-text-field
+                      dense
+                      outlined
+                      label="名前"
+                      v-model="inputted.name"
+                      :rules="nameRules"
+                      :disabled="sentIt"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="11"
+                  >
+                    <v-textarea
+                      dense
+                      outlined
+                      label="紹介文"
+                      v-model="inputted.text"
+                      :rules="textRules"
+                      :disabled="sentIt"
+                    >
+                    </v-textarea>
+                  </v-col>
+                  <v-col
+                    cols="11"
+                  >
+                    <v-row
+                      justify="center"
+                    >
+                      <v-btn
+                        type="submit"
+                        :disabled="!isValid || loading"
+                        :loading="loading"
+                        class="mb-6 mr-2 font-weight-bold white--text"
+                        color="teal"
+                      >
+                        コミュニティを作成する
+                      </v-btn>
+
+                      <v-btn
+                        text
+                        @click="formReset"
+                      >
+                        キャンセル
+                      </v-btn>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-form>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          作成済み（{{ newCommunities.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container
-        v-show="!newCommunities.length"
-      >
-        <v-row>
-          <v-col
-            cols="12"
-          >
-            <p>
-              作成しておりません。
-            </p>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-container>
-    <v-container>
-      <v-row
-        justify="center"
-        align="center"
-      >
+      <v-row>
         <v-col
           cols="12"
         >
-          <v-row
-            align="center"
+          <v-list
+            color="transparent"
           >
-            <v-col
-              v-for="(community, i) in newCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
-              :key="`card-community-${i}`"
-              cols="12"
-              :sm="card.sm"
-              :md="card.md"
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  作成済み（{{ newCommunities.length }}件）
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-container
+            v-show="!newCommunities.length"
+          >
+            <v-row>
+              <v-col
+                cols="12"
+              >
+                <v-list
+                  color="transparent"
+                >
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        作成しておりません。
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-container
+            v-show="newCommunities.length"
+          >
+            <v-row
+              justify="center"
+              align="center"
             >
-              <v-card
-                block
-                :height="card.height"
-                :elevation="card.elevation"
-                :to="$my.communityLinkToDetail(community.id)"
-                class="v-btn text-capitalize align-center"
+              <v-col
+                cols="12"
               >
                 <v-container>
-                  <v-card-title
-                    class="pb-1 d-block text-truncate font-weight-bold"
+                  <v-row
+                    align="center"
                   >
-                    {{ community.name }}
-                  </v-card-title>
-                  <v-card-text
-                    class="caption grey--text text--darken-1"
-                  >
-                    {{ community.text.substring(0, 30)+'...'}}
-                  </v-card-text>
+                    <v-col
+                      v-for="(community, i) in newCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+                      :key="`card-community-${i}`"
+                      cols="12"
+                      :sm="card.sm"
+                      :md="card.md"
+                    >
+                      <v-card
+                        block
+                        :height="card.height"
+                        :elevation="card.elevation"
+                        :to="$my.communityLinkToDetail(community.id)"
+                        class="v-btn text-capitalize align-center"
+                      >
+                        <v-container>
+                          <v-col
+                            cols="12"
+                          >
+                            <v-row>
+                              <v-card-title
+                                class="pb-1 d-block text-truncate font-weight-bold"
+                              >
+                                {{ community.name }}
+                              </v-card-title>
+                              <v-card-text
+                                class="caption grey--text text--darken-1"
+                              >
+                                {{ community.text.substring(0, 30)+'...'}}
+                              </v-card-text>
+                            </v-row>
+                          </v-col>
+                        </v-container>
+                      </v-card>
+                    </v-col>
+                  </v-row>
                 </v-container>
-              </v-card>
-            </v-col>
-          </v-row>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-container>
+
     <v-pagination
       class="my-6"
       v-model="page"
@@ -208,6 +244,7 @@
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
+
 export default {
   layout: 'logged-in',
   middleware: ['get-community-list'],
@@ -238,6 +275,23 @@ export default {
         height: 110,
         elevation: 4
       }
+    }
+  },
+  computed: {
+    url() {
+      if(this.inputted.image===null) {
+        return noImg
+      } else {
+        return URL.createObjectURL(this.inputted.image)
+      }
+    },
+    newCommunities () {
+      const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.maker === this.$auth.user.name))
+      return copyNewCommunities.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
+        return 0
+      })
     }
   },
   methods: {
@@ -274,23 +328,6 @@ export default {
     formReset () {
       this.sentIt = false
       this.$refs.new.reset()
-    }
-  },
-  computed: {
-    url() {
-      if(this.inputted.image===null) {
-        return noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
-      }
-    },
-    newCommunities () {
-      const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.maker === this.$auth.user.name))
-      return copyNewCommunities.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
-        return 0
-      })
     }
   }
 }

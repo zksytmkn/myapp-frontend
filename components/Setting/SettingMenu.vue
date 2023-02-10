@@ -9,9 +9,11 @@
         color="transparent"
       >
         <v-list-item>
-          <v-list-item-title>
-            設定
-          </v-list-item-title>
+          <v-list-item-content>
+            <v-list-item-title>
+              設定
+            </v-list-item-title>
+          </v-list-item-content>
         </v-list-item>
 
         <v-divider/>

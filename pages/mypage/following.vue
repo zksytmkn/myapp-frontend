@@ -9,13 +9,13 @@
           flat
           rounded="lg"
         >
-          <v-list
-            color="transparent"
-          >
+          <v-list>
             <v-list-item>
-              <v-list-item-title>
-                フォロー
-              </v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>
+                  フォロー
+                </v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
 
             <v-divider/>
@@ -23,7 +23,7 @@
             <v-list-item
               v-for="(following, i) in followingUsers"
               :key="`following-${i}`"
-              to="aaa"
+              :to="$my.userLinkToProfile(following.id)"
             >
               <v-list-item-avatar
                 left

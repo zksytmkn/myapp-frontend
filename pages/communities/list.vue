@@ -2,68 +2,81 @@
   <div
     id="communities"
   >
-    <logged-in-app-community-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural communities are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-community-eye-catch>
-
+    <logged-in-app-community-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          全てのコミュニティ（{{ communities.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-    </v-container>
-    <v-container>
-      <v-row
-        justify="center"
-        align="center"
-      >
+      <v-row>
         <v-col
           cols="12"
         >
-          <v-row
-            align="center"
+          <v-list
+            color="transparent"
           >
-            <v-col
-              v-for="(community, i) in communities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
-              :key="`card-community-${i}`"
-              cols="12"
-              :sm="card.sm"
-              :md="card.md"
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  全てのコミュニティ（{{ communities.length }}件）
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-container>
+            <v-row
+              justify="center"
+              align="center"
             >
-              <v-card
-                block
-                :height="card.height"
-                :elevation="card.elevation"
-                :to="$my.communityLinkToDetail(community.id)"
-                class="v-btn text-capitalize align-center"
+              <v-col
+                cols="12"
               >
                 <v-container>
-                  <v-card-title
-                    class="pb-1 d-block text-truncate font-weight-bold"
+                  <v-row
+                    align="center"
                   >
-                    {{ community.name }}
-                  </v-card-title>
-                  <v-card-text
-                    class="caption grey--text text--darken-1"
-                  >
-                    {{ community.text.substring(0, 30)+'...'}}
-                  </v-card-text>
+                    <v-col
+                      v-for="(community, i) in communities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+                      :key="`card-community-${i}`"
+                      cols="12"
+                      :sm="card.sm"
+                      :md="card.md"
+                    >
+                      <v-card
+                        block
+                        :height="card.height"
+                        :elevation="card.elevation"
+                        :to="$my.communityLinkToDetail(community.id)"
+                        class="v-btn text-capitalize align-center"
+                      >
+                        <v-container>
+                          <v-col
+                            cols="12"
+                          >
+                            <v-row>
+                              <v-card-title
+                                class="pb-1 d-block text-truncate font-weight-bold"
+                              >
+                                {{ community.name }}
+                              </v-card-title>
+                              <v-card-text
+                                class="caption grey--text text--darken-1"
+                              >
+                                {{ community.text.substring(0, 30)+'...'}}
+                              </v-card-text>
+                            </v-row>
+                          </v-col>
+                        </v-container>
+                      </v-card>
+                    </v-col>
+                  </v-row>
                 </v-container>
-              </v-card>
-            </v-col>
-          </v-row>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-container>
+
     <v-pagination
       class="my-6"
       v-model="page"

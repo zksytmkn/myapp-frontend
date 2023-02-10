@@ -2,24 +2,24 @@
   <div
     id="product"
   >
-    <logged-in-app-product-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural products are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-product-eye-catch>
+    <logged-in-app-product-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          編集
-        </v-list-item-title>
-      </v-list-item>
+      <v-list
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title
+              class="font-weight-bold"
+            >
+              編集
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
       <v-divider/>
     </v-container>
+
     <v-container>
       <v-row
         justify="center"
@@ -35,17 +35,19 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    農産物
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-bold"
+                    >
+                      農産物
+                    </v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
   
                 <v-divider/>
   
                 <v-list-item>
-                  <v-list-item-content>
+                  <v-container>
                     <v-row
                       justify="center"
                     >
@@ -182,7 +184,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                  </v-list-item-content>
+                  </v-container>
                 </v-list-item>
               </v-list>
             </v-form>
@@ -280,6 +282,15 @@ export default {
       ]
     }
   },
+  computed: {
+    url() {
+      if(this.inputted.image===null) {
+        return this.$store.state.product.current.image_url ? this.$store.state.product.current.image_url : noImg
+      } else {
+        return URL.createObjectURL(this.inputted.image)
+      }
+    }
+  },
   methods: {
     async editProduct(id) {
       this.loading = true
@@ -319,15 +330,6 @@ export default {
     formReset() {
       this.sentIt = false
       this.$refs.edit.reset()
-    }
-  },
-  computed: {
-    url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.product.current.image_url ? this.$store.state.product.current.image_url : noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
-      }
     }
   },
   mounted() {

@@ -2,15 +2,21 @@
   <div
     id="product"
   >
-    <logged-in-app-product-eye-catch>
-      <template
-        v-slot
+    <logged-in-app-product-eye-catch/>
+    <v-container>
+      <v-list
+        color="transparent"
       >
-        Various agricultural products are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-product-eye-catch>
-
+        <v-list-item>
+          <v-list-item-title
+            class="font-weight-bold"
+          >
+            詳細
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+      <v-divider/>
+    </v-container>
     <v-container>
       <v-row>
         <v-col
@@ -20,18 +26,18 @@
             <v-container>
               <v-row>
                 <v-col
-                  cols="4"
+                  cols="5"
                 >
                   <v-img
                     :src="currentProduct.image_url ? currentProduct.image_url : noImg"
-                    max-height="360px"
-                    max-width="360px"
+                    max-height="430px"
+                    max-width="430px"
                     aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
                     class="font-weight-bold pa-1"
-                    style="max-width:360px;"
+                    style="max-width:430px;"
                   >
                     {{ currentProduct.name }}
                     <v-card-subtitle>
@@ -86,6 +92,7 @@
                       Bad
                     </span>
                     <v-btn
+                      @click="comment = !comment"
                       class="ml-2"
                       text
                       x-small
@@ -98,7 +105,7 @@
                 </v-col>
 
                 <v-col
-                  cols="8"
+                  cols="7"
                 >
                   <v-chip
                     class="ma-2 font-weight-bold"
@@ -213,6 +220,35 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-container
+      v-show="comment"
+    >
+      <v-row>
+        <v-col
+          cols="12"
+        >
+          <v-sheet
+            rounded="lg"
+          >
+            <v-container>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-bold"
+                    >
+                      コメント
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+              <v-divider/>
+            </v-container>
+          </v-sheet>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -223,7 +259,8 @@ export default {
   layout: 'logged-in',
   data () {
     return {
-      noImg
+      noImg,
+      comment: false
     }
   },
   methods: {

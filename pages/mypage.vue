@@ -4,6 +4,6 @@
 
 <script>
 export default {
-  layout: 'logged-in'
+  layout: 'mypage'
 }
 </script>

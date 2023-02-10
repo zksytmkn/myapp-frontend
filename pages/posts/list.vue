@@ -2,25 +2,26 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural posts are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-post-eye-catch>
-    
+    <logged-in-app-post-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          全ての農家の呟き（{{ posts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+      <v-row>
+        <v-col>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-title
+                class="font-weight-bold"
+              >
+                全ての農家の呟き（{{ posts.length }}件）
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-container>
       <v-row
         justify="center"
@@ -52,45 +53,41 @@
             <template
               v-slot:[`item.like`] = "{ item }"
             >
-              <v-card-actions
-                class="pl-0"
+              <v-btn
+                @click="$store.dispatch('updatePostLikeState', item)"
+                :class="{ likeColor: item.like}"
+                style="background:grey"
+                fab
+                dark
+                x-small
               >
-                <v-btn
-                  @click="$store.dispatch('updatePostLikeState', item)"
-                  :class="{ likeColor: item.like}"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-up
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Good
-                </span>
-                <v-btn
-                  @click="$store.dispatch('updatePostDislikeState', item)"
-                  :class="{ dislikeColor: item.dislike }"
-                  class="ml-2"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-down
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Bad
-                </span>
-              </v-card-actions>
+                <v-icon>
+                  mdi-thumb-up
+                </v-icon>
+              </v-btn>
+              <span
+                class="font-weight-bold ml-1"
+              >
+                Good
+              </span>
+              <v-btn
+                @click="$store.dispatch('updatePostDislikeState', item)"
+                :class="{ dislikeColor: item.dislike }"
+                class="ml-2"
+                style="background:grey"
+                fab
+                dark
+                x-small
+              >
+                <v-icon>
+                  mdi-thumb-down
+                </v-icon>
+              </v-btn>
+              <span
+                class="font-weight-bold ml-1"
+              >
+                Bad
+              </span>
             </template>
             <template
               v-slot:[`item.updatedAt`]="{ item }"

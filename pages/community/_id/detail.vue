@@ -2,15 +2,21 @@
   <div
     id="community"
   >
-    <logged-in-app-community-eye-catch>
-      <template
-        v-slot
+    <logged-in-app-community-eye-catch/>
+    <v-container>
+      <v-list
+        color="transparent"
       >
-        Various agricultural communities are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-community-eye-catch>
-
+        <v-list-item>
+          <v-list-item-title
+            class="font-weight-bold"
+          >
+            詳細
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+      <v-divider/>
+    </v-container>
     <v-container>
       <v-row>
         <v-col
@@ -20,18 +26,18 @@
             <v-container>
               <v-row>
                 <v-col
-                  cols="4"
+                  cols="5"
                 >
                   <v-img
                     :src="currentCommunity.image_url ? currentCommunity.image_url : noImg"
-                    max-height="360px"
-                    max-width="360px"
+                    max-height="430px"
+                    max-width="430px"
                     aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
                     class="font-weight-bold pa-1"
-                    style="max-width:360px;"
+                    style="max-width:430px;"
                   >
                     {{ currentCommunity.name }}
                     <v-card-subtitle>
@@ -50,7 +56,7 @@
                 </v-col>
 
                 <v-col
-                  cols="8"
+                  cols="7"
                 >
                   <v-card-subtitle>
                     {{ currentCommunity.text }}
@@ -75,7 +81,7 @@
                       color="teal"
                       outlined
                     >
-                      メンバーを見てみる
+                      メンバーを見る
                     </v-btn>
                     <v-btn
                       class="font-weight-bold"

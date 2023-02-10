@@ -51,9 +51,11 @@
           exact
           @click="$vuetify.goTo(`#${menu.title}`)"
         >
-          <v-list-item-title>
-            {{ $t(`menus.${menu.title}`) }}
-          </v-list-item-title>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ $t(`menus.${menu.title}`) }}
+            </v-list-item-title>
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -88,16 +90,16 @@ export default {
       return { color, elevation }
     }
   },
+  methods: {
+    onScroll () {
+      this.scrollY = window.scrollY
+    }
+  },
   mounted () {
     window.addEventListener('scroll', this.onScroll)
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.onScroll)
-  },
-  methods: {
-    onScroll () {
-      this.scrollY = window.scrollY
-    }
   }
 }
 </script>

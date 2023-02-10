@@ -15,7 +15,7 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title>
-                  あなたのプロフィール
+                  {{ SelectedUser.name }}さんのプロフィール
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -43,7 +43,7 @@
                             width=260px
                           >
                             <v-img
-                              :src="currentUser.image_url ? currentUser.image_url : noPersonImg"
+                              :src="SelectedUser.image_url ? SelectedUser.image_url : noPersonImg"
                             >
                             </v-img>
                           </v-avatar>
@@ -54,19 +54,19 @@
                           <v-list-item-title
                             class="font-weight-bold text-h6"
                           >
-                            {{ currentUser.name }}
+                            {{ SelectedUser.name }}
                           </v-list-item-title>
                           <v-list-item-subtitle>
-                            {{ currentUser.prefecture }}
+                            {{ SelectedUser.prefecture }}
                           </v-list-item-subtitle>
                           <br/>
                           <v-list-item-text>
-                            {{ currentUser.text }}
-                            {{ currentUser.text }}
-                            {{ currentUser.text }}
-                            {{ currentUser.text }}
-                            {{ currentUser.text }}
-                            {{ currentUser.text }}
+                            {{ SelectedUser.text }}
+                            {{ SelectedUser.text }}
+                            {{ SelectedUser.text }}
+                            {{ SelectedUser.text }}
+                            {{ SelectedUser.text }}
+                            {{ SelectedUser.text }}
                           </v-list-item-text>
                         </v-col>
                       </v-row>
@@ -78,7 +78,7 @@
                     <v-list>
                       <v-list-item
                         to="/products/search"
-                        @click="$store.dispatch('updateProductSearchCondition', { name: '', seller: $auth.user.name, text: '', type: [], prefecture: [] })"
+                        @click="$store.dispatch('updateProductSearchCondition', { name: '', seller: $store.state.user.selected.name, text: '', type: [], prefecture: [] })"
                       >
                         <v-list-item-avatar
                           left
@@ -89,14 +89,14 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                           <v-list-item-title>
-                            あなたの出品した農産物を見る
+                            {{ SelectedUser.name }}さんの出品した農産物を見る
                           </v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>
 
                       <v-list-item
                         to="/posts/search"
-                        @click="$store.dispatch('updatePostSearchCondition', { name: '', poster: $auth.user.name, text: '' })"
+                        @click="$store.dispatch('updatePostSearchCondition', { name: '', poster: $store.state.user.selected.name, text: '' })"
                       >
                         <v-list-item-avatar
                           left
@@ -107,14 +107,14 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                           <v-list-item-title>
-                            あなたの投稿した農家の呟きを見る
+                            {{ SelectedUser.name }}さんの投稿した農家の呟きを見る
                           </v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>
 
                       <V-list-item
                         to="/communities/search"
-                        @click="$store.dispatch('updateCommunitySearchCondition', { name: '', maker: $auth.user.name, text: '' })"
+                        @click="$store.dispatch('updateCommunitySearchCondition', { name: '', maker: $store.state.user.selected.name, text: '' })"
                       >
                         <v-list-item-avatar
                           left
@@ -125,7 +125,7 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                           <v-list-item-title>
-                            あなたの作成したコミュニティを見る
+                            {{ SelectedUser.name }}さんの作成したコミュニティを見る
                           </v-list-item-title>
                         </v-list-item-content>
                       </V-list-item>
@@ -146,15 +146,16 @@ import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 
 export default {
   layout: 'logged-in',
+  middleware: ['get-user-selected'],
   data () {
     return {
       noPersonImg
     }
   },
   computed: {
-    currentUser() {
-      const copyCurrentUser = this.$store.state.user.current
-      return copyCurrentUser
+    SelectedUser() {
+      const copySelectedUser = this.$store.state.user.selected
+      return copySelectedUser
     }
   }
 }

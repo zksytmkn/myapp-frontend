@@ -2,75 +2,86 @@
   <div
     id="products"
   >
-    <logged-in-app-product-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural products are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-product-eye-catch>
-
+    <logged-in-app-product-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          あなたのカート
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container>
-        <v-row>
-          <v-col
-            cols="12"
+          <v-list
+            color="transparent"
           >
-            <v-container>
-              <p
-                v-show="!cartProducts.length"
-              >
-                カートには何も入っておりません。
-              </p>
-              <v-btn
-                class="font-weight-bold"
-                color="orange"
-                outlined
-                dark
-                to="/products/list"
-                v-show="!cartProducts.length"
-              >
-                農産物を見てみる
-              </v-btn>
-              <div
-                v-show="cartProducts.length"
-              >
-                <p
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
                   class="font-weight-bold"
                 >
-                  合計（税込）：¥{{ Math.floor(cartTotalPrice).toLocaleString() }}
-                </p>
+                  あなたのカート
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-list
+            v-show="!cartProducts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  カートには何も入っておりません。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
                 <v-btn
                   class="font-weight-bold"
-                  color="teal"
-                  dark
-                  to="/products/register"
-                >
-                  レジに進む
-                </v-btn>
-                <v-btn
-                  class="font-weight-bold ml-2"
-                  color="teal"
+                  color="orange"
                   outlined
                   dark
                   to="/products/list"
                 >
-                  一覧に戻る
+                  農産物を見る
                 </v-btn>
-              </div>
-            </v-container>
-          </v-col>
-        </v-row>
-      </v-container>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+          <v-list
+            v-show="cartProducts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  合計（税込）：¥{{ Math.floor(cartTotalPrice).toLocaleString() }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-btn
+                class="font-weight-bold"
+                color="teal"
+                dark
+                to="/products/register"
+              >
+                レジに進む
+              </v-btn>
+              <v-btn
+                class="font-weight-bold ml-2"
+                color="teal"
+                outlined
+                dark
+                to="/products/list"
+              >
+                一覧に戻る
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-container>
 
     <v-container>
@@ -165,10 +176,10 @@
                     小計（税込）：¥{{ Math.floor(product.price *product.quantity * 1.1).toLocaleString() }}
                   </v-card-subtitle>
                   <v-divider/>
-                  <v-container>
-                    <v-card-actions
-                      style="width:86%;"
-                    >
+                  <v-card-actions
+                    style="width:80%;"
+                  >
+                    <v-container>
                       <v-btn
                         @click="$store.dispatch('removeProductFromCart',product)"
                         class="font-weight-bold"
@@ -178,8 +189,8 @@
                       >
                         削除する
                       </v-btn>
-                    </v-card-actions>
-                  </v-container>
+                    </v-container>
+                  </v-card-actions>
                 </v-col>
               </v-row>
             </v-container>

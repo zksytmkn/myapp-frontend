@@ -2,24 +2,28 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural posts are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-post-eye-catch>
+    <logged-in-app-post-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          検索
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-title
+                class="font-weight-bold"
+              >
+                検索
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-container>
       <v-row
         justify="center"
@@ -31,83 +35,104 @@
             <v-list>
               <v-list-item>
                 <v-list-item-content>
-                  <v-row
-                    justify="center"
+                  <v-list-item-title
+                    class="font-weight-bold"
                   >
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-text-field
-                        class="mt-10"
-                        label="タイトル"
-                        v-model="searched.name"
-                        dense
-                      >
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-text-field
-                        label="投稿者"
-                        v-model="searched.poster"
-                        dense
-                      >
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="9"
-                    >
-                      <v-text-field
-                        label="呟き"
-                        v-model="searched.text"
-                        dense
-                      >
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      cols="12"
-                    >
-                      <v-row
-                        justify="center"
-                      >
-                        <v-btn
-                          @click="$store.dispatch('updatePostSearchCondition', { name: searched.name, poster: searched.poster, text: searched.text })"
-                          class="font-weight-bold mt-3 mb-9"
-                          color="teal"
-                          dark
-                        >
-                          農家の呟きを検索する
-                        </v-btn>
-                      </v-row>
-                    </v-col>
-                  </v-row>
+                    検索条件
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
+            <v-divider/>
+
+            <v-container>
+              <v-row
+                justify="center"
+              >
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="9"
+                >
+                  <v-text-field
+                    class="mt-10"
+                    label="タイトル"
+                    v-model="searched.name"
+                    outlined
+                    dense
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="9"
+                >
+                  <v-text-field
+                    label="投稿者"
+                    v-model="searched.poster"
+                    outlined
+                    dense
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="9"
+                >
+                  <v-text-field
+                    label="呟き"
+                    v-model="searched.text"
+                    outlined
+                    dense
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                >
+                  <v-row
+                    justify="center"
+                  >
+                    <v-btn
+                      @click="$store.dispatch('updatePostSearchCondition', { name: searched.name, poster: searched.poster, text: searched.text })"
+                      class="font-weight-bold mt-3 mb-9"
+                      color="teal"
+                      dark
+                    >
+                      農家の呟きを検索する
+                    </v-btn>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
 
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          検索結果 {{ searchedPosts.length }}件
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
+          <v-list
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  検索結果（{{ searchedPosts.length }}件）
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+        </v-col>
+      </v-row>
     </v-container>
     <v-container
       v-if="searchedPosts.length !== 0"
@@ -142,45 +167,41 @@
             <template
               v-slot:[`item.like`] = "{ item }"
             >
-              <v-card-actions
-                class="pl-0"
+              <v-btn
+                @click="$store.dispatch('updatePostLikeState', item)"
+                :class="{ likeColor: item.like}"
+                style="background:grey"
+                fab
+                dark
+                x-small
               >
-                <v-btn
-                  @click="$store.dispatch('updatePostLikeState', item)"
-                  :class="{ likeColor: item.like}"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-up
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Good
-                </span>
-                <v-btn
-                  @click="$store.dispatch('updatePostDislikeState', item)"
-                  :class="{ dislikeColor: item.dislike }"
-                  class="ml-2"
-                  style="background:grey"
-                  fab
-                  dark
-                  x-small
-                >
-                  <v-icon>
-                    mdi-thumb-down
-                  </v-icon>
-                </v-btn>
-                <span
-                  class="font-weight-bold ml-1"
-                >
-                  Bad
-                </span>
-              </v-card-actions>
+                <v-icon>
+                  mdi-thumb-up
+                </v-icon>
+              </v-btn>
+              <span
+                class="font-weight-bold ml-1"
+              >
+                Good
+              </span>
+              <v-btn
+                @click="$store.dispatch('updatePostDislikeState', item)"
+                :class="{ dislikeColor: item.dislike }"
+                class="ml-2"
+                style="background:grey"
+                fab
+                dark
+                x-small
+              >
+                <v-icon>
+                  mdi-thumb-down
+                </v-icon>
+              </v-btn>
+              <span
+                class="font-weight-bold ml-1"
+              >
+                Bad
+              </span>
             </template>
             <template
               v-slot:[`item.updatedAt`]="{ item }"

@@ -2,46 +2,55 @@
   <div
     id="communities"
   >
-    <logged-in-app-community-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural communities are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-community-eye-catch>
+    <logged-in-app-community-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          参加しているコミュニティ
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container
-        v-show="!participatedCommunities.length"
-      >
-        <v-row>
-          <v-col
-            cols="12"
+          <v-list
+            color="transparent"
           >
-            <p>
-              参加しておりません。
-            </p>
-            <v-btn
-              class="font-weight-bold"
-              color="orange"
-              outlined
-              dark
-              to="/communities/list"
-            >
-              コミュニティを見てみる
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  参加しているコミュニティ
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-list
+            v-show="!participatedCommunities.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  参加しておりません。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
+                <v-btn
+                  class="font-weight-bold"
+                  color="orange"
+                  outlined
+                  dark
+                  to="/communities/list"
+                >
+                  コミュニティを見る
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-pagination
       class="my-6"
       v-model="page"

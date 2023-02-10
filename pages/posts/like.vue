@@ -2,47 +2,55 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch>
-      <template
-        v-slot
-      >
-        Various agricultural posts are here !
-        Please look around and enjoy it !
-      </template>
-    </logged-in-app-post-eye-catch>
-
+    <logged-in-app-post-eye-catch/>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
+      <v-row>
+        <v-col
+          cols="12"
         >
-          いいね
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-container
-        v-show="!likePosts.length"
-      >
-        <v-row>
-          <v-col
-            cols="12"
+          <v-list
+            color="transparent"
           >
-            <p>
-              いいねしておりません。
-            </p>
-            <v-btn
-              class="font-weight-bold"
-              color="orange"
-              outlined
-              dark
-              to="/posts/list"
-            >
-              農家の呟きを見てみる
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  いいね（{{ likePosts.length }}件）
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider/>
+          <v-list
+            v-show="!likePosts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  いいねしておりません。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-action>
+                <v-btn
+                  class="font-weight-bold"
+                  color="orange"
+                  outlined
+                  dark
+                  to="/posts/list"
+                >
+                  農家の呟きを見る
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-container>
       <v-row
         justify="center"
