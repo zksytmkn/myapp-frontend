@@ -28,6 +28,9 @@ export const state = () => ({
       text: '',
       type: [],
       prefecture: []
+    },
+    comment: {
+      list: []
     }
   },
   post: {
@@ -37,6 +40,9 @@ export const state = () => ({
       name: '',
       poster: '',
       text: ''
+    },
+    comment: {
+      list: []
     }
   },
   community: {
@@ -101,11 +107,17 @@ export const mutations = {
   setCurrentProduct (state, payload) {
     state.product.current = payload
   },
+  setProductComment (state, payload) {
+    state.product.comment.list = payload
+  },
   setPostList (state, payload) {
     state.post.list = payload
   },
   setCurrentPost (state, payload) {
     state.post.current = payload
+  },
+  setPostComment (state, payload) {
+    state.post.comment.list = payload
   },
   setCommunityList (state, payload) {
     state.community.list = payload
@@ -224,6 +236,10 @@ export const actions = {
     }
     commit('setCurrentProduct', currentProduct)
   },
+  getProductComment ({ commit }, comments) {
+    comments = comments || []
+    commit('setProductComment', comments)
+  },
   getPostList ({ commit }, posts) {
     posts = posts || []
     commit('setPostList', posts)
@@ -235,6 +251,10 @@ export const actions = {
       currentPost = state.post.list.find(post => post.id === id) || null  
     }
     commit('setCurrentPost', currentPost)
+  },
+  getPostComment ({ commit }, comments ) {
+    comments = comments || []
+    commit('setPostComment', comments)
   },
   getCommunityList ({ commit }, communities) {
     communities = communities || []

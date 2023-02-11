@@ -257,7 +257,7 @@ export default {
     }
   },
   computed: {
-    likeProducts () {
+    likeProducts() {
       const copyLikeProducts = Array.from(this.$store.state.product.list.filter((x) => x.like === true))
       return copyLikeProducts.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }

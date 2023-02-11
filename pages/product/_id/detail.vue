@@ -228,24 +228,104 @@
         <v-col
           cols="12"
         >
-          <v-sheet
+          <v-card
+            flat
             rounded="lg"
           >
-            <v-container>
-              <v-list>
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="font-weight-bold"
+            <v-list>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title
+                    class="font-weight-bold"
+                  >
+                    コメント
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-divider/>
+            <v-list
+              v-for="(comment, i) in comments"
+              :key="`comment-${i}`"
+            >
+              <v-list-item>
+                <v-list-item-title>
+                  <v-list-item-avatar
+                    left
+                  >
+                    <v-img
+                      :src="noImg"
                     >
-                      コメント
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
+                    </v-img>
+                  </v-list-item-avatar>
+                  {{ comment.user.name }}
+                </v-list-item-title>
+                <v-spacer />
+                <v-card-subtitle>
+                  {{ comment.updated_at }}
+                </v-card-subtitle>
+                <v-card-subtitle>
+                  <logged-in-app-comment-detail/>
+                </v-card-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-text>
+                  {{ comment.comment_content }}
+                </v-list-item-text>
+              </v-list-item>
               <v-divider/>
-            </v-container>
-          </v-sheet>
+            </v-list>
+            <v-list>
+              <v-list-item>
+                <v-list-item-title>
+                  <v-list-item-avatar
+                    left
+                  >
+                    <v-img
+                      :src="$auth.user.image_url ? $auth.user.image_url : noImg"
+                    >
+                    </v-img>
+                  </v-list-item-avatar>
+                    {{ $auth.user.name }}
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-container>
+                  <v-row
+                    justify="center"
+                  >
+                    <v-col
+                      cols="11"
+                    >
+                      <v-textarea
+                        dense
+                        outlined
+                        hide-details
+                        rows="2"
+                        placeholder="コメントを追加する"
+                      >
+                      </v-textarea>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-row
+                        justify="center"
+                      >
+                        <v-btn
+                          text
+                          outlined
+                          class="font-weight-bold mt-3 mb-3"
+                        >
+                          コメントする
+                        </v-btn>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-list-item> 
+            </v-list>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -257,6 +337,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
+  middleware: ['get-product-comment'],
   data () {
     return {
       noImg,
@@ -283,6 +364,14 @@ export default {
     currentProduct() {
       const copyProduct = this.$store.state.product.current
       return copyProduct
+    },
+    comments() {
+      const copyComments = Array.from(this.$store.state.product.comment.list)
+      return copyComments.sort((a, b) => {
+        if (a.updated_at > b.updated_at) { return -1 }
+        if (a.updated_at < b.updated_at) { return 1 }
+        return 0
+      })
     }
   }
 }

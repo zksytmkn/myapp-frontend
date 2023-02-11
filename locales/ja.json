@@ -67,6 +67,10 @@
       "new": "作成",
       "participated": "参加",
       "search": "検索"
+    },
+    "comment": {
+      "edit": "編集する",
+      "delete": "削除する"
     }
   },
   "error": {
