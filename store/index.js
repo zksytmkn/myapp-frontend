@@ -22,27 +22,23 @@ export const state = () => ({
   product: {
     current: null,
     list: [],
+    comment: [],
     searchCondition: {
       name: '',
       seller: '',
       text: '',
       type: [],
       prefecture: []
-    },
-    comment: {
-      list: []
     }
   },
   post: {
     current: null,
     list: [],
+    comment: [],
     searchCondition: {
       name: '',
       poster: '',
       text: ''
-    },
-    comment: {
-      list: []
     }
   },
   community: {
@@ -108,7 +104,7 @@ export const mutations = {
     state.product.current = payload
   },
   setProductComment (state, payload) {
-    state.product.comment.list = payload
+    state.product.comment = payload
   },
   setPostList (state, payload) {
     state.post.list = payload
@@ -117,7 +113,7 @@ export const mutations = {
     state.post.current = payload
   },
   setPostComment (state, payload) {
-    state.post.comment.list = payload
+    state.post.comment = payload
   },
   setCommunityList (state, payload) {
     state.community.list = payload
@@ -228,13 +224,8 @@ export const actions = {
     products = products || []
     commit('setProductList', products)
   },
-  getCurrentProduct ( { state, commit }, params ) {
-    let currentProduct = null
-    if (params && params.id) {
-      const id = Number(params.id)
-      currentProduct = state.product.list.find(product => product.id === id) || null  
-    }
-    commit('setCurrentProduct', currentProduct)
+  getCurrentProduct ( { commit }, product ) {
+    commit('setCurrentProduct', product)
   },
   getProductComment ({ commit }, comments) {
     comments = comments || []
@@ -244,13 +235,8 @@ export const actions = {
     posts = posts || []
     commit('setPostList', posts)
   },
-  getCurrentPost ( { state, commit }, params ) {
-    let currentPost = null
-    if (params && params.id) {
-      const id = Number(params.id)
-      currentPost = state.post.list.find(post => post.id === id) || null  
-    }
-    commit('setCurrentPost', currentPost)
+  getCurrentPost ( { commit }, post ) {
+    commit('setCurrentPost', post)
   },
   getPostComment ({ commit }, comments ) {
     comments = comments || []
@@ -260,13 +246,8 @@ export const actions = {
     communities = communities || []
     commit('setCommunityList', communities)
   },
-  getCurrentCommunity ( { state, commit }, params ) {
-    let currentCommunity = null
-    if (params && params.id) {
-      const id = Number(params.id)
-      currentCommunity = state.community.list.find(community => community.id === id) || null  
-    }
-    commit('setCurrentCommunity', currentCommunity)
+  getCurrentCommunity ( { commit }, community ) {
+    commit('setCurrentCommunity', community)
   },
   getUserList ({ commit }, users) {
     users = users || []

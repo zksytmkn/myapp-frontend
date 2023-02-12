@@ -337,7 +337,6 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
-  middleware: ['get-product-comment'],
   data () {
     return {
       noImg,
@@ -366,7 +365,7 @@ export default {
       return copyProduct
     },
     comments() {
-      const copyComments = Array.from(this.$store.state.product.comment.list)
+      const copyComments = Array.from(this.$store.state.product.comment)
       return copyComments.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }
