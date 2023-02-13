@@ -178,12 +178,12 @@ export const mutations = {
     state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, like: product.like ? !product.like : product.like, dislike: !product.dislike} : {...x})
   },
   setCurrentLikeState (state, product) {
-    state.product.current.like = !product.like
-    state.product.current.dislike = product.dislike ? !product.dislike : product.dislike
+    state.product.current.product.like = !product.like
+    state.product.current.product.dislike = product.dislike ? !product.dislike : product.dislike
   },
   setCurrentDislikeState (state, product) {
-    state.product.current.dislike = !product.dislike
-    state.product.current.like = product.like ? !product.like : product.like
+    state.product.current.product.dislike = !product.dislike
+    state.product.current.product.like = product.like ? !product.like : product.like
   },
   setPostLikeState (state, post) {
     state.post.list = state.post.list.map((x) => x.id === post.id ? {...x, like: !post.like, dislike: post.dislike ? !post.dislike : post.dislike} : {...x})
@@ -224,7 +224,7 @@ export const actions = {
     products = products || []
     commit('setProductList', products)
   },
-  getCurrentProduct ( { commit }, product ) {
+  getCurrentProduct ({ commit }, product) {
     commit('setCurrentProduct', product)
   },
   getProductComment ({ commit }, comments) {
@@ -235,10 +235,10 @@ export const actions = {
     posts = posts || []
     commit('setPostList', posts)
   },
-  getCurrentPost ( { commit }, post ) {
+  getCurrentPost ({ commit }, post) {
     commit('setCurrentPost', post)
   },
-  getPostComment ({ commit }, comments ) {
+  getPostComment ({ commit }, comments) {
     comments = comments || []
     commit('setPostComment', comments)
   },
@@ -246,7 +246,7 @@ export const actions = {
     communities = communities || []
     commit('setCommunityList', communities)
   },
-  getCurrentCommunity ( { commit }, community ) {
+  getCurrentCommunity ({ commit }, community) {
     commit('setCurrentCommunity', community)
   },
   getUserList ({ commit }, users) {

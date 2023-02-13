@@ -270,7 +270,7 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-text>
-                  {{ comment.comment_content }}
+                  {{ comment.productComment_content }}
                 </v-list-item-text>
               </v-list-item>
               <v-divider/>
