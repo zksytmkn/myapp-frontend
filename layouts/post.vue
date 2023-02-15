@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  middleware: ['authentication', 'get-post-list', 'get-post-current'],
+  middleware: ['authentication', 'get-post-list', 'get-post-current', 'get-post-comment'],
   data () {
     return {
       drawer: null

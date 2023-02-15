@@ -262,7 +262,7 @@
                 </v-list-item-title>
                 <v-spacer />
                 <v-card-subtitle>
-                  {{ comment.updated_at }}
+                  {{ dateFormat(comment.updated_at) }} 
                 </v-card-subtitle>
                 <v-card-subtitle>
                   <logged-in-app-comment-detail/>
@@ -371,6 +371,14 @@ export default {
         if (a.updated_at < b.updated_at) { return 1 }
         return 0
       })
+    },
+    dateFormat() {
+      return (date) => {
+        const dateTimeFormat = new Intl.DateTimeFormat(
+          'ja', { dateStyle: 'medium', timeStyle: 'short' }
+        )
+        return dateTimeFormat.format(new Date(date))
+      }
     }
   }
 }
