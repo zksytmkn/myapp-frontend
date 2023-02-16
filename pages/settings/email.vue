@@ -35,11 +35,7 @@
                       <user-form-email
                         label="メールアドレス"
                       />
-                    </v-col>
-                    <v-col
-                      cols="11"
-                    >
-                      <user-form-email
+                      <user-form-password
                         label="現在のパスワード"
                       />
                     </v-col>

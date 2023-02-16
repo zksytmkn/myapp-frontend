@@ -68,26 +68,42 @@
                   </v-card-title>
                   <v-divider />
                   <v-container
-                    class="mt-9"
+                    class="mt-9 mb-9"
                   >
-                    <v-img
-                      :src="currentPost.image_url ? currentPost.image_url : noImg"
-                      max-height="430px"
-                      max-width="430px"
-                      aspect-ratio="1"
+                    <v-col
+                      cols="12"
                     >
-                    </v-img>
+                      <v-row>
+                        <v-col
+                          cols="5"
+                        >
+                          <v-row>
+                            <v-img
+                              :src="currentPost.image_url ? currentPost.image_url : noImg"
+                              max-height="430px"
+                              max-width="430px"
+                              aspect-ratio="1"
+                            >
+                            </v-img>
+                          </v-row>
+                        </v-col>
+                        <v-col
+                          cols="7"
+                        >
+                          <v-row>
+                            <v-card-text>
+                              <h3
+                                style="font-weight:normal;"
+                              >
+                                {{ currentPost.text }}
+                              </h3>
+                            </v-card-text>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </v-col>
                   </v-container>
 
-                  <v-container>
-                    <v-card-text>
-                      <h3
-                        style="font-weight:normal;"
-                      >
-                        {{ currentPost.text }}
-                      </h3>
-                    </v-card-text>
-                  </v-container>
                   <v-divider />
                   <v-container>
                     <v-card-actions>
@@ -225,7 +241,7 @@
                       <v-textarea
                         dense
                         outlined
-                        hide-details
+                        hide-details="auto"
                         rows="2"
                         placeholder="コメントを追加する"
                       >

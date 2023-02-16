@@ -466,7 +466,7 @@ export default {
         return this.$store.dispatch('getToast', { msg })
       })
     },
-    formReset () {
+    formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     }

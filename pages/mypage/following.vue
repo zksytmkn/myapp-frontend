@@ -45,21 +45,21 @@
 </template>
 
 <script>
-  import noImg from '~/assets/images/logged-in/no.png'
+import noImg from '~/assets/images/logged-in/no.png'
 
-  export default {
-    layout: 'logged-in',
-    middleware: ['get-user-list'],
-    data () {
-      return {
-        noImg
-      }
-    },
-    computed: {
-      followingUsers() {
-        const copyFollowingUsers = this.$store.state.user.list
-        return copyFollowingUsers
-      }
+export default {
+  layout: 'logged-in',
+  middleware: ['get-user-list'],
+  data () {
+    return {
+      noImg
+    }
+  },
+  computed: {
+    followingUsers() {
+      const copyFollowingUsers = this.$store.state.user.list
+      return copyFollowingUsers
     }
   }
+}
 </script>

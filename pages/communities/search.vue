@@ -130,7 +130,7 @@
                 <v-list-item-title
                   class="font-weight-bold"
                 >
-                  検索結果 {{ searchedCommunities.length }}件
+                  検索結果（{{ searchedCommunities.length }}件）
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>

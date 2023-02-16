@@ -275,56 +275,75 @@
               </v-list-item>
               <v-divider/>
             </v-list>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>
-                  <v-list-item-avatar
-                    left
-                  >
-                    <v-img
-                      :src="$auth.user.image_url ? $auth.user.image_url : noImg"
-                    >
-                    </v-img>
-                  </v-list-item-avatar>
-                    {{ $auth.user.name }}
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-container>
-                  <v-row
-                    justify="center"
-                  >
-                    <v-col
-                      cols="11"
-                    >
-                      <v-textarea
-                        dense
-                        outlined
-                        hide-details
-                        rows="2"
-                        placeholder="コメントを追加する"
+            <v-container>
+              <v-form
+                ref="new"
+                v-model="isValid"
+              >
+                <v-list>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <v-list-item-avatar
+                        left
                       >
-                      </v-textarea>
-                    </v-col>
-                    <v-col
-                      cols="11"
-                    >
+                        <v-img
+                          :src="$auth.user.image_url ? $auth.user.image_url : noImg"
+                        >
+                        </v-img>
+                      </v-list-item-avatar>
+                        {{ $auth.user.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-container>
                       <v-row
                         justify="center"
                       >
-                        <v-btn
-                          text
-                          outlined
-                          class="font-weight-bold mt-3 mb-3"
+                        <v-col
+                          cols="11"
                         >
-                          コメントする
-                        </v-btn>
+                          <v-textarea
+                            dense
+                            outlined
+                            rows="2"
+                            placeholder="コメントを追加する"
+                            hide-details="auto"
+                            v-model="inputted.comment"
+                            :rules="commentRules"
+                          >
+                          </v-textarea>
+                        </v-col>
+                        <v-col
+                          cols="11"
+                        >
+                          <v-row
+                            justify="center"
+                            align="center"
+                          >
+                            <v-btn
+                              text
+                              outlined
+                              class="font-weight-bold mt-3 mb-3 mr-2"
+                              @click="addProductComment"
+                              :disabled="sentIt"
+                            >
+                              コメントする
+                            </v-btn>
+    
+                            <v-btn
+                              text
+                              @click="formReset"
+                            >
+                              キャンセル
+                            </v-btn>
+                          </v-row>
+                        </v-col>
                       </v-row>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-list-item> 
-            </v-list>
+                    </v-container>
+                  </v-list-item> 
+                </v-list>
+              </v-form>
+            </v-container>
           </v-card>
         </v-col>
       </v-row>
@@ -340,7 +359,12 @@ export default {
   data () {
     return {
       noImg,
-      comment: false
+      isValid: false,
+      comment: false,
+      commentRules: [
+        v => !!v || 'コメントを入力してください'
+      ],
+      inputted: { comment: '', productId: this.$store.state.product.current.id, userId: this.$auth.user.id }
     }
   },
   methods: {
@@ -357,6 +381,26 @@ export default {
         const msg = '農産物の削除に失敗しました'
         return this.$store.dispatch('getToast', { msg })
       })
+    },
+    async addProductComment() {
+      if (this.isValid) {
+        await this.$axios.$post('/api/v1/product_comments', this.inputted)
+        .then(response => {
+            this.$router.go({path: this.$router.currentRoute.path, force: true})
+            const msg = 'コメントしました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コメントに失敗しました'
+          return this.$store.dispatch('getToast', { msg })
+        })
+      }
+    },
+    formReset() {
+      this.sentIt = false
+      this.$refs.new.reset()
     }
   },
   computed: {

@@ -58,7 +58,7 @@
                         />
                       </v-col>
                     </v-row>
-          
+
                     <v-textarea
                       v-model="contents"
                       :rules="contentRules"
