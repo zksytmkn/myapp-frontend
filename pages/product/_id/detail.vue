@@ -260,12 +260,45 @@
                   </v-list-item-avatar>
                   {{ comment.user.name }}
                 </v-list-item-title>
+                <v-list-item-action
+                  v-if="comment.user.id === $auth.user.id"
+                >
+                  <v-menu
+                    app
+                    offset-x
+                    offset-y
+                    max-width="200"
+                  >
+                    <template
+                      v-slot:activator="{ on }"
+                    >
+                      <v-btn
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>
+                          mdi-dots-horizontal
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list
+                      dense
+                    >
+                      <template>
+                        <v-list-item
+                          @click="deleteProductComment(comment.id)"
+                        >
+                          <v-list-item-title>
+                            削除する
+                          </v-list-item-title>
+                        </v-list-item>
+                      </template>
+                    </v-list>
+                  </v-menu>
+                </v-list-item-action>
                 <v-spacer />
                 <v-card-subtitle>
                   {{ dateFormat(comment.updated_at) }} 
-                </v-card-subtitle>
-                <v-card-subtitle>
-                  <logged-in-app-comment-detail/>
                 </v-card-subtitle>
               </v-list-item>
               <v-list-item>
@@ -275,75 +308,73 @@
               </v-list-item>
               <v-divider/>
             </v-list>
-            <v-container>
-              <v-form
-                ref="new"
-                v-model="isValid"
-              >
-                <v-list>
-                  <v-list-item>
-                    <v-list-item-title>
-                      <v-list-item-avatar
-                        left
+            <v-form
+              ref="new"
+              v-model="isValid"
+            >
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title>
+                    <v-list-item-avatar
+                      left
+                    >
+                      <v-img
+                        :src="$auth.user.image_url ? $auth.user.image_url : noImg"
                       >
-                        <v-img
-                          :src="$auth.user.image_url ? $auth.user.image_url : noImg"
-                        >
-                        </v-img>
-                      </v-list-item-avatar>
-                        {{ $auth.user.name }}
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-container>
-                      <v-row
-                        justify="center"
+                      </v-img>
+                    </v-list-item-avatar>
+                      {{ $auth.user.name }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-container>
+                    <v-row
+                      justify="center"
+                    >
+                      <v-col
+                        cols="11"
                       >
-                        <v-col
-                          cols="11"
+                        <v-textarea
+                          dense
+                          outlined
+                          rows="2"
+                          placeholder="コメントを追加する"
+                          hide-details="auto"
+                          v-model="inputted.comment"
+                          :rules="commentRules"
                         >
-                          <v-textarea
-                            dense
+                        </v-textarea>
+                      </v-col>
+                      <v-col
+                        cols="11"
+                      >
+                        <v-row
+                          justify="center"
+                          align="center"
+                        >
+                          <v-btn
+                            text
                             outlined
-                            rows="2"
-                            placeholder="コメントを追加する"
-                            hide-details="auto"
-                            v-model="inputted.comment"
-                            :rules="commentRules"
+                            class="font-weight-bold mt-3 mb-3 mr-2"
+                            @click="addProductComment"
+                            :disabled="!isValid"
                           >
-                          </v-textarea>
-                        </v-col>
-                        <v-col
-                          cols="11"
-                        >
-                          <v-row
-                            justify="center"
-                            align="center"
+                            コメントする
+                          </v-btn>
+
+                          <v-btn
+                            text
+                            @click="formReset"
                           >
-                            <v-btn
-                              text
-                              outlined
-                              class="font-weight-bold mt-3 mb-3 mr-2"
-                              @click="addProductComment"
-                              :disabled="sentIt"
-                            >
-                              コメントする
-                            </v-btn>
-    
-                            <v-btn
-                              text
-                              @click="formReset"
-                            >
-                              キャンセル
-                            </v-btn>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-list-item> 
-                </v-list>
-              </v-form>
-            </v-container>
+                            キャンセル
+                          </v-btn>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-list-item> 
+              </v-list>
+            </v-form>
           </v-card>
         </v-col>
       </v-row>
@@ -362,7 +393,7 @@ export default {
       isValid: false,
       comment: false,
       commentRules: [
-        v => !!v || 'コメントを入力してください'
+        v => !!v || 'コメントを追加してください'
       ],
       inputted: { comment: '', productId: this.$store.state.product.current.id, userId: this.$auth.user.id }
     }
@@ -384,12 +415,16 @@ export default {
     },
     async addProductComment() {
       if (this.isValid) {
-        await this.$axios.$post('/api/v1/product_comments', this.inputted)
+        const formData = new FormData()
+        formData.append('productComment_content', this.inputted.comment)
+        formData.append('product_id', this.inputted.productId)
+        formData.append('user_id', this.inputted.userId)
+        await this.$axios.$post('/api/v1/product_comments', formData)
         .then(response => {
-            this.$router.go({path: this.$router.currentRoute.path, force: true})
-            const msg = 'コメントしました'
-            const color = 'success'
-            return this.$store.dispatch('getToast', { msg, color })
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          const msg = 'コメントしました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
           console.log(error)
@@ -401,6 +436,20 @@ export default {
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
+    },
+    async deleteProductComment(id) {
+      await this.$axios.$delete(`/api/v1/product_comments/${id}`)
+      .then(response => {
+        this.$router.go({path: this.$router.currentRoute.path, force: true})
+        const msg = 'コメントを削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = 'コメントの削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
     }
   },
   computed: {
@@ -411,15 +460,15 @@ export default {
     comments() {
       const copyComments = Array.from(this.$store.state.product.comment)
       return copyComments.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
+        if (a.updated_at < b.updated_at) { return -1 }
+        if (a.updated_at > b.updated_at) { return 1 }
         return 0
       })
     },
     dateFormat() {
       return (date) => {
         const dateTimeFormat = new Intl.DateTimeFormat(
-          'ja', { dateStyle: 'medium', timeStyle: 'short' }
+          'ja', { dateStyle: 'medium' }
         )
         return dateTimeFormat.format(new Date(date))
       }
