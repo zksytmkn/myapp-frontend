@@ -44,6 +44,7 @@ export const state = () => ({
   community: {
     current: null,
     list: [],
+    message: [],
     searchCondition: {
       name: '',
       maker: '',
@@ -120,6 +121,9 @@ export const mutations = {
   },
   setCurrentCommunity (state, payload) {
     state.community.current = payload
+  },
+  setCommunityMessage (state, payload) {
+    state.community.message = payload
   },
   setUserList (state, payload) {
     state.user.list = payload
@@ -248,6 +252,10 @@ export const actions = {
   },
   getCurrentCommunity ({ commit }, community) {
     commit('setCurrentCommunity', community)
+  },
+  getCommunityMessage ({ commit }, messages) {
+    messages = messages || []
+    commit('setCommunityMessage', messages)
   },
   getUserList ({ commit }, users) {
     users = users || []

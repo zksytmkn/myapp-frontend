@@ -39,7 +39,7 @@
             block
             class="mt-6 font-weight-bold white--text"
             color="orange"
-            to="/signup"
+            @click="guestLogin"
           >
             ゲストログインする
           </v-btn>
@@ -59,25 +59,47 @@
 <script>
 export default {
   layout: 'before-login',
-  data () {
+  data ( { $store } ) {
     return {
       isValid: false,
       loading: false,
-      params: { user: { name: '', email: '', password: '' } }
+      params: { user: { name: '', email: '', password: '' } },
+      redirectPath: $store.state.loggedIn.rememberPath
     }
   },
   methods: {
-    signup () {
+    signup() {
       this.loading = true
       setTimeout(() => {
         this.formReset()
         this.loading = false
       }, 1500)
     },
-    formReset () {
+    formReset() {
       this.$refs.form.reset()
       for (const key in this.params.user) {
         this.params.user[key] = ''
+      }
+    },
+    async guestLogin() {
+      await this.$axios.$post('/api/v1/guest_sessions')
+        .then(response => {
+          this.$axios.$post('/api/v1/auth_token', response)
+            .then(response => this.authSuccessful(response))
+            .catch(error => this.authFailure(error))
+        })
+    },
+    authSuccessful (response) {
+      this.$auth.login(response)
+      this.$router.push(this.redirectPath)
+      const msg = 'ゲストログインしました'
+      const color = 'success'
+      return this.$store.dispatch('getToast', { msg, color })
+    },
+    authFailure ({ response }) {
+      if (response) {
+        const msg = 'ゲストログインに失敗しました'
+        return this.$store.dispatch('getToast', { msg })
       }
     }
   }

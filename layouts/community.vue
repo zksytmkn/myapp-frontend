@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  middleware: ['authentication', 'get-community-list', 'get-community-current'],
+  middleware: ['authentication', 'get-community-list', 'get-community-current', 'get-community-message'],
   data () {
     return {
       drawer: null

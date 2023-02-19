@@ -143,8 +143,8 @@
             </v-list>
             <v-divider/>
             <v-list
-              v-for="(comment, i) in comments"
-              :key="`comment-${i}`"
+              v-for="(message, i) in messages"
+              :key="`message-${i}`"
             >
               <v-list-item>
                 <v-list-item-title>
@@ -156,73 +156,123 @@
                     >
                     </v-img>
                   </v-list-item-avatar>
-                  {{ comment.user.name }}
+                  {{ message.user.name }}
                 </v-list-item-title>
+                <v-list-item-action
+                  v-if="message.user.id === $auth.user.id"
+                >
+                  <v-menu
+                    app
+                    offset-x
+                    offset-y
+                    max-width="200"
+                  >
+                    <template
+                      v-slot:activator="{ on }"
+                    >
+                      <v-btn
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>
+                          mdi-dots-horizontal
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list
+                      dense
+                    >
+                      <template>
+                        <v-list-item
+                          @click="deleteCommunityMessage(message.id)"
+                        >
+                          <v-list-item-title>
+                            削除する
+                          </v-list-item-title>
+                        </v-list-item>
+                      </template>
+                    </v-list>
+                  </v-menu>
+                </v-list-item-action>
                 <v-spacer />
                 <v-card-subtitle>
-                  {{ dateFormat(comment.updated_at) }} 
-                </v-card-subtitle>
-                <v-card-subtitle>
-                  <logged-in-app-comment-detail/>
+                  {{ dateFormat(message.updated_at) }} 
                 </v-card-subtitle>
               </v-list-item>
               <v-list-item>
                 <v-list-item-text>
-                  {{ comment.productComment_content }}
+                  {{ message.communityMessage_content }}
                 </v-list-item-text>
               </v-list-item>
               <v-divider/>
             </v-list>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>
-                  <v-list-item-avatar
-                    left
-                  >
-                    <v-img
-                      :src="$auth.user.image_url ? $auth.user.image_url : noImg"
+            <v-form
+              ref="new"
+              v-model="isValid"
+            >
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title>
+                    <v-list-item-avatar
+                      left
                     >
-                    </v-img>
-                  </v-list-item-avatar>
-                    {{ $auth.user.name }}
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-container>
-                  <v-row
-                    justify="center"
-                  >
-                    <v-col
-                      cols="11"
-                    >
-                      <v-textarea
-                        dense
-                        outlined
-                        hide-details="auto"
-                        rows="2"
-                        placeholder="メッセージを追加する"
+                      <v-img
+                        :src="$auth.user.image_url ? $auth.user.image_url : noImg"
                       >
-                      </v-textarea>
-                    </v-col>
-                    <v-col
-                      cols="11"
+                      </v-img>
+                    </v-list-item-avatar>
+                      {{ $auth.user.name }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-container>
+                    <v-row
+                      justify="center"
                     >
-                      <v-row
-                        justify="center"
+                      <v-col
+                        cols="11"
                       >
-                        <v-btn
-                          text
+                        <v-textarea
+                          dense
                           outlined
-                          class="font-weight-bold mt-3 mb-3"
+                          hide-details="auto"
+                          rows="2"
+                          placeholder="メッセージを追加する"
+                          v-model="inputted.message"
+                          :rules="messageRules"
                         >
-                          送信する
-                        </v-btn>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-list-item> 
-            </v-list>
+                        </v-textarea>
+                      </v-col>
+                      <v-col
+                        cols="11"
+                      >
+                        <v-row
+                          justify="center"
+                          align="center"
+                        >
+                          <v-btn
+                            text
+                            outlined
+                            class="font-weight-bold mt-3 mb-3 mr-2"
+                            @click="addCommunityMessage"
+                            :disabled="!isValid"
+                          >
+                            送信する
+                          </v-btn>
+  
+                          <v-btn
+                            text
+                            @click="formReset"
+                          >
+                            キャンセル
+                          </v-btn>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-list-item> 
+              </v-list>
+            </v-form>
           </v-card>
         </v-col>
       </v-row>
@@ -239,7 +289,12 @@ export default {
   data () {
     return {
       noImg,
-      participated: false
+      isValid: false,
+      participated: false,
+      messageRules: [
+        v => !!v || 'メッセージを追加してください'
+      ],
+      inputted: { message: '', communityId: this.$store.state.community.current.id, userId: this.$auth.user.id }
     }
   },
   methods: {
@@ -256,12 +311,66 @@ export default {
         const msg = 'コミュニティの削除に失敗しました'
         return this.$store.dispatch('getToast', { msg })
       })
+    },
+    async addCommunityMessage() {
+      if (this.isValid) {
+        const formData = new FormData()
+        formData.append('communityMessage_content', this.inputted.message)
+        formData.append('community_id', this.inputted.communityId)
+        formData.append('user_id', this.inputted.userId)
+        await this.$axios.$post('api/v1/community_messages', formData)
+        .then(response => {
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+          const msg = 'メッセージを送信しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'メッセージの送信に失敗しました'
+          return this.$store.dispatch('getToast', { msg })
+        })
+      }
+    },
+    formReset() {
+      this.sentIt = false
+      this.$refs.new.reset()
+    },
+    async deleteCommunityMessage(id) {
+      await this.$axios.$delete(`/api/v1/community_messages/${id}`)
+      .then(response => {
+        this.$router.go({path: this.$router.currentRoute.path, force: true})
+        const msg = 'メッセージを削除しました'
+        const color = 'success'
+        return this.$store.dispatch('getToast', { msg, color })
+      })
+      .catch(error => {
+        console.log(error)
+        const msg = 'メッセージの削除に失敗しました'
+        return this.$store.dispatch('getToast', { msg })
+      })
     }
   },
   computed: {
     currentCommunity () {
       const copyCommunity = this.$store.state.community.current
       return copyCommunity
+    },
+    messages() {
+      const copyMessages = Array.from(this.$store.state.community.message)
+      return copyMessages.sort((a, b) => {
+        if (a.updated_at < b.updated_at) { return -1 }
+        if (a.updated_at > b.updated_at) { return 1 }
+        return 0
+      })
+    },
+    dateFormat() {
+      return (date) => {
+        const dateTimeFormat = new Intl.DateTimeFormat(
+          'ja', { dateStyle: 'medium' }
+        )
+        return dateTimeFormat.format(new Date(date))
+      }
     },
     users() {
       const copyUsers = this.$store.state.user.list

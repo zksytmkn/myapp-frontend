@@ -282,6 +282,7 @@
                           rows="2"
                           placeholder="コメントを追加する"
                           v-model="inputted.comment"
+                          :rules="commentRules"
                         >
                         </v-textarea>
                       </v-col>
@@ -332,6 +333,9 @@ export default {
       noImg,
       isValid: false,
       comment: false,
+      commentRules: [
+        v => !!v || 'コメントを追加してください'
+      ],
       inputted: { comment: '', postId: this.$store.state.post.current.id, userId: this.$auth.user.id }
     }
   },

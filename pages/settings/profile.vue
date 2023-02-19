@@ -82,19 +82,6 @@
                     <v-col
                       cols="11"
                     >
-                      <v-text-field
-                        dense
-                        outlined
-                        label="市町村"
-                        v-model="inputted.city"
-                        :rules="cityRules"
-                        :disabled="sentIt"
-                      >
-                      </v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="11"
-                    >
                       <v-textarea
                         dense
                         outlined
@@ -159,13 +146,10 @@ export default {
       prefectureRules: [
         v => !!v || '都道府県を選択してください'
       ],
-      cityRules: [
-        v => !!v || '市町村を選択してください'
-      ],
       textRules: [
         v => !!v || 'プロフィール文を入力してください'
       ],
-      inputted: { name: '', prefecture: '', city: '', text: '', image: null },
+      inputted: { name: '', prefecture: '', text: '', image: null },
       prefectureItems: [
         '北海道',
         '青森県',
@@ -270,7 +254,6 @@ export default {
   mounted() {
     this.inputted.name = this.$store.state.user.current.name
     this.inputted.prefecture = this.$store.state.user.current.prefecture
-    this.inputted.city = this.$store.state.user.current.city
     this.inputted.text = this.$store.state.user.current.text
   }
 }
