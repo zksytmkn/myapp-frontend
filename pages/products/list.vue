@@ -41,7 +41,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name }}
+                    {{ product.name.substring(0, 7)+'...' }}
                     <v-spacer />
                     <v-btn
                       text
@@ -97,7 +97,7 @@
                   cols="6"
                 >
                   <v-card-text>
-                    {{ product.text }}
+                    {{ product.text.substring(0, 80)+'...' }}
                   </v-card-text>
                   <v-card-title
                     class="pt-0 font-weight-bold"

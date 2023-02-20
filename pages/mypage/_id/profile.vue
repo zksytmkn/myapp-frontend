@@ -54,19 +54,14 @@
                           <v-list-item-title
                             class="font-weight-bold text-h6"
                           >
-                            {{ SelectedUser.name }}
+                            {{ SelectedUser.name.substring(0, 16)+'...' }}
                           </v-list-item-title>
                           <v-list-item-subtitle>
                             {{ SelectedUser.prefecture }}
                           </v-list-item-subtitle>
                           <br/>
                           <v-list-item-text>
-                            {{ SelectedUser.text }}
-                            {{ SelectedUser.text }}
-                            {{ SelectedUser.text }}
-                            {{ SelectedUser.text }}
-                            {{ SelectedUser.text }}
-                            {{ SelectedUser.text }}
+                            {{ SelectedUser.text.substring(0, 120)+'...' }}
                           </v-list-item-text>
                         </v-col>
                       </v-row>

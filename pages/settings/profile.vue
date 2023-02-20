@@ -133,6 +133,8 @@ import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 export default {
   layout: 'logged-in',
   data () {
+    const nameMax = 16
+    const textMax = 120
     return {
       noPersonImg,
       isValid: false,
@@ -141,13 +143,17 @@ export default {
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
       nameRules: [
-        v => !!v || 'ユーザー名を入力してください'
+        nameMax,
+        v => !!v || '',
+        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
       prefectureRules: [
         v => !!v || '都道府県を選択してください'
       ],
       textRules: [
-        v => !!v || 'プロフィール文を入力してください'
+        textMax,
+        v => !!v || '',
+        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
       inputted: { name: '', prefecture: '', text: '', image: null },
       prefectureItems: [
@@ -207,12 +213,7 @@ export default {
       if (this.isValid) {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
-        formData.append('seller', this.inputted.seller)
-        formData.append('type', this.inputted.type)
         formData.append('prefecture', this.inputted.prefecture)
-        formData.append('price', this.inputted.price)
-        formData.append('quantity', this.inputted.quantity)
-        formData.append('inventory', this.inputted.inventory)
         formData.append('text', this.inputted.text)
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)
@@ -225,13 +226,13 @@ export default {
         await this.$axios.$patch(`/api/v1/products/${id}`, formData, config)
         .then(response => {
           this.$router.back()
-          const msg = '農産物を編集しました'
+          const msg = 'プロフィールを編集しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
           console.log(error)
-          const msg = '農産物の削除に失敗しました'
+          const msg = 'プロフィールの削除に失敗しました'
           return this.$store.dispatch('getToast', { msg })
         })
       }

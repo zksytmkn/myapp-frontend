@@ -131,6 +131,18 @@
             </v-list-item>
           </v-list>
           <v-divider/>
+          <v-list
+            v-show="!searchedPosts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  該当する農家の呟きはありませんでした。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-col>
       </v-row>
     </v-container>
@@ -156,13 +168,13 @@
                 :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
-                {{ item.name }}
+                {{ item.name.substring(0, 13)+'...' }}
               </nuxt-link>
             </template>
             <template
               v-slot:[`item.text`]="{ item }"
             >
-              {{ item.text }}
+              {{ item.text.substring(0, 37)+'...' }}
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"

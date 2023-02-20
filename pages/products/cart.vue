@@ -107,7 +107,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name }}
+                    {{ product.name.substring(0, 7)+'...' }}
                     <v-spacer />
                     <v-btn
                       text
@@ -166,7 +166,7 @@
                   <v-card-text
                     class="pb-0"
                   >
-                    {{ product.text }}
+                    {{ product.text.substring(0, 90)+'...' }}
                   </v-card-text>
                   <v-card-subtitle
                     class="pt-0 font-weight-bold"
@@ -221,7 +221,7 @@ export default {
       pageSize: 10
     }
   },
-  computed: mapGetters(['cartProducts','cartTotalPrice']),
+  computed: mapGetters(['cartProducts','cartTotalPrice'])
 }
 </script>
 

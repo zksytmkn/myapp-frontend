@@ -145,6 +145,8 @@ import noImg from '~/assets/images/logged-in/no.png'
 export default {
   layout: 'logged-in',
   data () {
+    const nameMax = 16
+    const textMax = 300
     return {
       noImg,
       isValid: false,
@@ -153,10 +155,14 @@ export default {
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
       nameRules: [
-        v => !!v || '名前を入力してください'
+        nameMax,
+        v => !!v || '',
+        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
       textRules: [
-        v => !!v || '紹介文を入力してください'
+        textMax,
+        v => !!v || '',
+        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
       inputted: { name: '', maker: this.$auth.user.name, text: '', image: null }
     }

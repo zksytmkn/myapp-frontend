@@ -56,12 +56,12 @@
                               <v-card-title
                                 class="pb-1 d-block text-truncate font-weight-bold"
                               >
-                                {{ community.name }}
+                                {{ community.name.substring(0, 13)+'...' }}
                               </v-card-title>
                               <v-card-text
                                 class="caption grey--text text--darken-1"
                               >
-                                {{ community.text.substring(0, 30)+'...'}}
+                                {{ community.text.substring(0, 23)+'...'}}
                               </v-card-text>
                             </v-row>
                           </v-col>

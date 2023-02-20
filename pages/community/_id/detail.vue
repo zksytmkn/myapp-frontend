@@ -39,10 +39,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:430px;"
                   >
-                    {{ currentCommunity.name }}
-                    <v-card-subtitle>
-                      by {{ currentCommunity.maker }}
-                    </v-card-subtitle>
+                    {{ currentCommunity.name.substring(0, 16)+'...' }}
                     <v-spacer />
                     <v-btn
                       text
@@ -59,7 +56,10 @@
                   cols="7"
                 >
                   <v-card-subtitle>
-                    {{ currentCommunity.text }}
+                    by {{ currentCommunity.maker }}
+                  </v-card-subtitle>
+                  <v-card-subtitle>
+                    {{ currentCommunity.text.substring(0, 300)+'...' }}
                   </v-card-subtitle>
 
                   <v-divider/>
@@ -70,7 +70,16 @@
                       参加人数：{{ users.length }}人
                     </span>
                     <br/>
-                    ＊ご自由に参加していただけます。
+                    <span
+                      v-show="!participated"
+                    >
+                      ＊ご自由に参加していただけます。
+                    </span>
+                    <span
+                      v-show="participated"
+                    >
+                      ＊ご参加済みです。
+                    </span>
                   </v-card-text>
                   <v-card-actions
                     v-if="currentCommunity.maker!==$auth.user.name"
@@ -79,12 +88,37 @@
                     <logged-in-app-community-member />
                     <v-btn
                       @click="participated = !participated"
+                      v-show="!participated"
                       class="font-weight-bold ml-2"
                       color="teal"
                       block
                       dark
                     >
                       コミュニティに参加する
+                    </v-btn>
+                    <v-btn
+                      @click="participated = !participated"
+                      v-show="participated"
+                      class="font-weight-bold ml-2"
+                      color="teal"
+                      block
+                      dark
+                    >
+                      コミュニティを退会する
+                    </v-btn>
+                  </v-card-actions>
+                  <v-card-actions
+                    v-show="participated"
+                    style="width:59.6%;"
+                  >
+                    <v-btn
+                      v-show="participated"
+                      class="font-weight-bold"
+                      color="orange"
+                      block
+                      dark
+                    >
+                      コミュニティに招待する
                     </v-btn>
                   </v-card-actions>
                   <v-card-actions

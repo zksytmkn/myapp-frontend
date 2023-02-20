@@ -161,6 +161,18 @@
             </v-list-item>
           </v-list>
           <v-divider/>
+          <v-list
+            v-show="!searchedProducts.length"
+            color="transparent"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  該当する農産物はありませんでした。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-col>
       </v-row>
     </v-container>
@@ -188,7 +200,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name }}
+                    {{ product.name.substring(0, 7)+'...' }}
                     <v-spacer />
                     <v-btn
                       text
@@ -244,13 +256,13 @@
                   cols="6"
                 >
                   <v-card-text>
-                    {{ product.text }}
+                    {{ product.text.substring(0, 80)+'...' }}
                   </v-card-text>
-                  <v-card-subtitle
-                    class="font-weight-bold text-h6"
+                  <v-card-title
+                    class="pt-0 font-weight-bold"
                   >
                     ¥{{ product.price.toLocaleString() }}
-                  </v-card-subtitle>
+                  </v-card-title>
                   <v-divider/>
                   <v-container
                     class="pt-0"

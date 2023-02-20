@@ -39,10 +39,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:430px;"
                   >
-                    {{ currentProduct.name }}
-                    <v-card-subtitle>
-                      by {{ currentProduct.seller }}
-                    </v-card-subtitle>
+                    {{ currentProduct.name.substring(0, 16)+'...' }}
                     <v-spacer />
                     <v-btn
                       text
@@ -138,8 +135,11 @@
                     {{ currentProduct.prefecture }}
                   </v-chip>
 
+                  <v-card-subtitle>
+                    by {{ currentProduct.seller.substring(0, 10)+'...' }}
+                  </v-card-subtitle>
                   <v-card-text>
-                    {{ currentProduct.text }}
+                    {{ currentProduct.text.substring(0, 300)+'...' }}
                   </v-card-text>
                   <v-card-title
                     class="font-weight-bold"

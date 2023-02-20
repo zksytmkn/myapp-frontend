@@ -15,15 +15,18 @@
       "id": {
         "profile": "プロフィール"
       },
+      "address_payment": "住所＆お支払い",
       "followed": "フォロワー",
       "following": "フォロー",
       "profile": "プロフィール"
     },
     "settings": {
+      "address": "住所変更",
       "deactivate": "退会する",
       "email": "メールアドレス変更",
       "information": "お知らせ",
       "password": "パスワード変更",
+      "payment": "お支払い変更",
       "profile": "プロフィール編集"
     },
     "product": {

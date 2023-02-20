@@ -29,7 +29,7 @@
                   <v-card-title
                     class="font-weight-bold"
                   >
-                    {{ currentPost.name }}
+                    {{ currentPost.name.substring(0, 40)+'...' }}
                     <v-card-subtitle>
                       by {{ currentPost.poster }}
                     </v-card-subtitle>
@@ -95,7 +95,7 @@
                               <h3
                                 style="font-weight:normal;"
                               >
-                                {{ currentPost.text }}
+                                {{ currentPost.text.substring(0, 600)+'...' }}
                               </h3>
                             </v-card-text>
                           </v-row>

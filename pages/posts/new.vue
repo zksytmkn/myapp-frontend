@@ -190,13 +190,13 @@
                 :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
-                {{ item.name }}
+                {{ item.name.substring(0, 13)+'...' }}
               </nuxt-link>
             </template>
             <template
               v-slot:[`item.text`]="{ item }"
             >
-              {{ item.text }}
+              {{ item.text.substring(0, 37)+'...' }}
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"
@@ -264,6 +264,8 @@ export default {
   layout: 'logged-in',
   middleware: ['get-post-list'],
   data () {
+    const nameMax = 40
+    const textMax = 600
     return {
       noImg,
       page: 1,
@@ -304,10 +306,14 @@ export default {
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
       nameRules: [
-        v => !!v || '名前を入力してください'
+        nameMax,
+        v => !!v || '',
+        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
       textRules: [
-        v => !!v || '呟きを入力してください'
+        textMax,
+        v => !!v || '',
+        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
       inputted: { name: '', poster: this.$auth.user.name, text: '', image: null }
     }

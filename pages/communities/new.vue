@@ -210,12 +210,12 @@
                               <v-card-title
                                 class="pb-1 d-block text-truncate font-weight-bold"
                               >
-                                {{ community.name }}
+                                {{ community.name.substring(0, 13)+'...' }}
                               </v-card-title>
                               <v-card-text
                                 class="caption grey--text text--darken-1"
                               >
-                                {{ community.text.substring(0, 30)+'...'}}
+                                {{ community.text.substring(0, 23)+'...'}}
                               </v-card-text>
                             </v-row>
                           </v-col>
@@ -249,6 +249,8 @@ export default {
   layout: 'logged-in',
   middleware: ['get-community-list'],
   data () {
+    const nameMax = 16
+    const textMax = 300
     return {
       noImg,
       page: 1,
@@ -259,10 +261,14 @@ export default {
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
       nameRules: [
-        v => !!v || '名前を入力してください'
+        nameMax,
+        v => !!v || '',
+        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
       textRules: [
-        v => !!v || '紹介文を入力してください'
+        textMax,
+        v => !!v || '',
+        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
       inputted: { name: '', maker: this.$auth.user.name, text: '', image: null },
       container: {

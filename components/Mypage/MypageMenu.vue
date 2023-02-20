@@ -47,6 +47,7 @@ export default {
         { name: 'プロフィール', icon: 'mdi-account', link: '/mypage/profile' },
         { name: 'フォロー', icon: 'mdi-account-arrow-right', link: '/mypage/following' },
         { name: 'フォロワー', icon: 'mdi-account-arrow-left', link: '/mypage/followed' },
+        { name: '住所＆お支払い', icon: 'mdi-credit-card-marker-outline', link: '/mypage/address_payment' }
       ]
     }
   }

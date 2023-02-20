@@ -72,13 +72,13 @@
                 :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
-                {{ item.name }}
+                {{ item.name.substring(0, 13)+'...' }}
               </nuxt-link>
             </template>
             <template
               v-slot:[`item.text`]="{ item }"
             >
-              {{ item.text }}
+              {{ item.text.substring(0, 37)+'...' }}
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"

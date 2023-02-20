@@ -218,7 +218,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name }}
+                    {{ product.name.substring(0, 7)+'...' }}
                     <v-spacer />
                     <v-btn
                       text
@@ -273,7 +273,7 @@
                   cols="6"
                 >
                   <v-card-text>
-                    {{ product.text }}
+                    {{ product.text.substring(0, 80)+'...' }}
                   </v-card-text>
                   <v-card-title
                     class="pt-0 font-weight-bold"
@@ -336,6 +336,8 @@ export default {
   layout: 'logged-in',
   middleware: ['get-product-list'],
   data () {
+    const nameMax = 16
+    const textMax = 300
     return {
       noImg,
       page: 1,
@@ -346,7 +348,9 @@ export default {
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
       nameRules: [
-        v => !!v || '名前を入力してください'
+        nameMax,
+        v => !!v || '',
+        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
       typeRules: [
         v => !!v || '種類を選択してください'
@@ -358,7 +362,9 @@ export default {
         v => !!v || '数量を入力してください'
       ],
       textRules: [
-        v => !!v || '説明文を入力してください'
+        textMax,
+        v => !!v || '',
+        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
       inputted: { name: '', seller: this.$auth.user.name, type: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, inventory: null, text: '', image: null },
       typeItems: [
