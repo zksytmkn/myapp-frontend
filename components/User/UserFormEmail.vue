@@ -5,6 +5,7 @@
     v-model="setEmail"
     :rules="rules"
     :placeholder="placeholder ? 'your@email.com' : undefined"
+    :disabled="sentIt"
     outlined
   />
 </template>

@@ -13,6 +13,7 @@
     outlined
     autocomplete="on"
     @click:append="show = !show"
+    :disabled="sentIt"
   />
 </template>
 

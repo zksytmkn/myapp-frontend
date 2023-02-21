@@ -48,6 +48,7 @@
                     >
                       <user-form-password
                         label="パスワード(確認)"
+                        :disabled="sentIt"
                       />
                     </v-col>
                     <v-col
@@ -61,9 +62,17 @@
                           :disabled="!isValid || loading"
                           :loading="loading"
                           color="appblue"
-                          class="white--text mt-3 mb-3"
+                          class="white--text mt-3 mb-3 mr-2"
                         >
                           変更する
+                        </v-btn>
+
+                        <v-btn
+                          text
+                          class="mt-3"
+                          @click="formReset"
+                        >
+                          キャンセル
                         </v-btn>
                       </v-row>
                     </v-col>
@@ -95,6 +104,10 @@ export default {
         await this.$axios
       }
       this.loading = false
+    },
+    formReset() {
+      this.sentIt = false
+      this.$refs.edit.reset()
     }
   }
 }

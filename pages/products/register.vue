@@ -76,7 +76,10 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-text>
-                    お届け先住所：
+                    お届け先住所：{{ this.$store.state.user.current.zipcode }}
+                    <br/><br/>
+                    {{ this.$store.state.user.current.street }}
+                    {{ this.$store.state.user.current.building }}
                   </v-list-item-text>
                 </v-list-item-content>
               </v-list-item>
