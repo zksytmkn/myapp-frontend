@@ -48,7 +48,6 @@ export default {
         { name: 'パスワード変更', icon: 'mdi-lock', link: '/settings/password' },
         { name: 'メールアドレス変更', icon: 'mdi-email', link: '/settings/email' },
         { name: '住所変更', icon:'mdi-map-marker', link: '/settings/address' },
-        { name: 'お支払い変更', icon:'mdi-credit-card-outline', link: '/settings/payment' },
         { name: '退会する', icon: 'mdi-account-remove', link: '/settings/deactivate' }
       ]
     }

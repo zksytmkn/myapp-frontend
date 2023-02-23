@@ -113,7 +113,9 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-text>
-                    お支払い方法：
+                    お支払い方法：クレジットカード
+                    <br/><br/>
+                    ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
                   </v-list-item-text>
                 </v-list-item-content>
               </v-list-item>

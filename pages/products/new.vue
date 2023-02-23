@@ -180,19 +180,18 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
-      <v-container
+      <v-list
         v-show="!newProducts.length"
+        color="transparent"
       >
-        <v-row>
-          <v-col
-            cols="12"
-          >
-            <p>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
               出品しておりません。
-            </p>
-          </v-col>
-        </v-row>
-      </v-container>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-container>
     <v-container>
       <v-row>

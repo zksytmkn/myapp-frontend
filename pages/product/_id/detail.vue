@@ -1,6 +1,7 @@
 <template>
   <div
     id="product"
+    class="mb-10"
   >
     <logged-in-app-product-eye-catch/>
     <v-container>

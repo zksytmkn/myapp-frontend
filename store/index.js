@@ -45,6 +45,7 @@ export const state = () => ({
     current: null,
     list: [],
     message: [],
+    participation: [],
     searchCondition: {
       name: '',
       maker: '',
@@ -54,6 +55,7 @@ export const state = () => ({
   user: {
     current: null,
     selected: null,
+    community: [],
     list: []
   },
   auth: {
@@ -130,6 +132,9 @@ export const mutations = {
   },
   setUserSelected (state, payload) {
     state.user.selected = payload
+  },
+  setUserCommunity (state, payload) {
+    state.user.community = payload
   },
   setCurrentUser (state, payload) {
     state.user.current = payload
@@ -268,6 +273,9 @@ export const actions = {
       userSelected = state.user.list.find(user => user.id === id) || null  
     }
     commit('setUserSelected', userSelected)
+  },
+  getUserCommunity ({ commit }, community) {
+    commit('setUserCommunity', community)
   },
   getCurrentUser ({ commit }, user) {
     commit('setCurrentUser', user)

@@ -1,5 +1,7 @@
 <template>
-  <v-container>
+  <v-container
+    class="mt-3"
+  >
     <v-row>
       <setting-menu />
       <v-col
@@ -35,7 +37,7 @@
                         <v-list-item-text
                           style="white-space:pre-line;"
                         >
-                            ※メールアドレスや、プロフィールを変更したい場合は、下記のメニューから変更できます。
+                            ※プロフィールやメールアドレスを変更したい場合は、下記のメニューから変更できます。
                             退会の手続きは必要ありません。引き続きEdibleをお楽しみください。
                         </v-list-item-text>
                       </v-container>
@@ -111,7 +113,8 @@ export default {
       setMenus: [
         { name: 'プロフィール編集', icon: 'mdi-account-edit', link: '/settings/profile' },
         { name: 'パスワード変更', icon: 'mdi-lock', link: '/settings/password' },
-        { name: 'メールアドレス変更', icon: 'mdi-email', link: '/settings/email' }
+        { name: 'メールアドレス変更', icon: 'mdi-email', link: '/settings/email' },
+        { name: '住所変更', icon: 'mdi-map-marker', link: '/settings/address' }
       ]
     }
   }

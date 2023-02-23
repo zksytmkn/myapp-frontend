@@ -153,27 +153,18 @@
             </v-list-item>
           </v-list>
           <v-divider/>
-          <v-container
+          <v-list
             v-show="!newCommunities.length"
+            color="transparent"
           >
-            <v-row>
-              <v-col
-                cols="12"
-              >
-                <v-list
-                  color="transparent"
-                >
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        作成しておりません。
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-col>
-            </v-row>
-          </v-container>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  作成しておりません。
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
           <v-container
             v-show="newCommunities.length"
           >

@@ -1,6 +1,7 @@
 <template>
   <div
     id="post"
+    class="mb-10"
   >
     <logged-in-app-post-eye-catch/>
     <v-container>

@@ -9,6 +9,7 @@
       v-slot:activator="{ on }"
     >
       <v-btn
+        v-show="users.length"
         class ="font-weight-bold"
         color="teal"
         outlined
@@ -41,7 +42,7 @@
 export default {
   computed: {
     users() {
-      const copyUsers = this.$store.state.user.list
+      const copyUsers = this.$store.state.community.current.user
       return copyUsers
     }
   }

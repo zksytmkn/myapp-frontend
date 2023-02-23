@@ -1,5 +1,7 @@
 <template>
-  <v-container>
+  <v-container
+    class="mt-3 mb-6"
+  >
     <v-row>
       <setting-menu />
       <v-col
