@@ -192,14 +192,14 @@
   
             <v-card-actions
               class="justify-center align-baseline font-weight-bold"
-              style="color:rgba(0, 0, 0, 0.73);"
+              style="color:rgba(0, 0, 0, 0.9);"
             >
               {{ que.text[user] }}
             </v-card-actions>
             <v-divider/>
             <v-card-actions
               class="justify-center align-baseline font-weight-bold"
-              style="color:rgba(255, 0, 0, 0.73);"
+              style="color:rgba(0, 128, 128, 0.9);"
             >
               {{ que.answer[user] }}
             </v-card-actions>

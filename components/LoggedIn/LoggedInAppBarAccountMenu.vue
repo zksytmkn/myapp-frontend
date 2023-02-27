@@ -36,17 +36,9 @@
         アカウント
       </v-subheader>
 
-      <template
-        v-for="(menu, i) in menus"
-      >
-        <v-divider
-          v-if="menu.divider"
-          :key="`menu-divider-${i}`"
-        />
-
+      <template>
         <v-list-item
-          :key="`menu-list-${i}`"
-          :to="{ name: menu.name }"
+          :to="$my.userLinkToProfile(this.$auth.user.id)"
         >
           <v-list-item-icon
             class="mr-2"
@@ -54,11 +46,43 @@
             <v-icon
               size="22"
             >
-            {{ menu.icon }}
+              mdi-home
             </v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $my.pageTitle(menu.name) }}
+            プロフィール
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          to="/settings/profile"
+        >
+          <v-list-item-icon
+            class="mr-2"
+          >
+            <v-icon
+              size="22"
+            >
+              mdi-account-cog
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            プロフィール編集
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          to="/logout"
+        >
+          <v-list-item-icon
+            class="mr-2"
+          >
+            <v-icon
+              size="22"
+            >
+              mdi-logout-variant
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            ログアウト
           </v-list-item-title>
         </v-list-item>
       </template>
@@ -67,15 +91,4 @@
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      menus: [
-        { name: 'mypage-profile', icon: 'mdi-home' },
-        { name: 'settings-profile', icon: 'mdi-account-cog' },
-        { name: 'logout', icon: 'mdi-logout-variant', divider: true }
-      ]
-    }
-  }
-}
 </script>

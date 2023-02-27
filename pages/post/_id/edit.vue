@@ -201,7 +201,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = '農家の呟きの編集に失敗しました'
+          const msg = '農家の呟きを編集できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }

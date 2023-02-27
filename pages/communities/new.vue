@@ -316,7 +316,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = 'コミュニティの作成に失敗しました'
+          const msg = 'コミュニティを作成できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }

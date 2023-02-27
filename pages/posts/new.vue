@@ -361,7 +361,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = '農家の呟きの投稿に失敗しました'
+          const msg = '農家の呟きを投稿できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }

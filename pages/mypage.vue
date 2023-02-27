@@ -4,6 +4,9 @@
 
 <script>
 export default {
-  layout: 'mypage'
+  layout: 'mypage',
+  validate ({ route }) {
+    return route.name !== 'mypage'
+  }
 }
 </script>

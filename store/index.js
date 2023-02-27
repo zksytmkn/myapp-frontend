@@ -46,6 +46,7 @@ export const state = () => ({
     list: [],
     message: [],
     participation: [],
+    invitation: [],
     searchCondition: {
       name: '',
       maker: '',
@@ -53,10 +54,10 @@ export const state = () => ({
     }
   },
   user: {
+    login: null,
     current: null,
-    selected: null,
-    community: [],
-    list: []
+    list: [],
+    relationship: []
   },
   auth: {
     token: null,
@@ -130,14 +131,20 @@ export const mutations = {
   setUserList (state, payload) {
     state.user.list = payload
   },
-  setUserSelected (state, payload) {
-    state.user.selected = payload
-  },
-  setUserCommunity (state, payload) {
-    state.user.community = payload
-  },
   setCurrentUser (state, payload) {
     state.user.current = payload
+  },
+  setRelationship (state, payload) {
+    state.user.relationship = payload
+  },
+  setParticipationCommunity (state, payload) {
+    state.community.participation = payload
+  },
+  setInvitationCommunity (state, payload) {
+    state.community.invitation = payload
+  },
+  setLoggedInUser (state, payload) {
+    state.user.login = payload
   },
   setAuthToken (state, payload) {
     state.auth.token = payload
@@ -266,19 +273,20 @@ export const actions = {
     users = users || []
     commit('setUserList', users)
   },
-  getUserSelected ({ state, commit }, params) {
-    let userSelected = null
-    if (params && params.id) {
-      const id = Number(params.id)
-      userSelected = state.user.list.find(user => user.id === id) || null  
-    }
-    commit('setUserSelected', userSelected)
-  },
-  getUserCommunity ({ commit }, community) {
-    commit('setUserCommunity', community)
-  },
   getCurrentUser ({ commit }, user) {
     commit('setCurrentUser', user)
+  },
+  getUserRelationship ({ commit }, relationship) {
+    commit('setRelationship', relationship)
+  },
+  getParticipationCommunity ({ commit }, community) {
+    commit('setParticipationCommunity', community)
+  },
+  getInvitationCommunity ({ commit }, community) {
+    commit('setInvitationCommunity', community)
+  },
+  getLoggedInUser ({ commit }, user) {
+    commit('setLoggedInUser', user)
   },
   getAuthToken ({ commit }, token) {
     commit('setAuthToken', token)

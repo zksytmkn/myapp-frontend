@@ -266,7 +266,7 @@
                   <v-divider/>
                   <v-container
                     class="pt-0"
-                    v-if="product.seller!==$auth.user.name"
+                    v-if="product.user_id!==$auth.user.id"
                   >
                     <v-row>
                       <v-col
@@ -315,7 +315,7 @@
                     </v-row>
                   </v-container>
                   <v-container
-                    v-if="product.seller===$auth.user.name"
+                    v-if="product.user_id===$auth.user.id"
                   >
                     <v-row>
                       <v-col
@@ -442,7 +442,7 @@ export default {
       const searchCondition = this.$store.state.product.searchCondition
 
       let copySearchedProducts = Array.from(this.$store.state.product.list).
-      filter((x) => x.name.includes(searchCondition.name) && x.seller.includes(searchCondition.seller))
+      filter((x) => x.name.includes(searchCondition.name) && x.user.name.includes(searchCondition.seller))
 
       if (searchCondition.type.length !== 0) {
         copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.type.some(str => x.type.includes(str)))
@@ -469,7 +469,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = '農産物の削除に失敗しました'
+        const msg = '農産物を削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     }

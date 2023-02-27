@@ -13,7 +13,7 @@
           <v-form
             ref="edit"
             v-model="isValid"
-            @submit.prevent="editProfile($store.state.user.current.id)"
+            @submit.prevent="editProfile($store.state.user.login.id)"
           >
             <v-list
               color="transparent"

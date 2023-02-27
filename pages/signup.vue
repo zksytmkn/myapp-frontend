@@ -98,7 +98,7 @@ export default {
     },
     authFailure ({ response }) {
       if (response) {
-        const msg = 'ゲストログインに失敗しました'
+        const msg = 'ゲストログインできませんでした'
         return this.$store.dispatch('getToast', { msg })
       }
     }

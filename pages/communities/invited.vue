@@ -16,7 +16,7 @@
                 <v-list-item-title
                   class="font-weight-bold"
                 >
-                  招待されているコミュニティ
+                  招待されているコミュニティ（{{ invitedCommunities.length }}件）
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     invitedCommunities () {
-      const copyInvitedCommunities = Array.from(this.$store.state.user.community.invitation)
+      const copyInvitedCommunities = Array.from(this.$store.state.community.invitation)
       return copyInvitedCommunities.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }

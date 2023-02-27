@@ -13,12 +13,11 @@
     "logout": "ログアウト",
     "mypage": {
       "id": {
-        "profile": "プロフィール"
+        "profile": "プロフィール",
+        "followed": "フォロワー",
+        "following": "フォロー"
       },
-      "address_payment": "住所＆お支払い",
-      "followed": "フォロワー",
-      "following": "フォロー",
-      "profile": "プロフィール"
+      "address_payment": "住所＆お支払い"
     },
     "settings": {
       "address": "住所変更",

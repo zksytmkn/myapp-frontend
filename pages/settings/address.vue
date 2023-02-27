@@ -132,9 +132,9 @@ export default {
     }
   },
   mounted() {
-    this.inputted.zipcode = this.$store.state.user.current.zipcode
-    this.inputted.street = this.$store.state.user.current.street
-    this.inputted.building = this.$store.state.user.current.building
+    this.inputted.zipcode = this.$store.state.user.login.zipcode
+    this.inputted.street = this.$store.state.user.login.street
+    this.inputted.building = this.$store.state.user.login.building
   }
 }
 </script>

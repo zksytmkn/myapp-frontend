@@ -271,7 +271,7 @@ export default {
       const searchCondition = this.$store.state.post.searchCondition
 
       const copySearchedPosts = Array.from(this.$store.state.post.list).
-      filter((x) => x.name.includes(searchCondition.name) && x.poster.includes(searchCondition.poster))
+      filter((x) => x.name.includes(searchCondition.name) && x.user.name.includes(searchCondition.poster))
 
       return copySearchedPosts.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }

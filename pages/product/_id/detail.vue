@@ -137,7 +137,12 @@
                   </v-chip>
 
                   <v-card-subtitle>
-                    by {{ currentProduct.seller.substring(0, 10)+'...' }}
+                    <nuxt-link
+                      :to="$my.userLinkToProfile(currentProduct.user_id)"
+                      class="text-decoration-none black--text"
+                    >
+                      by {{ currentProduct.user.name.substring(0, 10)+'...' }}
+                    </nuxt-link>
                   </v-card-subtitle>
                   <v-card-text>
                     {{ currentProduct.text.substring(0, 300)+'...' }}
@@ -149,7 +154,7 @@
                   </v-card-title>
                   <v-divider/>
                   <v-container
-                    v-if="currentProduct.seller!==$auth.user.name"
+                    v-if="currentProduct.user!==$auth.user.id"
                   >
                     <v-card-actions
                       class="pa-0"
@@ -184,7 +189,7 @@
                     </v-card-actions>
                   </v-container>
                   <v-container
-                    v-if="currentProduct.seller===$auth.user.name"
+                    v-if="currentProduct.user===$auth.user.id"
                   >
                     <v-card-actions
                       style="width:40%;"
@@ -394,7 +399,7 @@ export default {
       isValid: false,
       comment: false,
       commentRules: [
-        v => !!v || 'コメントを追加してください'
+        v => !!v || ''
       ],
       inputted: { comment: '', productId: this.$store.state.product.current.id, userId: this.$auth.user.id }
     }
@@ -410,7 +415,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = '農産物の削除に失敗しました'
+        const msg = '農産物を削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     },
@@ -429,7 +434,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = 'コメントに失敗しました'
+          const msg = 'コメントできませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }
@@ -448,7 +453,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = 'コメントの削除に失敗しました'
+        const msg = 'コメントを削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     }

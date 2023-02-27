@@ -32,7 +32,12 @@
                   >
                     {{ currentPost.name.substring(0, 40)+'...' }}
                     <v-card-subtitle>
-                      by {{ currentPost.poster }}
+                      <nuxt-link
+                      :to="$my.userLinkToProfile(currentPost.user_id)"
+                      class="text-decoration-none black--text"
+                      >
+                        by {{ currentPost.user.name }}
+                      </nuxt-link>
                     </v-card-subtitle>
                     <v-btn
                       text
@@ -43,7 +48,7 @@
                       一覧
                     </v-btn>
                     <v-card-actions
-                      v-if="currentPost.poster===$auth.user.name"
+                      v-if="currentPost.user.id===$auth.user.id"
                       class="ml-2"
                     >
                       <v-btn
@@ -335,7 +340,7 @@ export default {
       isValid: false,
       comment: false,
       commentRules: [
-        v => !!v || 'コメントを追加してください'
+        v => !!v || ''
       ],
       inputted: { comment: '', postId: this.$store.state.post.current.id, userId: this.$auth.user.id }
     }
@@ -351,7 +356,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = '農家の呟きの削除に失敗しました'
+        const msg = '農家の呟きを削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     },
@@ -370,7 +375,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = 'コメントに失敗しました'
+          const msg = 'コメントできませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }
@@ -389,7 +394,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = 'コメントの削除に失敗しました'
+        const msg = 'コメントを削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     }

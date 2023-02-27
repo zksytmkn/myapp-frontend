@@ -201,7 +201,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = 'コミュニティの編集に失敗しました'
+          const msg = 'コミュニティを編集できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }

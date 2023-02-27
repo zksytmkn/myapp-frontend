@@ -327,7 +327,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = '農産物の削除に失敗しました'
+          const msg = '農産物を編集できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }

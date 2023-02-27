@@ -242,7 +242,7 @@ export default {
       const searchCondition = this.$store.state.community.searchCondition
 
       const copySearchedCommunities = Array.from(this.$store.state.community.list).
-      filter((x) => x.name.includes(searchCondition.name) && x.maker.includes(searchCondition.maker))
+      filter((x) => x.name.includes(searchCondition.name) && x.user.name.includes(searchCondition.maker))
 
       return copySearchedCommunities.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }

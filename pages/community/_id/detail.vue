@@ -58,13 +58,18 @@
                 >
                   <v-card-title>
                     <span
-                      class="text-subtitle-1"
+                      class="text-subtitle-2"
                     >
-                      by {{ currentCommunity.maker }}
+                      <nuxt-link
+                        :to="$my.userLinkToProfile(currentCommunity.user_id)"
+                        class="text-decoration-none black--text"
+                      >
+                        by {{ currentCommunity.user.name }}
+                      </nuxt-link>
                     </span>
                     <v-spacer/>
                     <v-list-item-action
-                      v-if="currentCommunity.maker === $auth.user.name"
+                      v-if="currentCommunity.user_id === $auth.user.id"
                     >
                       <v-menu
                         app
@@ -120,12 +125,12 @@
                     </span>
                     <br/>
                     <span
-                      v-show="!this.$store.state.user.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="!this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                     >
                       ＊ご自由に参加していただけます。
                     </span>
                     <span
-                      v-show="this.$store.state.user.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                     >
                       ＊ご参加済みです。
                     </span>
@@ -136,7 +141,7 @@
                     <logged-in-app-community-member />
                     <v-btn
                       @click="participateInCommunity(currentCommunity.id)"
-                      v-show="!this.$store.state.user.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="!this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
                       block
@@ -146,7 +151,7 @@
                     </v-btn>
                     <v-btn
                       @click="withdrawCommunity(currentCommunity.id)"
-                      v-show="this.$store.state.user.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
                       block
@@ -156,7 +161,7 @@
                     </v-btn>
                   </v-card-actions>
                   <v-card-actions
-                    v-show="this.$store.state.user.community.participation.some(community => community.id === currentCommunity.id)"
+                    v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                     style="width:59.6%;"
                   >
                     <v-menu
@@ -204,7 +209,7 @@
     </v-container>
 
     <v-container
-      v-show="this.$store.state.user.community.participation.some(community => community.id === currentCommunity.id)"
+      v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
     >
       <v-row>
         <v-col
@@ -375,7 +380,7 @@ export default {
       noImg,
       isValid: false,
       messageRules: [
-        v => !!v || 'メッセージを追加してください'
+        v => !!v || ''
       ],
       inputted: { message: '', communityId: this.$store.state.community.current.community.id, userId: this.$auth.user.id }
     }
@@ -391,7 +396,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = 'コミュニティの削除に失敗しました'
+        const msg = 'コミュニティを削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     },
@@ -410,7 +415,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = 'メッセージの送信に失敗しました'
+          const msg = 'メッセージを送信できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }
@@ -429,7 +434,7 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        const msg = 'メッセージの削除に失敗しました'
+        const msg = 'メッセージを削除できませんでした'
         return this.$store.dispatch('getToast', { msg })
       })
     },
@@ -507,7 +512,12 @@ export default {
       }
     },
     allUsers() {
-      const copyAllUsers = Array.from(this.$store.state.user.list.filter(user => this.$store.state.community.current.user.some(v => v.id !== user.id)))
+      const participatedUser = this.$store.state.community.current.user
+      const copyAllUsers = Array.from(this.$store.state.user.list.filter(function(user, index, array) {
+        return !participatedUser.some(function(participation) {
+          return participation.id === user.id 
+        })
+      }))
       return copyAllUsers
     }
   }

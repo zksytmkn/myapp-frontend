@@ -19,7 +19,7 @@ class Authentication {
   }
 
   get user () {
-    return this.store.state.user.current || {}
+    return this.store.state.user.login || {}
   }
 
   // 認証情報をVuexに保存する
@@ -29,7 +29,7 @@ class Authentication {
 
     this.store.dispatch('getAuthToken', token)
     this.store.dispatch('getAuthExpires', exp)
-    this.store.dispatch('getCurrentUser', user)
+    this.store.dispatch('getLoggedInUser', user)
     this.store.dispatch('getAuthPayload', jwtPayload)
   }
 

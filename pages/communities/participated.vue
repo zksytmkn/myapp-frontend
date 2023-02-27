@@ -16,7 +16,7 @@
                 <v-list-item-title
                   class="font-weight-bold"
                 >
-                  参加しているコミュニティ
+                  参加しているコミュニティ（{{ participatedCommunities.length }}件）
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     participatedCommunities() {
-      const copyParticipatedCommunities = Array.from(this.$store.state.user.community.participation)
+      const copyParticipatedCommunities = Array.from(this.$store.state.community.participation)
       return copyParticipatedCommunities.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }

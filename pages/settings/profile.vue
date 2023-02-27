@@ -13,7 +13,7 @@
           <v-form
             ref="edit"
             v-model="isValid"
-            @submit.prevent="editProfile($store.state.user.current.id)"
+            @submit.prevent="editProfile($store.state.user.login.id)"
           >
             <v-list
               color="transparent"
@@ -234,7 +234,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          const msg = 'プロフィールの削除に失敗しました'
+          const msg = 'プロフィールを編集できませんでした'
           return this.$store.dispatch('getToast', { msg })
         })
       }
@@ -248,16 +248,16 @@ export default {
   computed: {
     url() {
       if(this.inputted.image===null) {
-        return this.$store.state.user.current.image_url ? this.$store.state.user.current.image_url : noPersonImg
+        return this.$store.state.user.login.image_url ? this.$store.state.user.login.image_url : noPersonImg
       } else {
         return URL.createObjectURL(this.inputted.image)
       }
     }
   },
   mounted() {
-    this.inputted.name = this.$store.state.user.current.name
-    this.inputted.prefecture = this.$store.state.user.current.prefecture
-    this.inputted.text = this.$store.state.user.current.text
+    this.inputted.name = this.$store.state.user.login.name
+    this.inputted.prefecture = this.$store.state.user.login.prefecture
+    this.inputted.text = this.$store.state.user.login.text
   }
 }
 </script>

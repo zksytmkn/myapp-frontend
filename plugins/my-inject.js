@@ -42,7 +42,19 @@ class MyInject {
   }
 
   userLinkToProfile (id, name = "mypage-id-profile") {
-    return { name, params: {id} }
+    return { name, params: { id } }
+  }
+
+  userLinkToFollowing (id, name="mypage-id-following") {
+    return { name, params: { id } }
+  }
+
+  userLinkToFollowed (id, name="mypage-id-followed") {
+    return { name, params: { id } }
+  }
+
+  userLinkToMessage (id, name="mypage-id-message") {
+    return { name, params: { id } }
   }
 
   // apiエラーハンドラー
