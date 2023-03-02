@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="products"
-  >
-    <logged-in-app-product-eye-catch/>
+  <div>
     <v-container>
       <v-row>
         <v-col

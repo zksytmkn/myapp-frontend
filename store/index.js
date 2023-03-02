@@ -66,7 +66,7 @@ export const state = () => ({
   },
   toast: {
     msg: null,
-    color: 'error',
+    color: 'transparent',
     timeout: 4000
   },
   items: []
@@ -81,8 +81,6 @@ export const getters = {
         text: product.text,
         price: product.price,
         inventory: product.inventory,
-        like: product.like,
-        dislike: product.dislike,
         quantity: item.quantity,
         id: item.id
       }
@@ -187,34 +185,6 @@ export const mutations = {
   decrementCurrentProductInventory (state, product) {
     state.product.current.inventory -= product.quantity
   },
-  setLikeState (state, product) {
-    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, like: !product.like, dislike: product.dislike ? !product.dislike : product.dislike} : {...x})
-  },
-  setDislikeState (state, product) {
-    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, like: product.like ? !product.like : product.like, dislike: !product.dislike} : {...x})
-  },
-  setCurrentLikeState (state, product) {
-    state.product.current.product.like = !product.like
-    state.product.current.product.dislike = product.dislike ? !product.dislike : product.dislike
-  },
-  setCurrentDislikeState (state, product) {
-    state.product.current.product.dislike = !product.dislike
-    state.product.current.product.like = product.like ? !product.like : product.like
-  },
-  setPostLikeState (state, post) {
-    state.post.list = state.post.list.map((x) => x.id === post.id ? {...x, like: !post.like, dislike: post.dislike ? !post.dislike : post.dislike} : {...x})
-  },
-  setPostDislikeState (state, post) {
-    state.post.list = state.post.list.map((x) => x.id === post.id ? {...x, like: post.like ? !post.like : post.like, dislike: !post.dislike} : {...x})
-  },
-  setCurrentPostLikeState (state, post) {
-    state.post.current.like = !post.like
-    state.post.current.dislike = post.dislike ? !post.dislike : post.dislike
-  },
-  setCurrentPostDislikeState (state, post) {
-    state.post.current.dislike = !post.dislike
-    state.post.current.like = post.like ? !post.like : post.like
-  },
   setProductSearchCondition (state, { name, seller, text, type, prefecture }) {
     state.product.searchCondition.name = name
     state.product.searchCondition.seller = seller
@@ -300,7 +270,7 @@ export const actions = {
     commit('setAuthPayload', jwtPayload)
   },
   getToast ({ commit }, { msg, color, timeout }) {
-    color = color || 'error'
+    color = color || 'transparent'
     timeout = timeout || 4000
     commit('setToast', { msg, color, timeout })
   },
@@ -339,30 +309,6 @@ export const actions = {
   },
   updateCurrentQuantity ({ commit }, quantity ) {
     commit('setCurrentQuantity', quantity )
-  },
-  updateLikeState ({ commit }, product) {
-    commit('setLikeState', product)
-  },
-  updateDislikeState ({ commit }, product) {
-    commit('setDislikeState', product)
-  },
-  updateCurrentLikeState ({ commit }, product) {
-    commit('setCurrentLikeState', product)
-  },
-  updateCurrentDislikeState ({ commit }, product) {
-    commit('setCurrentDislikeState', product)
-  },
-  updatePostLikeState ({ commit }, post ) {
-    commit('setPostLikeState', post)
-  },
-  updatePostDislikeState ({ commit }, post) {
-    commit('setPostDislikeState', post)
-  },
-  updateCurrentPostLikeState ({ commit }, post) {
-    commit('setCurrentPostLikeState', post)
-  },
-  updateCurrentPostDislikeState ({ commit }, post) {
-    commit('setCurrentPostDislikeState', post)
   },
   updateProductSearchCondition ({ commit }, { name, seller, text, type, prefecture }) {
     commit('setProductSearchCondition', { name, seller, text, type, prefecture })

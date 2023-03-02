@@ -13,8 +13,9 @@ export default async ({ $auth, $axios, store, route, redirect, isDev }) => {
         } else {
         const msg = 'セッションの有効期限が切れました。' +
                     'もう一度ログインしてください'
+        const color = 'error'
         // トースター出力
-        store.dispatch('getToast', { msg })
+        store.dispatch('getToast', { msg, color })
         // アクセスルート記憶
         store.dispatch('getRememberPath', route)
         return redirect('/login')

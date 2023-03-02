@@ -3,7 +3,6 @@
     id="community"
     class="mb-10"
   >
-    <logged-in-app-community-eye-catch/>
     <v-container>
       <v-list
         color="transparent"
@@ -40,7 +39,16 @@
                     class="font-weight-bold pa-1"
                     style="max-width:430px;"
                   >
-                    {{ currentCommunity.name.substring(0, 16)+'...' }}
+                    <span
+                      v-show="currentCommunity.name.length>16"
+                    >
+                      {{ currentCommunity.name.substring(0, 16)+'...' }}
+                    </span>
+                    <span
+                      v-show="currentCommunity.name.length<=16"
+                    >
+                      {{ currentCommunity.name }}
+                    </span>
                     <v-spacer />
                     <v-btn
                       text
@@ -62,7 +70,7 @@
                     >
                       <nuxt-link
                         :to="$my.userLinkToProfile(currentCommunity.user_id)"
-                        class="text-decoration-none black--text"
+                        class="text-decoration-none grey--text text--darken-2"
                       >
                         by {{ currentCommunity.user.name }}
                       </nuxt-link>
@@ -94,7 +102,7 @@
                         >
                           <template>
                             <v-list-item
-                            :to="$my.communityLinkToEdit(currentCommunity.id)"
+                              :to="$my.communityLinkToEdit(currentCommunity.id)"
                             >
                               <v-list-item-title>
                                 編集する
@@ -113,7 +121,16 @@
                     </v-list-item-action>
                   </v-card-title>
                   <v-card-text>
-                    {{ currentCommunity.text.substring(0, 300)+'...' }}
+                    <span
+                      v-show="currentCommunity.name.length>300"
+                    >
+                      {{ currentCommunity.text.substring(0, 300)+'...' }}
+                    </span>
+                    <span
+                      v-show="currentCommunity.name.length<=300"
+                    >
+                      {{ currentCommunity.text }}
+                    </span>
                   </v-card-text>
 
                   <v-divider/>
@@ -121,7 +138,7 @@
                     <span
                       class="font-weight-bold"
                     >
-                      参加人数：{{ this.$store.state.community.current.user.length }}人
+                      参加人数：{{ this.$store.state.community.current.participation.length }}人
                     </span>
                     <br/>
                     <span
@@ -140,7 +157,7 @@
                   >
                     <logged-in-app-community-member />
                     <v-btn
-                      @click="participateInCommunity(currentCommunity.id)"
+                      @click="participateInCommunity(currentCommunity.id, $auth.user.id)"
                       v-show="!this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
@@ -150,7 +167,7 @@
                       コミュニティに参加する
                     </v-btn>
                     <v-btn
-                      @click="withdrawCommunity(currentCommunity.id)"
+                      @click="withdrawCommunity(currentCommunity.id, $auth.user.id)"
                       v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
@@ -190,7 +207,7 @@
                           <v-list-item
                             v-for="(user, i) in allUsers"
                             :key="`user-${i}`"
-                            @click="inviteUser(user.id)"
+                            @click="inviteUser(user.id, currentCommunity.id)"
                           >
                             <v-list-item-title>
                               {{ user.name }}
@@ -273,7 +290,7 @@
                     >
                       <template>
                         <v-list-item
-                          @click="deleteCommunityMessage(message.id)"
+                          @click="deleteCommunityMessage(message.id, currentCommunity.id)"
                         >
                           <v-list-item-title>
                             削除する
@@ -329,6 +346,7 @@
                           placeholder="メッセージを追加する"
                           v-model="inputted.message"
                           :rules="messageRules"
+                          :disabled="sentIt"
                         >
                         </v-textarea>
                       </v-col>
@@ -343,7 +361,7 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            @click="addCommunityMessage"
+                            @click="addCommunityMessage(currentCommunity.id)"
                             :disabled="!isValid"
                           >
                             送信する
@@ -397,97 +415,140 @@ export default {
       .catch(error => {
         console.log(error)
         const msg = 'コミュニティを削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
+        const color = 'error'
+        return this.$store.dispatch('getToast', { msg, color })
       })
     },
-    async addCommunityMessage() {
+    addCommunityMessage(id) {
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('communityMessage_content', this.inputted.message)
-        formData.append('community_id', this.inputted.communityId)
-        formData.append('user_id', this.inputted.userId)
-        await this.$axios.$post('api/v1/community_messages', formData)
-        .then(response => {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = 'メッセージを送信しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'メッセージを送信できませんでした'
-          return this.$store.dispatch('getToast', { msg })
-        })
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('communityMessage_content', this.inputted.message)
+          formData.append('community_id', this.inputted.communityId)
+          formData.append('user_id', this.inputted.userId)
+          this.formReset()
+          await this.$axios.$post('api/v1/community_messages', formData)
+          .then(response => {
+            const msg = 'メッセージを送信しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = 'メッセージを送信できませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$get(`api/v1/community_messages/${id}`)
+          .then(messages => this.$store.dispatch('getCommunityMessage', messages))
+        }
+        asyncFunc().finally(response => console.log(response))
       }
     },
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    async deleteCommunityMessage(id) {
-      await this.$axios.$delete(`/api/v1/community_messages/${id}`)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'メッセージを削除しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'メッセージを削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    deleteCommunityMessage(messageId, communityId) {
+      const asyncFunc = async() => {
+        await this.$axios.$delete(`/api/v1/community_messages/${messageId}`)
+        .then(response => {
+          const msg = 'メッセージを削除しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'メッセージを削除できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await this.$axios.$get(`api/v1/community_messages/${communityId}`)
+        .then(messages => this.$store.dispatch('getCommunityMessage', messages))
+      }
+      asyncFunc().finally(response => console.log(response))
     },
-    async participateInCommunity(id) {
-      const formData = new FormData()
-      formData.append('user_id', this.$auth.user.id)
-      formData.append('community_id', id)
-      await this.$axios.$post('/api/v1/participations', formData)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'コミュニティに参加しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'コミュニティに参加できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    participateInCommunity(communityId, userId) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('user_id', this.$auth.user.id)
+        formData.append('community_id', communityId)
+        await this.$axios.$post('/api/v1/participations', formData)
+        .then(response => {
+          const msg = 'コミュニティに参加しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コミュニティに参加できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await Promise.all([
+          this.$axios.$get(`/api/v1/participations/${userId}`),
+          this.$axios.$get(`/api/v1/communities/${communityId}`),
+        ])
+        .then(response => {
+          this.$store.dispatch('getParticipationCommunity', response[0])
+          this.$store.dispatch('getCurrentCommunity', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
     },
-    async withdrawCommunity(id) {
-      const formData = new FormData()
-      formData.append('user_id', this.$auth.user.id)
-      formData.append('community_id', id)
-      await this.$axios.$delete(`/api/v1/participations/0`, formData)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'コミュニティを退会しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'コミュニティを退会できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    withdrawCommunity(communityId, userId) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('user_id', this.$auth.user.id)
+        formData.append('community_id', communityId)
+        await this.$axios.$delete(`/api/v1/participations`, {data: formData})
+        .then(response => {
+          const msg = 'コミュニティを退会しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コミュニティを退会できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await Promise.all([
+          this.$axios.$get(`/api/v1/participations/${userId}`),
+          this.$axios.$get(`/api/v1/communities/${communityId}`),
+        ])
+        .then(response => {
+          this.$store.dispatch('getParticipationCommunity', response[0])
+          this.$store.dispatch('getCurrentCommunity', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
     },
-    async inviteUser(id) {
-      const formData = new FormData()
-      formData.append('user_id', this.$auth.user.id)
-      formData.append('community_id', id)
-      await this.$axios.$post('/api/v1/invitations', formData)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'コミュニティに招待しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'コミュニティに招待できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    inviteUser(userId, communityId) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('user_id', userId)
+        formData.append('community_id', communityId)
+        await this.$axios.$post('/api/v1/invitations', formData)
+        .then(response => {
+          const msg = 'コミュニティに招待しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コミュニティに招待できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await Promise.all([
+          this.$axios.$get(`/api/v1/communities/${communityId}`),
+        ])
+        .then(response => {
+          this.$store.dispatch('getCurrentCommunity', response[0])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
     }
   },
   computed: {
@@ -512,10 +573,12 @@ export default {
       }
     },
     allUsers() {
-      const participatedUser = this.$store.state.community.current.user
+      const participatedUser = this.$store.state.community.current.participation
+      const invitedUser = this.$store.state.community.current.invitation
+      const excludedUser = participatedUser.concat(invitedUser)
       const copyAllUsers = Array.from(this.$store.state.user.list.filter(function(user, index, array) {
-        return !participatedUser.some(function(participation) {
-          return participation.id === user.id 
+        return !excludedUser.some(function(excluded) {
+          return excluded.id === user.id
         })
       }))
       return copyAllUsers

@@ -1,8 +1,7 @@
 <template>
   <div
-    id="product"
+    class="mb-10"
   >
-    <logged-in-app-product-eye-catch/>
     <v-container>
       <v-list
         color="transparent"
@@ -328,7 +327,8 @@ export default {
         .catch(error => {
           console.log(error)
           const msg = '農産物を編集できませんでした'
-          return this.$store.dispatch('getToast', { msg })
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
         })
       }
       this.loading = false
@@ -351,11 +351,6 @@ export default {
 
 
 <style lang="scss">
-#product {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 .likeColor {
   background: #CC0000 !important;
 }

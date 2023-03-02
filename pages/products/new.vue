@@ -1,16 +1,17 @@
 <template>
-  <div
-    id="products"
-  >
-    <logged-in-app-product-eye-catch/>
+  <div>
     <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          出品
-        </v-list-item-title>
-      </v-list-item>
+      <v-list
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-title
+            class="font-weight-bold"
+          >
+            出品
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
       <v-divider/>
     </v-container>
     <v-container>
@@ -217,7 +218,16 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name.substring(0, 7)+'...' }}
+                    <span
+                      v-show="product.name.length>7"
+                    >
+                      {{ product.name.substring(0, 7)+'...' }}
+                    </span>
+                    <span
+                      v-show="product.name.length<=7"
+                    >
+                      {{ product.name }}
+                    </span>
                     <v-spacer />
                     <v-btn
                       text
@@ -232,8 +242,7 @@
                     class="pa-1"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateLikeState', product)"
-                      :class="{ likeColor: product.like}"
+                      :class="{ likeColor: true}"
                       style="background:grey"
                       fab
                       dark
@@ -249,8 +258,7 @@
                       Good
                     </span>
                     <v-btn
-                      @click="$store.dispatch('updateDislikeState', product)"
-                      :class="{ dislikeColor: product.dislike }"
+                      :class="{ dislikeColor: true }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -272,7 +280,16 @@
                   cols="6"
                 >
                   <v-card-text>
-                    {{ product.text.substring(0, 80)+'...' }}
+                    <span
+                      v-show="product.text.length>80"
+                    >
+                      {{ product.text.substring(0, 80)+'...' }}
+                    </span>
+                    <span
+                      v-show="product.text.length<=80"
+                    >
+                      {{ product.text }}
+                    </span>
                   </v-card-text>
                   <v-card-title
                     class="pt-0 font-weight-bold"
@@ -281,7 +298,7 @@
                   </v-card-title>
                   <v-divider/>
                   <v-container
-                    v-if="product.seller===$auth.user.name"
+                    v-if="product.user_id===$auth.user.id"
                   >
                     <v-card-actions
                       style="width:86%;"
@@ -365,7 +382,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', seller: this.$auth.user.name, type: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, inventory: null, text: '', image: null },
+      inputted: { name: '', user_id: this.$auth.user.id, type: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, inventory: null, text: '', image: null },
       typeItems: [
         '野菜',
         '果物'
@@ -422,38 +439,44 @@ export default {
     }
   },
   methods: {
-    async addProduct () {
+    addProduct () {
       this.loading = true
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('name', this.inputted.name)
-        formData.append('seller', this.inputted.seller)
-        formData.append('type', this.inputted.type)
-        formData.append('prefecture', this.inputted.prefecture)
-        formData.append('price', this.inputted.price)
-        formData.append('quantity', this.inputted.quantity)
-        formData.append('inventory', this.inputted.inventory)
-        formData.append('text', this.inputted.text)
-        if (this.inputted.image !== null) {
-          formData.append('image', this.inputted.image)
-        }
-        const config = {
-          header: {
-            "Content-Type": "multipart/form-data"
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('name', this.inputted.name)
+          formData.append('user_id', this.inputted.user_id)
+          formData.append('type', this.inputted.type)
+          formData.append('prefecture', this.inputted.prefecture)
+          formData.append('price', this.inputted.price)
+          formData.append('quantity', this.inputted.quantity)
+          formData.append('inventory', this.inputted.inventory)
+          formData.append('text', this.inputted.text)
+          if (this.inputted.image !== null) {
+            formData.append('image', this.inputted.image)
           }
+          const config = {
+            header: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+          this.formReset()
+          await this.$axios.$post('/api/v1/products', formData, config)
+          .then(response => {
+            const msg = '農産物を出品しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = '農産物を出品できませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$get('api/v1/products')
+          .then(products => this.$store.dispatch('getProductList', products))
         }
-        await this.$axios.$post('/api/v1/products', formData, config)
-        .then(response => {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = '農産物を出品しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = '農産物を出品できませんでした'
-          return this.$store.dispatch('getToast', { msg })
-        })
+        asyncFunc().finally(response => console.log(response))
       }
       this.loading = false
     },
@@ -468,7 +491,8 @@ export default {
       .catch(error => {
         console.log(error)
         const msg = '農産物を削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
+        const color = 'error'
+        return this.$store.dispatch('getToast', { msg, color })
       })
     },
     formReset() {
@@ -485,7 +509,7 @@ export default {
       }
     },
     newProducts () {
-      const copyNewProducts = Array.from(this.$store.state.product.list.filter((x) => x.seller === this.$auth.user.name))
+      const copyNewProducts = Array.from(this.$store.state.product.list.filter((x) => x.user_id === this.$auth.user.id))
       return copyNewProducts.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }
@@ -497,11 +521,6 @@ export default {
 </script>
 
 <style lang="scss">
-#products {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 .likeColor {
   background: #CC0000 !important;
 }

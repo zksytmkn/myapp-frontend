@@ -1,8 +1,8 @@
 <template>
   <div
     id="community"
+    class="mb-10"
   >
-    <logged-in-app-community-eye-catch/>
     <v-container>
       <v-row>
         <v-col
@@ -37,7 +37,7 @@
             <v-form
               ref="edit"
               v-model="isValid"
-              @submit.prevent="editCommunity($store.state.community.current.id)"
+              @submit.prevent="editCommunity($store.state.community.current.community.id)"
             >
               <v-list>
                 <v-list-item>
@@ -170,7 +170,7 @@ export default {
   computed: {
     url() {
       if(this.inputted.image===null) {
-        return this.$store.state.community.current.image_url ? this.$store.state.community.current.image_url : noImg
+        return this.$store.state.community.current.community.image_url ? this.$store.state.community.current.community.image_url : noImg
       } else {
         return URL.createObjectURL(this.inputted.image)
       }
@@ -202,7 +202,8 @@ export default {
         .catch(error => {
           console.log(error)
           const msg = 'コミュニティを編集できませんでした'
-          return this.$store.dispatch('getToast', { msg })
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
         })
       }
       this.loading = false
@@ -213,8 +214,8 @@ export default {
     }
   },
   mounted() {
-    this.inputted.name = this.$store.state.community.current.name
-    this.inputted.text = this.$store.state.community.current.text
+    this.inputted.name = this.$store.state.community.current.community.name
+    this.inputted.text = this.$store.state.community.current.community.text
   }
 }
 </script>

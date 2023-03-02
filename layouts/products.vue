@@ -1,6 +1,6 @@
 <template>
   <div
-    id="post"
+    id="products"
   >
     <v-app>
       <logged-in-app-bar
@@ -17,7 +17,7 @@
       />
       <v-main>
         <app-toaster />
-        <logged-in-app-post-eye-catch/>
+        <logged-in-app-product-eye-catch/>
         <nuxt />
       </v-main>
       <app-footer />
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  middleware: ['authentication', 'get-post-list', 'get-post-current', 'get-post-comment'],
+  middleware: ['authentication', 'get-product-list'],
   data () {
     return {
       drawer: null
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style lang="scss">
-#post {
+#products {
   .v-parallax__content {
     padding: 0;
   }

@@ -5,7 +5,7 @@
 <script>
 export default {
   middleware: ['get-participation-community', 'get-invitation-community'],
-  layout: 'logged-in',
+  layout: 'communities',
   validate ({ route }) {
     return route.name !== 'communities'
   }

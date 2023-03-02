@@ -141,14 +141,32 @@
                           <v-list-item-title
                             class="font-weight-bold text-h6"
                           >
-                            {{ CurrentUser.name.substring(0, 16)+'...' }}
+                            <span
+                              v-show="CurrentUser.name.length>16"
+                            >
+                              {{ CurrentUser.name.substring(0, 16)+'...' }}
+                            </span>
+                            <span
+                              v-show="CurrentUser.name.length<=16"
+                            >
+                              {{ CurrentUser.name }}
+                            </span>
                           </v-list-item-title>
                           <v-list-item-subtitle>
                             {{ CurrentUser.prefecture }}
                           </v-list-item-subtitle>
                           <br/>
                           <v-list-item-text>
-                            {{ CurrentUser.text.substring(0, 120)+'...' }}
+                            <span
+                              v-show="CurrentUser.text.length>120"
+                            >
+                              {{ CurrentUser.text.substring(0, 120)+'...' }}
+                            </span>
+                            <span
+                              v-show="CurrentUser.text.length<=120"
+                            >
+                              {{ CurrentUser.text }}
+                            </span>
                           </v-list-item-text>
                         </v-col>
                       </v-row>
@@ -287,39 +305,49 @@ export default {
     }
   },
   methods: {
-    async addRelationship(id) {
-      const formData = new FormData()
-      formData.append('following_id', this.$auth.user.id)
-      formData.append('followed_id', id)
-      await this.$axios.$post(`/api/v1/relationships`, formData)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'フォローしました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'フォローできませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    addRelationship(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('following_id', this.$auth.user.id)
+        formData.append('followed_id', id)
+        await this.$axios.$post(`/api/v1/relationships`, formData)
+        .then(response => {
+          const msg = 'フォローしました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'フォローできませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await this.$axios.$get(`/api/v1/relationships/${id}`)
+        .then(relationship => this.$store.dispatch('getUserRelationship', relationship))
+      }
+      asyncFunc().finally(response => console.log(response))
     },
-    async deleteRelationship(id) {
-      const formData = new FormData()
-      formData.append('following_id', this.$auth.user.id)
-      formData.append('followed_id', id)
-      await this.$axios.$delete(`/api/v1/relationships/0`, formData)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'フォローを解除しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'フォローを解除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    deleteRelationship(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('following_id', this.$auth.user.id)
+        formData.append('followed_id', id)
+        await this.$axios.$delete('/api/v1/relationships', {date:formData})
+        .then(response => {
+          const msg = 'フォローを解除しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'フォローを解除できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await this.$axios.$get(`/api/v1/relationships/${id}`)
+        .then(relationship => this.$store.dispatch('getUserRelationship', relationship))
+      }
+      asyncFunc().finally(response => console.log(response))
     }
   }
 }

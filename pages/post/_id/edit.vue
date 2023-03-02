@@ -1,8 +1,8 @@
 <template>
   <div
     id="post"
+    class="mb-10"
   >
-    <logged-in-app-post-eye-catch/>
     <v-container>
       <v-row>
         <v-col
@@ -145,7 +145,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 export default {
   layout: 'logged-in',
   data () {
-    const nameMax = 40
+    const nameMax = 30
     const textMax = 600
     return {
       noImg,
@@ -202,7 +202,8 @@ export default {
         .catch(error => {
           console.log(error)
           const msg = '農家の呟きを編集できませんでした'
-          return this.$store.dispatch('getToast', { msg })
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
         })
       }
       this.loading = false

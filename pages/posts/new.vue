@@ -2,7 +2,6 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch/>
     <v-container>
       <v-row>
         <v-col
@@ -190,20 +189,37 @@
                 :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
-                {{ item.name.substring(0, 13)+'...' }}
+                <span
+                  v-show="item.name.length>13"
+                >
+                  {{ item.name.substring(0, 13)+'...' }}
+                </span>
+                <span
+                  v-show="item.name.length<=13"
+                >
+                  {{ item.name }}
+                </span>
               </nuxt-link>
             </template>
             <template
               v-slot:[`item.text`]="{ item }"
             >
-              {{ item.text.substring(0, 37)+'...' }}
+              <span
+                v-show="item.text.length>37"
+              >
+                {{ item.text.substring(0, 37)+'...' }}
+              </span>
+              <span
+                v-show="item.text.length<=37"
+              >
+                {{ item.text }}
+              </span>
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"
             >
               <v-btn
-                @click="$store.dispatch('updatePostLikeState', item)"
-                :class="{ likeColor: item.like}"
+                :class="{ likeColor: true}"
                 style="background:grey"
                 fab
                 dark
@@ -219,8 +235,7 @@
                 Good
               </span>
               <v-btn
-                @click="$store.dispatch('updatePostDislikeState', item)"
-                :class="{ dislikeColor: item.dislike }"
+                :class="{ dislikeColor: true }"
                 class="ml-2"
                 style="background:grey"
                 fab
@@ -264,7 +279,7 @@ export default {
   layout: 'logged-in',
   middleware: ['get-post-list'],
   data () {
-    const nameMax = 40
+    const nameMax = 30
     const textMax = 600
     return {
       noImg,
@@ -315,7 +330,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', poster: this.$auth.user.name, text: '', image: null }
+      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null }
     }
   },
   computed: {
@@ -328,7 +343,7 @@ export default {
       }
     },
     newPosts () {
-      const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.poster === this.$auth.user.name))
+      const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.user_id === this.$auth.user.id))
       return copyNewPosts.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }
@@ -337,33 +352,39 @@ export default {
     }
   },
   methods: {
-    async addPost () {
+    addPost() {
       this.loading = true
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('name', this.inputted.name)
-        formData.append('poster', this.inputted.poster)
-        formData.append('text', this.inputted.text)
-        if (this.inputted.image !== null) {
-          formData.append('image', this.inputted.image)
-        }
-        const config = {
-          header: {
-            "Content-Type": "multipart/form-data"
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('name', this.inputted.name)
+          formData.append('user_id', this.inputted.user_id)
+          formData.append('text', this.inputted.text)
+          if (this.inputted.image !== null) {
+            formData.append('image', this.inputted.image)
           }
+          const config = {
+            header: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+          this.formReset()
+          await this.$axios.$post('/api/v1/posts', formData, config)
+          .then(response => {
+            const msg = '農家の呟きを投稿しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = '農家の呟きを投稿できませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$get('api/v1/posts')
+          .then(posts => this.$store.dispatch('getPostList', posts))
         }
-        await this.$axios.$post('/api/v1/posts', formData, config)
-        .then(response => {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = '農家の呟きを投稿しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = '農家の呟きを投稿できませんでした'
-          return this.$store.dispatch('getToast', { msg })
-        })
+        asyncFunc().finally(response => console.log(response))
       }
       this.loading = false
     },

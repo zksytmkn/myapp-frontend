@@ -1,9 +1,7 @@
 <template>
   <div
-    id="product"
     class="mb-10"
   >
-    <logged-in-app-product-eye-catch/>
     <v-container>
       <v-list
         color="transparent"
@@ -40,7 +38,16 @@
                     class="font-weight-bold pa-1"
                     style="max-width:430px;"
                   >
-                    {{ currentProduct.name.substring(0, 16)+'...' }}
+                    <span
+                      v-show="currentProduct.name.length>16"
+                    >
+                      {{ currentProduct.name.substring(0, 16)+'...' }}
+                    </span>
+                    <span
+                      v-show="currentProduct.name.length<=16"
+                    >
+                      {{ currentProduct.name }}
+                    </span>
                     <v-spacer />
                     <v-btn
                       text
@@ -55,8 +62,8 @@
                     class="pa-1"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateCurrentLikeState', currentProduct)"
-                      :class="{ likeColor: currentProduct.like}"
+                      @click="addProductFavorite"
+                      :class="{ likeColor: true}"
                       style="background:grey"
                       fab
                       dark
@@ -72,8 +79,7 @@
                       Good
                     </span>
                     <v-btn
-                      @click="$store.dispatch('updateCurrentDislikeState', currentProduct)"
-                      :class="{ dislikeColor: currentProduct.dislike }"
+                      :class="{ dislikeColor: true }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -139,13 +145,31 @@
                   <v-card-subtitle>
                     <nuxt-link
                       :to="$my.userLinkToProfile(currentProduct.user_id)"
-                      class="text-decoration-none black--text"
+                      class="text-decoration-none grey--text text--darken-2"
                     >
-                      by {{ currentProduct.user.name.substring(0, 10)+'...' }}
+                      <span
+                        v-show="currentProduct.user.name.length>10"
+                      >
+                        by {{ currentProduct.user.name.substring(0, 10)+'...' }}
+                      </span>
+                      <span
+                        v-show="currentProduct.user.name.length<=10"
+                      >
+                        by {{ currentProduct.user.name }}
+                      </span>
                     </nuxt-link>
                   </v-card-subtitle>
                   <v-card-text>
-                    {{ currentProduct.text.substring(0, 300)+'...' }}
+                    <span
+                      v-show="currentProduct.text.length>300"
+                    >
+                      {{ currentProduct.text.substring(0, 300)+'...' }}
+                    </span>
+                    <span
+                      v-show="currentProduct.text.length<=300"
+                    >
+                      {{ currentProduct.text }}
+                    </span>
                   </v-card-text>
                   <v-card-title
                     class="font-weight-bold"
@@ -154,7 +178,7 @@
                   </v-card-title>
                   <v-divider/>
                   <v-container
-                    v-if="currentProduct.user!==$auth.user.id"
+                    v-if="currentProduct.user.id!==$auth.user.id"
                   >
                     <v-card-actions
                       class="pa-0"
@@ -189,7 +213,7 @@
                     </v-card-actions>
                   </v-container>
                   <v-container
-                    v-if="currentProduct.user===$auth.user.id"
+                    v-if="currentProduct.user.id===$auth.user.id"
                   >
                     <v-card-actions
                       style="width:40%;"
@@ -292,7 +316,7 @@
                     >
                       <template>
                         <v-list-item
-                          @click="deleteProductComment(comment.id)"
+                          @click="deleteProductComment(comment.id, currentProduct.id)"
                         >
                           <v-list-item-title>
                             削除する
@@ -348,6 +372,7 @@
                           hide-details="auto"
                           v-model="inputted.comment"
                           :rules="commentRules"
+                          :disabled="sentIt"
                         >
                         </v-textarea>
                       </v-col>
@@ -362,7 +387,7 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            @click="addProductComment"
+                            @click="addProductComment(currentProduct.id)"
                             :disabled="!isValid"
                           >
                             コメントする
@@ -416,46 +441,61 @@ export default {
       .catch(error => {
         console.log(error)
         const msg = '農産物を削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
+        const color = 'error'
+        return this.$store.dispatch('getToast', { msg, color })
       })
     },
-    async addProductComment() {
+    addProductComment(id) {
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('productComment_content', this.inputted.comment)
-        formData.append('product_id', this.inputted.productId)
-        formData.append('user_id', this.inputted.userId)
-        await this.$axios.$post('/api/v1/product_comments', formData)
-        .then(response => {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = 'コメントしました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'コメントできませんでした'
-          return this.$store.dispatch('getToast', { msg })
-        })
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('productComment_content', this.inputted.comment)
+          formData.append('product_id', this.inputted.productId)
+          formData.append('user_id', this.inputted.userId)
+          this.formReset()
+          await this.$axios.$post('/api/v1/product_comments', formData)
+          .then(response => {
+            const msg = 'コメントしました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = 'コメントできませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$get(`api/v1/product_comments/${id}`)
+          .then(comments => this.$store.dispatch('getProductComment', comments))
+        }
+        asyncFunc().finally(response => console.log(response))
       }
     },
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    async deleteProductComment(id) {
-      await this.$axios.$delete(`/api/v1/product_comments/${id}`)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'コメントを削除しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'コメントを削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    deleteProductComment(commentId, productId) {
+      const asyncFunc = async() => {
+        await this.$axios.$delete(`/api/v1/product_comments/${commentId}`)
+        .then(response => {
+          const msg = 'コメントを削除しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コメントを削除できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await this.$axios.$get(`api/v1/product_comments/${productId}`)
+        .then(comments => this.$store.dispatch('getProductComment', comments))
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    addProductFavorite() {
+      await this.$axios
     }
   },
   computed: {
@@ -484,11 +524,6 @@ export default {
 </script>
 
 <style lang="scss">
-#product {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 .likeColor {
   background: #CC0000 !important;
 }

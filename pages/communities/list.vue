@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="communities"
-  >
-    <logged-in-app-community-eye-catch/>
+  <div>
     <v-container>
       <v-row>
         <v-col
@@ -56,12 +53,30 @@
                               <v-card-title
                                 class="pb-1 d-block text-truncate font-weight-bold"
                               >
-                                {{ community.name.substring(0, 13)+'...' }}
+                                <span
+                                  v-show="community.name.length>13"
+                                >
+                                  {{ community.name.substring(0, 13)+'...' }}
+                                </span>
+                                <span
+                                  v-show="community.name.length<=13"
+                                >
+                                  {{ community.name }}
+                                </span>
                               </v-card-title>
                               <v-card-text
                                 class="caption grey--text text--darken-1"
                               >
-                                {{ community.text.substring(0, 23)+'...'}}
+                                <span
+                                  v-show="community.text.length>23"
+                                >
+                                  {{ community.text.substring(0, 23)+'...'}}
+                                </span>
+                                <span
+                                  v-show="community.text.length<=23"
+                                >
+                                  {{ community.text }}
+                                </span>
                               </v-card-text>
                             </v-row>
                           </v-col>
@@ -120,11 +135,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-#communities {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
-</style>

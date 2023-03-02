@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="products"
-  >
-    <logged-in-app-product-eye-catch/>
+  <div>
     <v-container>
       <v-row>
         <v-col
@@ -107,7 +104,16 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name.substring(0, 7)+'...' }}
+                    <span
+                      v-show="product.name.length>7"
+                    >
+                      {{ product.name.substring(0, 7)+'...' }}
+                    </span>
+                    <span
+                      v-show="product.name.length<=7"
+                    >
+                      {{ product.name }}
+                    </span>
                     <v-spacer />
                     <v-btn
                       text
@@ -123,8 +129,7 @@
                     class="pa-1"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateLikeState', product)"
-                      :class="{ likeColor: product.like}"
+                      :class="{ likeColor: true}"
                       style="background:grey"
                       fab
                       dark
@@ -140,8 +145,7 @@
                       Good
                     </span>
                     <v-btn
-                      @click="$store.dispatch('updateDislikeState',product)"
-                      :class="{ dislikeColor: product.dislike }"
+                      :class="{ dislikeColor: true }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -166,7 +170,16 @@
                   <v-card-text
                     class="pb-0"
                   >
-                    {{ product.text.substring(0, 90)+'...' }}
+                    <span
+                      v-show="product.text.length>90"
+                    >
+                      {{ product.text.substring(0, 90)+'...' }}
+                    </span>
+                    <span
+                    v-show="product.text.length<=90"
+                    >
+                      {{ product.text }}
+                    </span>
                   </v-card-text>
                   <v-card-subtitle
                     class="pt-0 font-weight-bold"
@@ -226,11 +239,6 @@ export default {
 </script>
 
 <style lang="scss">
-#products {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 .likeColor {
   background: #CC0000 !important;
 }

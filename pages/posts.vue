@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  layout: 'logged-in',
+  layout: 'posts',
   validate ({ route }) {
     return route.name !== 'posts'
   }

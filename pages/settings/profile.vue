@@ -235,7 +235,8 @@ export default {
         .catch(error => {
           console.log(error)
           const msg = 'プロフィールを編集できませんでした'
-          return this.$store.dispatch('getToast', { msg })
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
         })
       }
       this.loading = false

@@ -2,7 +2,6 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch/>
     <v-container>
       <v-row>
         <v-col
@@ -72,13 +71,31 @@
                 :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none"
               >
-                {{ item.name.substring(0, 13)+'...' }}
+                <span
+                  v-show="item.name.length>13"
+                >
+                  {{ item.name.substring(0, 13)+'...' }}
+                </span>
+                <span
+                  v-show="item.name.length<=13"
+                >
+                  {{ item.name }}
+                </span>
               </nuxt-link>
             </template>
             <template
               v-slot:[`item.text`]="{ item }"
             >
-              {{ item.text.substring(0, 37)+'...' }}
+              <span
+                v-show="item.text.length>37"
+              >
+                {{ item.text.substring(0, 37)+'...' }}
+              </span>
+              <span
+                v-show="item.text.length<=37"
+              >
+                {{ item.text }}
+              </span>
             </template>
             <template
               v-slot:[`item.like`] = "{ item }"
@@ -87,8 +104,7 @@
                 class="pl-0"
               >
                 <v-btn
-                  @click="$store.dispatch('updatePostLikeState', item)"
-                  :class="{ likeColor: item.like}"
+                  :class="{ likeColor: true}"
                   style="background:grey"
                   fab
                   dark
@@ -104,8 +120,7 @@
                   Good
                 </span>
                 <v-btn
-                  @click="$store.dispatch('updatePostDislikeState', item)"
-                  :class="{ dislikeColor: item.dislike }"
+                  :class="{ dislikeColor: true }"
                   class="ml-2"
                   style="background:grey"
                   fab

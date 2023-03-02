@@ -2,7 +2,6 @@
   <div
     id="posts"
   >
-    <logged-in-app-post-eye-catch/>
     <v-container>
       <v-row>
         <v-col

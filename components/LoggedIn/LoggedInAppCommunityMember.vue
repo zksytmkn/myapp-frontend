@@ -42,7 +42,7 @@
 export default {
   computed: {
     users() {
-      const copyUsers = this.$store.state.community.current.user
+      const copyUsers = this.$store.state.community.current.participation
       return copyUsers
     }
   }

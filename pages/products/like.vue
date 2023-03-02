@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="products"
-  >
-    <logged-in-app-product-eye-catch/>
+  <div>
     <v-container>
       <v-row>
         <v-col
@@ -75,7 +72,16 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    {{ product.name.substring(0, 7)+'...' }}
+                    <span
+                      v-show="product.name.length>7"
+                    >
+                      {{ product.name.substring(0, 7)+'...' }}
+                    </span>
+                    <span
+                      v-show="product.name.length<=7"
+                    >
+                      {{ product.name }}
+                    </span>
                     <v-spacer />
                     <v-btn
                       text
@@ -90,8 +96,7 @@
                     class="pa-1"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateLikeState', product)"
-                      :class="{ likeColor: product.like}"
+                      :class="{ likeColor: true}"
                       style="background:grey"
                       fab
                       dark
@@ -107,8 +112,7 @@
                       Good
                     </span>
                     <v-btn
-                      @click="$store.dispatch('updateDislikeState', product)"
-                      :class="{ dislikeColor: product.dislike }"
+                      :class="{ dislikeColor: true }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -130,7 +134,16 @@
                   cols="6"
                 >
                   <v-card-text>
-                    {{ product.text.substring(0, 80)+'...' }}
+                    <span
+                      v-show="product.text.length>80"
+                    >
+                      {{ product.text.substring(0, 80)+'...' }}
+                    </span>
+                    <span
+                      v-show="product.text.length<=80"
+                    >
+                      {{ product.text }}
+                    </span>
                   </v-card-text>
                   <v-card-title
                     class="pt-0 font-weight-bold"
@@ -279,7 +292,8 @@ export default {
       .catch(error => {
         console.log(error)
         const msg = '農産物を削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
+        const color = 'error'
+        return this.$store.dispatch('getToast', { msg, color })
       })
     }
   }
@@ -287,11 +301,6 @@ export default {
 </script>
 
 <style lang="scss">
-#products {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 .likeColor {
   background: #CC0000 !important;
 }

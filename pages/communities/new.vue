@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="communities"
-  >
-    <logged-in-app-community-eye-catch/>
+  <div>
     <v-container>
       <v-row>
         <v-col
@@ -73,6 +70,7 @@
                       prepend-icon="mdi-camera"
                       label="画像ファイル"
                       v-model="inputted.image"
+                      :disabled="sentIt"
                     >
                     </v-file-input>
                   </v-col>
@@ -201,12 +199,30 @@
                               <v-card-title
                                 class="pb-1 d-block text-truncate font-weight-bold"
                               >
-                                {{ community.name.substring(0, 13)+'...' }}
+                                <span
+                                  v-show="community.name.length>13"
+                                >
+                                  {{ community.name.substring(0, 13)+'...' }}
+                                </span>
+                                <span
+                                  v-show="community.name.length<=13"
+                                >
+                                  {{ community.name }}
+                                </span>
                               </v-card-title>
                               <v-card-text
                                 class="caption grey--text text--darken-1"
                               >
-                                {{ community.text.substring(0, 23)+'...'}}
+                                <span
+                                  v-show="community.text.length>23"
+                                >
+                                  {{ community.text.substring(0, 23)+'...'}}
+                                </span>
+                                <span
+                                  v-show="community.text.length<=23"
+                                >
+                                  {{ community.text }}
+                                </span>
                               </v-card-text>
                             </v-row>
                           </v-col>
@@ -261,7 +277,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', maker: this.$auth.user.name, text: '', image: null },
+      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null },
       container: {
         sm: 10,
         md: 8
@@ -283,7 +299,7 @@ export default {
       }
     },
     newCommunities () {
-      const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.maker === this.$auth.user.name))
+      const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.user.id === this.$auth.user.id))
       return copyNewCommunities.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }
@@ -292,33 +308,39 @@ export default {
     }
   },
   methods: {
-    async addCommunity() {
+    addCommunity() {
       this.loading = true
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('name', this.inputted.name)
-        formData.append('maker', this.inputted.maker)
-        formData.append('text', this.inputted.text)
-        if (this.inputted.image !== null) {
-          formData.append('image', this.inputted.image)
-        }
-        const config = {
-          header: {
-            "Content-Type": "multipart/form-data"
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('name', this.inputted.name)
+          formData.append('user_id', this.inputted.user_id)
+          formData.append('text', this.inputted.text)
+          if (this.inputted.image !== null) {
+            formData.append('image', this.inputted.image)
           }
+          const config = {
+            header: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+          this.formReset()
+          await this.$axios.$post('api/v1/communities', formData, config)
+          .then(response => {
+            const msg = 'コミュニティを作成しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = 'コミュニティを作成できませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$get('api/v1/communities')
+          .then(communities => this.$store.dispatch('getCommunityList', communities))
         }
-        await this.$axios.$post('api/v1/communities', formData, config)
-        .then(response => {
-          this.$router.go({path: this.$router.currentRoute.path, force: true})
-          const msg = 'コミュニティを作成しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'コミュニティを作成できませんでした'
-          return this.$store.dispatch('getToast', { msg })
-        })
+        asyncFunc().finally(response => console.log(response))
       }
       this.loading = false
     },
@@ -329,11 +351,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-#communities {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
-</style>

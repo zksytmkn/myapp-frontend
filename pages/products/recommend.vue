@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="products"
-  >
-    <logged-in-app-product-eye-catch/>
+  <div>
     <v-container>
       <v-row>
         <v-col
@@ -91,9 +88,4 @@ export default {
 </script>
 
 <style lang="scss">
-#products {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 </style>

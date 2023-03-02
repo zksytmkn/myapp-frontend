@@ -1,10 +1,10 @@
 <template>
-  <nuxt-child />
+  <nuxt-child/>
 </template>
 
 <script>
 export default {
-  layout: 'logged-in',
+  layout: 'products',
   validate ({ route }) {
     return route.name !== 'products'
   }

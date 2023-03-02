@@ -3,7 +3,6 @@
     id="post"
     class="mb-10"
   >
-    <logged-in-app-post-eye-catch/>
     <v-container>
       <v-list
         color="transparent"
@@ -30,11 +29,11 @@
                   <v-card-title
                     class="font-weight-bold"
                   >
-                    {{ currentPost.name.substring(0, 40)+'...' }}
+                    {{ currentPost.name }}
                     <v-card-subtitle>
                       <nuxt-link
                       :to="$my.userLinkToProfile(currentPost.user_id)"
-                      class="text-decoration-none black--text"
+                      class="text-decoration-none grey--text text--darken-2"
                       >
                         by {{ currentPost.user.name }}
                       </nuxt-link>
@@ -47,30 +46,49 @@
                     >
                       一覧
                     </v-btn>
-                    <v-card-actions
-                      v-if="currentPost.user.id===$auth.user.id"
-                      class="ml-2"
+                    <v-list-item-action
+                      v-if="currentPost.user_id === $auth.user.id"
                     >
-                      <v-btn
-                        :to="$my.postLinkToEdit(currentPost.id)"
-                        class="font-weight-bold"
-                        color="teal"
-                        block
-                        dark
-                        outlined
+                      <v-menu
+                        app
+                        offset-x
+                        offset-y
+                        max-width="200"
                       >
-                        編集する
-                      </v-btn>
-                      <v-btn
-                        @click="deleteCurrentPost(currentPost.id)"
-                        class="font-weight-bold"
-                        color="teal"
-                        block
-                        dark
-                      >
-                        削除する
-                      </v-btn>
-                    </v-card-actions>
+                        <template
+                          v-slot:activator="{ on }"
+                        >
+                          <v-btn
+                            icon
+                            v-on="on"
+                          >
+                            <v-icon>
+                              mdi-dots-horizontal
+                            </v-icon>
+                          </v-btn>
+                        </template>
+                        <v-list
+                          dense
+                        >
+                          <template>
+                            <v-list-item
+                              :to="$my.postLinkToEdit(currentPost.id)"
+                            >
+                              <v-list-item-title>
+                                編集する
+                              </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                              @click="deleteCurrentPost(currentPost.id)"
+                            >
+                              <v-list-item-title>
+                                削除する
+                              </v-list-item-title>
+                            </v-list-item>
+                          </template>
+                        </v-list>
+                      </v-menu>
+                    </v-list-item-action>
                   </v-card-title>
                   <v-divider />
                   <v-container
@@ -97,13 +115,24 @@
                           cols="7"
                         >
                           <v-row>
-                            <v-card-text>
-                              <h3
-                                style="font-weight:normal;"
+                            <v-col
+                              cols="11"
+                            >
+                              <v-card-text
+                                class="text--h3"
                               >
-                                {{ currentPost.text.substring(0, 600)+'...' }}
-                              </h3>
-                            </v-card-text>
+                                <span
+                                  v-show="currentPost.text.length>600"
+                                >
+                                  {{ currentPost.text.substring(0, 600)+'...' }}
+                                </span>
+                                <span
+                                  v-show="currentPost.text.length<=600"
+                                >
+                                  {{ currentPost.text }}
+                                </span>
+                              </v-card-text>
+                            </v-col>
                           </v-row>
                         </v-col>
                       </v-row>
@@ -114,8 +143,7 @@
                   <v-container>
                     <v-card-actions>
                       <v-btn
-                        @click="$store.dispatch('updateCurrentPostLikeState', currentPost)"
-                        :class="{ likeColor: currentPost.like}"
+                        :class="{ likeColor: true}"
                         style="background:grey"
                         fab
                         dark
@@ -131,8 +159,7 @@
                         Good
                       </span>
                       <v-btn
-                        @click="$store.dispatch('updateCurrentPostDislikeState', currentPost)"
-                        :class="{ dislikeColor: currentPost.dislike }"
+                        :class="{ dislikeColor: true }"
                         class="ml-2"
                         style="background:grey"
                         fab
@@ -233,7 +260,7 @@
                     >
                       <template>
                         <v-list-item
-                          @click="deletePostComment(comment.id)"
+                          @click="deletePostComment(comment.id, currentPost.id)"
                         >
                           <v-list-item-title>
                             削除する
@@ -289,6 +316,7 @@
                           placeholder="コメントを追加する"
                           v-model="inputted.comment"
                           :rules="commentRules"
+                          :disabled="sentIt"
                         >
                         </v-textarea>
                       </v-col>
@@ -303,7 +331,7 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            @click="addPostComment"
+                            @click="addPostComment(currentPost.id)"
                             :disabled="!isValid"
                           >
                             コメントする
@@ -357,46 +385,58 @@ export default {
       .catch(error => {
         console.log(error)
         const msg = '農家の呟きを削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
+        const color = 'error'
+        return this.$store.dispatch('getToast', { msg, color })
       })
     },
-    async addPostComment() {
+    addPostComment(id) {
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('postComment_content', this.inputted.comment)
-        formData.append('post_id', this.inputted.postId)
-        formData.append('user_id', this.inputted.userId)
-        await this.$axios.$post('/api/v1/post_comments', formData)
-        .then(response => {
-            this.$router.go({path: this.$router.currentRoute.path, force: true})
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('postComment_content', this.inputted.comment)
+          formData.append('post_id', this.inputted.postId)
+          formData.append('user_id', this.inputted.userId)
+          this.formReset()
+          await this.$axios.$post('/api/v1/post_comments', formData)
+          .then(response => {
             const msg = 'コメントしました'
             const color = 'success'
             return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'コメントできませんでした'
-          return this.$store.dispatch('getToast', { msg })
-        })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = 'コメントできませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$get(`api/v1/post_comments/${id}`)
+          .then(comments => this.$store.dispatch('getPostComment', comments))
+        }
+        asyncFunc().finally(response => console.log(response))
       }
     },
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    async deletePostComment(id) {
-      await this.$axios.$delete(`/api/v1/post_comments/${id}`)
-      .then(response => {
-        this.$router.go({path: this.$router.currentRoute.path, force: true})
-        const msg = 'コメントを削除しました'
-        const color = 'success'
-        return this.$store.dispatch('getToast', { msg, color })
-      })
-      .catch(error => {
-        console.log(error)
-        const msg = 'コメントを削除できませんでした'
-        return this.$store.dispatch('getToast', { msg })
-      })
+    deletePostComment(commentId, postId) {
+      const asyncFunc = async() => {
+        await this.$axios.$delete(`/api/v1/post_comments/${commentId}`)
+        .then(response => {
+          const msg = 'コメントを削除しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error)
+          const msg = 'コメントを削除できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        await this.$axios.$get(`api/v1/post_comments/${postId}`)
+        .then(comments => this.$store.dispatch('getPostComment', comments))
+      }
+      asyncFunc().finally(response => console.log(response))
     }
   },
   computed: {
