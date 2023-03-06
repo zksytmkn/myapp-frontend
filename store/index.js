@@ -23,6 +23,8 @@ export const state = () => ({
     current: null,
     list: [],
     comment: [],
+    favorite: [],
+    unfavorite: [],
     searchCondition: {
       name: '',
       seller: '',
@@ -35,6 +37,8 @@ export const state = () => ({
     current: null,
     list: [],
     comment: [],
+    favorite: [],
+    unfavorite: [],
     searchCondition: {
       name: '',
       poster: '',
@@ -108,6 +112,12 @@ export const mutations = {
   setProductComment (state, payload) {
     state.product.comment = payload
   },
+  setProductFavorite (state, payload) {
+    state.product.favorite = payload
+  },
+  setProductUnfavorite (state, payload) {
+    state.product.unfavorite = payload
+  },
   setPostList (state, payload) {
     state.post.list = payload
   },
@@ -116,6 +126,12 @@ export const mutations = {
   },
   setPostComment (state, payload) {
     state.post.comment = payload
+  },
+  setPostFavorite (state, payload) {
+    state.post.favorite = payload
+  },
+  setPostUnfavorite (state, payload) {
+    state.post.unfavorite = payload
   },
   setCommunityList (state, payload) {
     state.community.list = payload
@@ -217,6 +233,14 @@ export const actions = {
     comments = comments || []
     commit('setProductComment', comments)
   },
+  getProductFavorite ({ commit }, favorite) {
+    favorite = favorite || []
+    commit('setProductFavorite', favorite)
+  },
+  getProductUnfavorite ({ commit }, unfavorite) {
+    unfavorite = unfavorite || []
+    commit('setProductUnfavorite', unfavorite)
+  },
   getPostList ({ commit }, posts) {
     posts = posts || []
     commit('setPostList', posts)
@@ -227,6 +251,14 @@ export const actions = {
   getPostComment ({ commit }, comments) {
     comments = comments || []
     commit('setPostComment', comments)
+  },
+  getPostFavorite ({ commit }, favorite) {
+    favorite = favorite || []
+    commit('setPostFavorite', favorite)
+  },
+  getPostUnfavorite ({ commit }, unfavorite) {
+    unfavorite = unfavorite || []
+    commit('setPostUnfavorite', unfavorite)
   },
   getCommunityList ({ commit }, communities) {
     communities = communities || []

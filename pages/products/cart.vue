@@ -129,7 +129,24 @@
                     class="pa-1"
                   >
                     <v-btn
-                      :class="{ likeColor: true}"
+                      v-show="!$store.state.product.favorite.some(favorite => favorite.id === product.id)"
+                      @click="addProductFavorite(product.id)"
+                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === product.id) }"
+                      class="ml-0"
+                      style="background:grey"
+                      fab
+                      dark
+                      x-small
+                    >
+                      <v-icon>
+                        mdi-thumb-up
+                      </v-icon>
+                    </v-btn>
+                    <v-btn
+                      v-show="$store.state.product.favorite.some(favorite => favorite.id === product.id)"
+                      @click="deleteProductFavorite(product.id)"
+                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === product.id) }"
+                      class="ml-0"
                       style="background:grey"
                       fab
                       dark
@@ -142,10 +159,26 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      Good
+                      {{ $store.state.product.favorite.filter(favorite => favorite.id === product.id).length }}
                     </span>
                     <v-btn
-                      :class="{ dislikeColor: true }"
+                      v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
+                      @click="addProductUnfavorite(product.id)"
+                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id) }"
+                      class="ml-2"
+                      style="background:grey"
+                      fab
+                      dark
+                      x-small
+                    >
+                      <v-icon>
+                        mdi-thumb-down
+                      </v-icon>
+                    </v-btn>
+                    <v-btn
+                      v-show="$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
+                      @click="deleteProductUnfavorite(product.id)"
+                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id) }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -159,7 +192,7 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      Bad
+                      {{ $store.state.product.unfavorite.filter(unfavorite => unfavorite.id === product.id).length }}
                     </span>
                   </v-card-actions>
                 </v-col>
@@ -234,7 +267,73 @@ export default {
       pageSize: 10
     }
   },
-  computed: mapGetters(['cartProducts','cartTotalPrice'])
+  computed: mapGetters(['cartProducts','cartTotalPrice']),
+  methods: {
+    addProductFavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('product_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$post('/api/v1/product_favorites', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductFavorite', response[0])
+          this.$store.dispatch('getProductUnfavorite', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    deleteProductFavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('product_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$delete('/api/v1/product_favorites', {data: formData})
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`)
+        .then(favorite => this.$store.dispatch('getProductFavorite', favorite))
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    addProductUnfavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('product_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$post('/api/v1/product_unfavorites', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductFavorite', response[0])
+          this.$store.dispatch('getProductUnfavorite', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    deleteProductUnfavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('product_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$delete('/api/v1/product_unfavorites', {data: formData})
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+        .then(unfavorite => this.$store.dispatch('getProductUnfavorite', unfavorite))
+      }
+      asyncFunc().finally(response => console.log(response))
+    }
+  }
 }
 </script>
 

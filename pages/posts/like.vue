@@ -104,7 +104,24 @@
                 class="pl-0"
               >
                 <v-btn
-                  :class="{ likeColor: true}"
+                  v-show="!$store.state.post.favorite.some(favorite => favorite.id === item.id)"
+                  @click="addPostFavorite(item.id)"
+                  :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
+                  class="ml-0"
+                  style="background:grey"
+                  fab
+                  dark
+                  x-small
+                >
+                  <v-icon>
+                    mdi-thumb-up
+                  </v-icon>
+                </v-btn>
+                <v-btn
+                  v-show="$store.state.post.favorite.some(favorite => favorite.id === item.id)"
+                  @click="deletePostFavorite(item.id)"
+                  :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
+                  class="ml-0"
                   style="background:grey"
                   fab
                   dark
@@ -117,10 +134,26 @@
                 <span
                   class="font-weight-bold ml-1"
                 >
-                  Good
+                  {{ $store.state.post.favorite.filter(favorite => favorite.id === item.id).length }}
                 </span>
                 <v-btn
-                  :class="{ dislikeColor: true }"
+                  v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
+                  @click="addPostUnfavorite(item.id)"
+                  :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
+                  class="ml-2"
+                  style="background:grey"
+                  fab
+                  dark
+                  x-small
+                >
+                  <v-icon>
+                    mdi-thumb-down
+                  </v-icon>
+                </v-btn>
+                <v-btn
+                  v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
+                  @click="deletePostUnfavorite(item.id)"
+                  :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                   class="ml-2"
                   style="background:grey"
                   fab
@@ -134,7 +167,7 @@
                 <span
                   class="font-weight-bold ml-1"
                 >
-                  Bad
+                  {{ $store.state.post.unfavorite.filter(unfavorite => unfavorite.id === item.id).length }}
                 </span>
               </v-card-actions>
             </template>
@@ -187,7 +220,7 @@ export default {
         },
         {
           text: 'いいね履歴',
-          width: 200,
+          width: 170,
           value: 'like'
         },
         {
@@ -198,9 +231,75 @@ export default {
       ]
     }
   },
+  methods: {
+    addPostFavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$post('/api/v1/post_favorites', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getPostFavorite', response[0])
+          this.$store.dispatch('getPostUnfavorite', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    deletePostFavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$delete('/api/v1/post_favorites', {data: formData})
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`)
+        .then(favorite => this.$store.dispatch('getPostFavorite', favorite))
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    addPostUnfavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$post('/api/v1/post_unfavorites', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getPostFavorite', response[0])
+          this.$store.dispatch('getPostUnfavorite', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    deletePostUnfavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$delete('/api/v1/post_unfavorites', {data: formData})
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+        .then(unfavorite => this.$store.dispatch('getPostUnfavorite', unfavorite))
+      }
+      asyncFunc().finally(response => console.log(response))
+    }
+  },
   computed: {
     likePosts () {
-      const copyLikePosts = Array.from(this.$store.state.post.list.filter((x) => x.like === true))
+      const copyLikePosts = Array.from(this.$store.state.post.favorite)
       return copyLikePosts.sort((a, b) => {
         if (a.updated_at > b.updated_at) { return -1 }
         if (a.updated_at < b.updated_at) { return 1 }

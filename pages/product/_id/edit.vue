@@ -351,10 +351,4 @@ export default {
 
 
 <style lang="scss">
-.likeColor {
-  background: #CC0000 !important;
-}
-.dislikeColor {
-  background: #336791 !important;
-}
 </style>

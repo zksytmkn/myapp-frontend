@@ -26,7 +26,7 @@
                 align="center"
               >
                 <v-col
-                  cols="8"
+                  cols="7"
                 >
                   <v-list
                     color="transparent"
@@ -43,7 +43,7 @@
                           持続可能な社会の実現を目指します。
                         </v-list-item-title>
                         <div
-                          style="background-color:white; width:90%"
+                          style="background-color:white;"
                         >
                           <v-divider/>
                         </div>
@@ -52,8 +52,8 @@
                           style="white-space:pre-line; line-height:1.5; text-shadow:1px 1px 1px black;"
                         >
                           世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
-                          本サービスはそういった農産物を生産する農家の方々の悩みを解消し、さらにSDGs
-                          （持続可能な開発目標）Goal12の『つくる責任、つかう責任』達成にも則しています。
+                          本サービスはそれら規格外農産物を減らすことを始めとし、世の中のフードロスを減らします。
+                          さらにSDGs（持続可能な開発目標）Goal12の『つくる責任、つかう責任』達成に則しています。
                         </v-list-item-subtitle>
                       </v-list-item-content>
                     </v-list-item>
@@ -94,29 +94,12 @@
                     class="text-center"
                   >
                     <v-list-item>
-                      <v-avatar
-                        color="teal"
-                        size="400"
+                      <v-img
+                        :src=SDGsImg
+                        height=330px
+                        width=330px
                       >
-                        <v-list-item-content>
-                          <v-list-item-title
-                            color="transparent"
-                            class="font-weight-bold"
-                            style="white-space:pre-line; text-shadow:1px 1px 1px black;"
-                          >
-                            <span>
-                              SDGs（持続可能な開発目標）Goal12
-                            </span>
-                            <span>
-                              『つくる責任、つかう責任』
-                            </span>
-                            <span>
-                              持続可能な方法で生産し、
-                              責任をもって消費する。
-                            </span>
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-avatar>
+                      </v-img>
                     </v-list-item>
                   </v-list>
                 </v-col>
@@ -166,6 +149,7 @@
 
 <script>
 import HomeAbout from '~/components/Home/HomeAbout'
+import SDGsImg from '~/assets/images/before-logged-in/SDGs.png'
 
 export default {
   components: {
@@ -174,6 +158,7 @@ export default {
   middleware: ['logged-in-redirect'],
   data () {
     return {
+      SDGsImg,
       imgHeight: 700,
       menus: [
         { title: 'about' }

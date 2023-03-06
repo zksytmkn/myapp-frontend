@@ -43,6 +43,12 @@
               <v-col
                 cols="4"
               >
+                <v-img
+                  :src="productsImg"
+                  height="260px"
+                  width="370px"
+                  class="rounded-lg"
+                />
               </v-col>
             </v-row>
           </v-container>
@@ -63,6 +69,12 @@
               <v-col
                 cols="4"
               >
+                <v-img
+                  :src="postsImg"
+                  height="260px"
+                  width="370px"
+                  class="rounded-lg"
+                />
               </v-col>
               <v-col
                 cols="8"
@@ -130,6 +142,12 @@
               <v-col
                 cols="4"
               >
+                <v-img
+                  :src="communitiesImg"
+                  height="260px"
+                  width="370px"
+                  class="rounded-lg"
+                />
               </v-col>
             </v-row>
           </v-container>
@@ -250,6 +268,10 @@
 </template>
 
 <script>
+import productsImg from '~/assets/images/before-logged-in/products.png'
+import postsImg from '~/assets/images/before-logged-in/posts.png'
+import communitiesImg from '~/assets/images/before-logged-in/communities.png'
+
 export default {
   data () {
     const users = [
@@ -257,6 +279,9 @@ export default {
       { label: 'consumer', color: 'teal' }
     ]
     return {
+      productsImg,
+      postsImg,
+      communitiesImg,
       users,
       user: users[0].label,
       questions: [

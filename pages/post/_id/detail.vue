@@ -143,7 +143,24 @@
                   <v-container>
                     <v-card-actions>
                       <v-btn
-                        :class="{ likeColor: true}"
+                        v-show="!$store.state.post.favorite.some(favorite => favorite.id === currentPost.id)"
+                        @click="addPostFavorite(currentPost.id)"
+                        :class="{ likeColor: this.$store.state.post.favorite.some(favorite => favorite.id === currentPost.id) }"
+                        class="ml-0"
+                        style="background:grey"
+                        fab
+                        dark
+                        x-small
+                      >
+                        <v-icon>
+                          mdi-thumb-up
+                        </v-icon>
+                      </v-btn>
+                      <v-btn
+                        v-show="$store.state.post.favorite.some(favorite => favorite.id === currentPost.id)"
+                        @click="deletePostFavorite(currentPost.id)"
+                        :class="{ likeColor: this.$store.state.post.favorite.some(favorite => favorite.id === currentPost.id) }"
+                        class="ml-0"
                         style="background:grey"
                         fab
                         dark
@@ -156,10 +173,26 @@
                       <span
                         class="font-weight-bold ml-1"
                       >
-                        Good
+                        {{ $store.state.post.favorite.filter(favorite => favorite.id === currentPost.id).length }}
                       </span>
                       <v-btn
-                        :class="{ dislikeColor: true }"
+                        v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id)"
+                        @click="addPostUnfavorite(currentPost.id)"
+                        :class="{ dislikeColor: this.$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id) }"
+                        class="ml-2"
+                        style="background:grey"
+                        fab
+                        dark
+                        x-small
+                      >
+                        <v-icon>
+                          mdi-thumb-down
+                        </v-icon>
+                      </v-btn>
+                      <v-btn
+                        v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id)"
+                        @click="deletePostUnfavorite(currentPost.id)"
+                        :class="{ dislikeColor: this.$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id) }"
                         class="ml-2"
                         style="background:grey"
                         fab
@@ -173,7 +206,7 @@
                       <span
                         class="font-weight-bold ml-1"
                       >
-                        Bad
+                        {{ $store.state.post.unfavorite.filter(unfavorite => unfavorite.id === currentPost.id).length }}
                       </span>
                       <v-btn
                         @click="comment = !comment"
@@ -435,6 +468,70 @@ export default {
         })
         await this.$axios.$get(`api/v1/post_comments/${postId}`)
         .then(comments => this.$store.dispatch('getPostComment', comments))
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    addPostFavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$post('/api/v1/post_favorites', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getPostFavorite', response[0])
+          this.$store.dispatch('getPostUnfavorite', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    deletePostFavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$delete('/api/v1/post_favorites', {data: formData})
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`)
+        .then(favorite => this.$store.dispatch('getPostFavorite', favorite))
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    addPostUnfavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$post('/api/v1/post_unfavorites', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getPostFavorite', response[0])
+          this.$store.dispatch('getPostUnfavorite', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    deletePostUnfavorite(id) {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('post_id', id)
+        formData.append('user_id', this.$auth.user.id)
+        await this.$axios.$delete('/api/v1/post_unfavorites', {data: formData})
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+        .then(unfavorite => this.$store.dispatch('getPostUnfavorite', unfavorite))
       }
       asyncFunc().finally(response => console.log(response))
     }

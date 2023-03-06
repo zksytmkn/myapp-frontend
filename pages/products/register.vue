@@ -60,9 +60,7 @@
             <v-list>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
+                  <v-list-item-title>
                     お届け先情報
                   </v-list-item-title>
                 </v-list-item-content>
@@ -90,9 +88,7 @@
             <v-list>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
+                  <v-list-item-title>
                     お支払い情報
                   </v-list-item-title>
                 </v-list-item-content>
