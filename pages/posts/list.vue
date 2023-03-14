@@ -12,7 +12,7 @@
               <v-list-item-title
                 class="font-weight-bold"
               >
-                全ての農家の呟き（{{ posts.length }}件）
+                全てのつぶやき（{{ posts.length }}件）
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -181,7 +181,7 @@ export default {
           value: 'title'
         },
         {
-          text: '呟き',
+          text: 'つぶやき',
           value: 'text'
         },
         {

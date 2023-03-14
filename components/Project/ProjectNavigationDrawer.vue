@@ -137,7 +137,7 @@ export default {
             }
           ]
         },
-        { name: '農家の呟き', icon: 'mdi-file-document',
+        { name: 'つぶやき', icon: 'mdi-file-document',
           lists: [
             {
               name: '一覧',

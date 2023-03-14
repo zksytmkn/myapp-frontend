@@ -216,12 +216,12 @@
                           <v-list-item-title
                             v-show="CurrentUser.id===this.$auth.user.id"
                           >
-                            あなたのを投稿した農家の呟きを見る
+                            あなたのを投稿したつぶやきを見る
                           </v-list-item-title>
                           <v-list-item-title
                             v-show="CurrentUser.id!==this.$auth.user.id"
                           >
-                            {{ CurrentUser.name }}さんの投稿した農家の呟きを見る
+                            {{ CurrentUser.name }}さんの投稿したつぶやきを見る
                           </v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>

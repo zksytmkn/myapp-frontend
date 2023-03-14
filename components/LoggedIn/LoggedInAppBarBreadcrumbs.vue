@@ -40,7 +40,7 @@ export default {
         currentRouteName.match(/post/) &&
         !this.$vuetify.breakpoint.xs
       ) {
-        items.unshift({ text: "農家の呟き" })
+        items.unshift({ text: "つぶやき" })
       }
 
       if (

@@ -33,8 +33,8 @@
                         style="white-space:pre-line; line-height:1.5;"
                       >
                           規格外農産物を含みさまざまな野菜や果物を出品、購入していただけます。
-                          規格外農産物につきましても出品時チェックによって品質は十分に保証されます。
-                          その為、安心して本サービスをご利用していただけます。
+                          おいしい野菜や果物を食べたい方も、世の中のフードロスに関心をお持ちの方も、
+                          どなたもお気軽にご利用になってください。
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -85,14 +85,16 @@
                       <v-list-item-title
                         class="font-weight-bold teal--text text-h5"
                       >
-                        農家にとって有益な情報を発信、閲覧できる！
+                        皆さまにとって有益な情報を発信、閲覧できる！
                       </v-list-item-title>
                       <br/>
                       <v-list-item-subtitle
                         class="font-weight-bold text-subtitle-1"
                         style="white-space:pre-line; line-height:1.5;"
                       >
-                        農家の方々は農業に関するさまざまな情報を発信していただけますし、他の農家の方々はそれらの情報を閲覧していただけます。すでに本サービスにはたくさんの情報が発信されておりますので、ご自身に合ってそうな情報から閲覧ください。
+                        農家の方々も農家以外の方々も農業に関することや世の中のフードロスに関することなど、
+                        さまざまな情報を発信していただけます。皆さまにとって有益な情報がきっとありますので、
+                        どなたもお気軽にご利用になってください。
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -131,9 +133,9 @@
                         class="font-weight-bold text-subtitle-1"
                         style="white-space:pre-line; line-height:1.5;"
                       >
-                        農家、消費者、地元間のコミュニティを作成、参加していただくことによって、
-                        参加メンバー同士で交流できます。農業に関することや旬の農産物のことなど、
-                        お好きなように会話し、交流していただけます。
+                        コミュニティを自由に作成し、参加しているメンバー間で交流していただけます。
+                        農業に関することや世の中のフードロスに関することなど、さまざまなテーマのもと、
+                        交流していただけます。どなたもお気軽にご利用になってください。
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -158,7 +160,7 @@
     <v-card-title
       class="justify-center text-h4"
     >
-      ＊『Edible』が解決できる悩み
+      ＊『Edible』が解決できること
     </v-card-title>
     <v-container
       class="mb-10"
@@ -173,15 +175,15 @@
           >
             <v-spacer />
             <v-radio-group
-              v-model="user"
+              v-model="answerer"
               row
             >
               <v-radio
-                v-for="(user, i) in users"
-                :key="`user-${i}`"
-                :label="$t(`menus.users.${user.label}`)"
-                :value="user.label"
-                :color="user.color"
+                v-for="(answerer, i) in answerers"
+                :key="`answerer-${i}`"
+                :label="$t(`menus.answerers.${answerer.label}`)"
+                :value="answerer.label"
+                :color="answerer.color"
               />
             </v-radio-group>
           </v-card-actions>
@@ -199,8 +201,9 @@
               :class="['white--text', que.color]"
               class="font-weight-bold"
             >
-              {{ que.name[user] }}
+              {{ que.name[answerer] }}
               <v-icon
+                class="ml-2"
                 color="white"
                 dense
               >
@@ -212,14 +215,14 @@
               class="justify-center align-baseline font-weight-bold"
               style="color:rgba(0, 0, 0, 0.9);"
             >
-              {{ que.text[user] }}
+              {{ que.text[answerer] }}
             </v-card-actions>
             <v-divider/>
             <v-card-actions
               class="justify-center align-baseline font-weight-bold"
               style="color:rgba(0, 128, 128, 0.9);"
             >
-              {{ que.answer[user] }}
+              {{ que.answer[answerer] }}
             </v-card-actions>
           </v-card>
         </v-col>
@@ -274,60 +277,60 @@ import communitiesImg from '~/assets/images/before-logged-in/communities.png'
 
 export default {
   data () {
-    const users = [
-      { label: 'farmer', color: 'teal' },
-      { label: 'consumer', color: 'teal' }
+    const answerers = [
+      { label: 'first', color: 'teal' },
+      { label: 'second', color: 'teal' }
     ]
     return {
       productsImg,
       postsImg,
       communitiesImg,
-      users,
-      user: users[0].label,
+      answerers,
+      answerer: answerers[0].label,
       questions: [
         {
           name: {
-            farmer: '農家の悩み',
-            consumer: '消費者の悩み'
+            first: 'No. 1',
+            second: 'No. 4'
           },
           color: 'teal',
           text: {
-            farmer: '味が同じでも形が悪いため、捨てられる農産物が一定数存在するのですが、そちらも出品できますでしょうか？',
-            consumer: '私の地元は農産物があまり売られていないため、困っているのですが、農産物を購入後は遠くにも届けていただけますでしょうか？'
+            first: '味が同じでも形が悪いため、捨てられる農産物が存在するのですが、出品できますでしょうか？',
+            second: '身の回りにフードロスに関心を持つ人は少ないのですが、こちらには多くいらっしゃいますか？'
           },
           answer: {
-            farmer: '出品できます！出品時チェックがあるのですが、そちらの基準を満たしていたら、出品できます！',
-            consumer: '遠くに届けることもできます！日本各地から出品いただいているため、ご対応できます！'
+            first: '出品できます！たとえ規格外農産物であっても『農産物』の機能を使って、出品することが可能となっております！',
+            second: 'いらっしゃいます！『Edible』が規格外農産物を扱っているため、そのような関心を持たれる方はとても多いです！'
           }
         },
         {
           name: {
-            farmer: '農家の悩み',
-            consumer: '消費者の悩み'
+            first: 'No. 2',
+            second: 'No. 5'
           },
           color: 'teal',
           text: {
-            farmer: '農業に悩むこともあるのですが、農家にとっての有益な情報も得られますでしょうか？',
-            consumer: '趣味で農業を始めるのですが、農業に関する情報は得られますでしょうか？'
+            first: '世の中のフードロスに関することなどいろいろと知りたいのですが、それはできますでしょうか？',
+            second: '農業に悩むことがあるのですが、農家にとっての有益な情報も得られますでしょうか？'
           },
           answer: {
-            farmer: '有益な情報も得られます！『農家の呟き』という機能があるのですが、そちらを使って有益な情報を閲覧していただけます！',
-            consumer: '農業に関する情報も得られます！『農家の呟き』という機能があるのですが、そちらを使って情報を閲覧していただけます！'
+            first: 'できます！同じような関心ごとをお持ちの方の『つぶやき』を通し、フードロスに関する知見も得られます！',
+            second: '得られます！『つぶやき』や『コミュニティ』の機能を使っていただけると、同じく農家の方からさまざまな情報を得られます！'
           }
         },
         {
           name: {
-            farmer: '農家の悩み',
-            consumer: '消費者の悩み'
+            first: 'No. 3',
+            second: 'No. 6'
           },
           color: 'teal',
           text: {
-            farmer: '他の農家や地元の方と交流を深めたいのですが、それはできますでしょうか？',
-            consumer: '地元の農家の方々とも交流してみたいのですが、それはできますでしょうか？'
+            first: '世の中のフードロスを解消するための施策も検討したいのですが、それはできますでしょうか？',
+            second: '農業に関することを実際に農家の方から聞きたいのですが、それはできますでしょうか？'
           },
           answer: {
-            farmer: '交流を深めることもできます！『コミュニティ』という機能があるのですが、そちらを使って他の方々と交流を深めていただけます！',
-            consumer: '交流してみることもできます！『コミュニティ』という機能があるのですが、そちらを使って他の方々と交流いただけます！'
+            first: 'できます！『コミュニティ』を作って同じような考え方をされているメンバーとそのような施策を検討していただけます！', 
+            second: 'できます！農業をご経験されたことのない方でも農家の方と対話し、さまざまな情報を得ることができます！'
           }
         }
       ]

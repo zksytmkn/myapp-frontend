@@ -43,7 +43,7 @@
                   dark
                   to="/posts/list"
                 >
-                  農家の呟きを見る
+                  つぶやきを見る
                 </v-btn>
               </v-list-item-action>
             </v-list-item>

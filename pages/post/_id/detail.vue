@@ -411,13 +411,13 @@ export default {
       await this.$axios.$delete(`/api/v1/posts/${id}`)
       .then(response => {
         this.$router.back()
-        const msg = '農家の呟きを削除しました'
+        const msg = 'つぶやきを削除しました'
         const color = 'success'
         return this.$store.dispatch('getToast', { msg, color })
       })
       .catch(error => {
         console.log(error)
-        const msg = '農家の呟きを削除できませんでした'
+        const msg = 'つぶやきを削除できませんでした'
         const color = 'error'
         return this.$store.dispatch('getToast', { msg, color })
       })

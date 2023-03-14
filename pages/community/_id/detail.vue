@@ -122,12 +122,12 @@
                   </v-card-title>
                   <v-card-text>
                     <span
-                      v-show="currentCommunity.name.length>300"
+                      v-show="currentCommunity.text.length>300"
                     >
                       {{ currentCommunity.text.substring(0, 300)+'...' }}
                     </span>
                     <span
-                      v-show="currentCommunity.name.length<=300"
+                      v-show="currentCommunity.text.length<=300"
                     >
                       {{ currentCommunity.text }}
                     </span>
@@ -226,7 +226,7 @@
     </v-container>
 
     <v-container
-      v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+      v-show="$store.state.community.participation.some(community => community.id === currentCommunity.id)"
     >
       <v-row>
         <v-col

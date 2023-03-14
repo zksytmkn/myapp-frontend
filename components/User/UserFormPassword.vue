@@ -5,7 +5,6 @@
     v-model="setPassword"
     :rules="form.rules"
     :hint="form.hint"
-    :placeholder="form.placeholder"
     :hide-details="!setValidation"
     :counter="setValidation"
     :append-icon="toggle.icon"
@@ -52,7 +51,7 @@ export default {
     },
     form () {
       const min = '8文字以上'
-      const msg = `${min}。半角英数字・ﾊｲﾌﾝ・ｱﾝﾀﾞｰﾊﾞｰが使えます`
+      const msg = `${min}。`
       const required = v => !!v || ''
       const format = v => /^[\w-]{8,72}$/.test(v) || msg
 

@@ -81,7 +81,7 @@
                   md="9"
                 >
                   <v-text-field
-                    label="呟き"
+                    label="つぶやき"
                     v-model="searched.text"
                     outlined
                     dense
@@ -100,7 +100,7 @@
                       color="teal"
                       dark
                     >
-                      農家の呟きを検索する
+                      つぶやきを検索する
                     </v-btn>
                   </v-row>
                 </v-col>
@@ -137,7 +137,7 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title>
-                  該当する農家の呟きはありませんでした。
+                  該当するつぶやきはありませんでした。
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -297,7 +297,7 @@ export default {
           value: 'title'
         },
         {
-          text: '呟き',
+          text: 'つぶやき',
           value: 'text'
         },
         {

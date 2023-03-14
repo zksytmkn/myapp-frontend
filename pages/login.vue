@@ -56,7 +56,7 @@ export default {
       loading: false,
       params: { auth: { email: '', password: '' } },
       redirectPath: $store.state.loggedIn.rememberPath,
-      loggedInHomePath: $store.state.loggedIn.homePath
+      loggedInHomePath: $store.state.loggedIn.homePath,
     }
   },
   methods: {
@@ -82,6 +82,15 @@ export default {
         return this.$store.dispatch('getToast', { msg, color })
       }
       return this.$my.apiErrorHandler(response)
+    }
+  },
+  mounted: function() {
+    console.log('aaa')
+    console.log(document.referrer)
+    if (document.referrer.match(/mail/)) {
+      const msg = 'アカウントが有効化されました'
+      const color = 'success'
+      return this.$store.dispatch('getToast', { msg, color })
     }
   }
 }

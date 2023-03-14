@@ -45,7 +45,7 @@
                     <v-list-item-title
                       class="font-weight-bold"
                     >
-                      農家の呟き
+                      つぶやき
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
@@ -96,7 +96,7 @@
                         <v-textarea
                           dense
                           outlined
-                          label="呟き"
+                          label="つぶやき"
                           v-model="inputted.text"
                           :rules="textRules"
                           :disabled="sentIt"
@@ -116,7 +116,7 @@
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
                           >
-                            農家の呟きを編集する
+                            つぶやきを編集する
                           </v-btn>
 
                           <v-btn
@@ -195,13 +195,13 @@ export default {
         await this.$axios.$patch(`/api/v1/posts/${id}`, formData, config)
         .then(response => {
           this.$router.back()
-          const msg = '農家の呟きを編集しました'
+          const msg = 'つぶやきを編集しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
           console.log(error)
-          const msg = '農家の呟きを編集できませんでした'
+          const msg = 'つぶやきを編集できませんでした'
           const color = 'error'
           return this.$store.dispatch('getToast', { msg, color })
         })

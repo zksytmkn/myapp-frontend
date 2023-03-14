@@ -2,9 +2,9 @@
   "menus": {
     "about":"サービスについて",
     "contact": "お問い合わせ",
-    "users": {
-      "farmer": "農家",
-      "consumer": "消費者"
+    "answerers": {
+      "first": "1~3",
+      "second": "4~6"
     }
   },
   "pages": {
