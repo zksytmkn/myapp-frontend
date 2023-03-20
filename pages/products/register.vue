@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div
+    class="mb-3"
+  >
     <v-container>
       <v-row>
         <v-col
@@ -122,6 +124,7 @@
             justify="center"
           >
             <v-btn
+              @click="addOrder()"
               class="font-weight-bold mt-6 mb-6 mr-2"
               color="teal"
               dark
@@ -147,7 +150,37 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  computed: mapGetters(['cartProducts','cartTotalPrice'])
+  middleware: ['get-cart'],
+  computed: mapGetters(['cartProducts','cartTotalPrice']),
+  methods: {
+    addOrder() {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('user_id', this.$auth.user.id)
+        formData.append('billing_amount', Math.floor(this.$store.getters.cartTotalPrice))
+        formData.append('status', 'confirm_payment')
+        await this.$axios.$post('/api/v1/orders', formData)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        await Promise.all([
+          this.$axios.$get(`/api/v1/carts/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getCarts', response[0])
+          const msg = '農産物を購入しました'
+          const color = 'success'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+        .catch(error => {
+          console.log(error[0])
+          const msg = '農産物を購入できませんでした'
+          const color = 'error'
+          return this.$store.dispatch('getToast', { msg, color })
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    }
+  }
 }
 </script>
 

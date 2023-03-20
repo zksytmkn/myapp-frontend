@@ -301,8 +301,8 @@ export default {
     newCommunities () {
       const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.user.id === this.$auth.user.id))
       return copyNewCommunities.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
         return 0
       })
     }

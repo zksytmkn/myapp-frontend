@@ -249,7 +249,7 @@
               <span
                 class="font-weight-bold ml-1"
               >
-                {{ $store.state.post.favorite.filter(favorite => favorite.id === item.id).length }}
+                {{ $store.state.post.favorites.filter(favorites => favorites.post_id === item.id).length }}
               </span>
               <v-btn
                 v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
@@ -282,7 +282,7 @@
               <span
                 class="font-weight-bold ml-1"
               >
-                {{ $store.state.post.unfavorite.filter(unfavorite => unfavorite.id === item.id).length }}
+                {{ $store.state.post.unfavorites.filter(unfavorites => unfavorites.post_id === item.id).length }}
               </span>
             </template>
             <template
@@ -378,8 +378,8 @@ export default {
     newPosts () {
       const copyNewPosts = Array.from(this.$store.state.post.list.filter((x) => x.user_id === this.$auth.user.id))
       return copyNewPosts.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
         return 0
       })
     }
@@ -435,11 +435,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/post_favorites'),
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/post_unfavorites')
         ])
         .then(response => {
           this.$store.dispatch('getPostFavorite', response[0])
-          this.$store.dispatch('getPostUnfavorite', response[1])
+          this.$store.dispatch('getPostFavorites', response[1])
+          this.$store.dispatch('getPostUnfavorite', response[2])
+          this.$store.dispatch('getPostUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -452,8 +456,14 @@ export default {
         await this.$axios.$delete('/api/v1/post_favorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`)
-        .then(favorite => this.$store.dispatch('getPostFavorite', favorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/post_favorites')
+        ])
+        .then(response => {
+          this.$store.dispatch('getPostFavorite', response[0])
+          this.$store.dispatch('getPostFavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     },
@@ -467,11 +477,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/post_favorites'),
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/post_unfavorites'),
         ])
         .then(response => {
           this.$store.dispatch('getPostFavorite', response[0])
-          this.$store.dispatch('getPostUnfavorite', response[1])
+          this.$store.dispatch('getPostFavorites', response[1])
+          this.$store.dispatch('getPostUnfavorite', response[2])
+          this.$store.dispatch('getPostUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -484,8 +498,14 @@ export default {
         await this.$axios.$delete('/api/v1/post_unfavorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`)
-        .then(unfavorite => this.$store.dispatch('getPostUnfavorite', unfavorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/post_unfavorites'),
+        ])
+        .then(response => {
+          this.$store.dispatch('getPostUnfavorite', response[0])
+          this.$store.dispatch('getPostUnfavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     }

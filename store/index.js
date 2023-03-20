@@ -24,7 +24,9 @@ export const state = () => ({
     list: [],
     comment: [],
     favorite: [],
+    favorites: [],
     unfavorite: [],
+    unfavorites: [],
     searchCondition: {
       name: '',
       seller: '',
@@ -38,7 +40,9 @@ export const state = () => ({
     list: [],
     comment: [],
     favorite: [],
+    favorites: [],
     unfavorite: [],
+    unfavorites: [],
     searchCondition: {
       name: '',
       poster: '',
@@ -73,31 +77,27 @@ export const state = () => ({
     color: 'transparent',
     timeout: 4000
   },
-  items: []
+  carts: [],
+  orders: []
 })
 
 export const getters = {
   cartProducts: (state) => {
-    return state.items.map((item) => {
-      const product = state.product.list.find((product) => product.id === item.id)
+    return state.carts.map((cart) => {
       return {
-        name: product.name,
-        text: product.text,
-        price: product.price,
-        inventory: product.inventory,
-        quantity: item.quantity,
-        id: item.id
+        price: cart.product.price,
+        quantity: cart.quantity,
       }
     })
   },
   cartTotalPrice: (state, getters) => {
-    return getters.cartProducts.reduce((total, product) => {
-      return total + product.price * product.quantity * 1.1
+    return getters.cartProducts.reduce((total, cart) => {
+      return total + cart.price * cart.quantity * 1.1
     }, 0)
   },
   cartTotalQuantity: (state, getters) => {
-    return getters.cartProducts.reduce((total, product) => {
-      return total + product.quantity
+    return getters.cartProducts.reduce((total, cart) => {
+      return total + cart.quantity
     }, 0)
   }
 }
@@ -115,8 +115,29 @@ export const mutations = {
   setProductFavorite (state, payload) {
     state.product.favorite = payload
   },
+  setProductFavorites (state, payload) {
+    state.product.favorites = payload
+  },
   setProductUnfavorite (state, payload) {
     state.product.unfavorite = payload
+  },
+  setProductUnfavorites (state, payload) {
+    state.product.unfavorites = payload
+  },
+  setProductQuantity (state, { id, quantity }) {
+    state.product.list.find(product => product.id === id).quantity = quantity
+  },
+  setProductFavoriteQuantity (state, { id, quantity }) {
+    state.product.favorite.find(product => product.id === id).quantity = quantity
+  },
+  setCurrentProductQuantity(state, payload) {
+    state.product.current.quantity = payload
+  },
+  setCarts (state, payload) {
+    state.carts = payload
+  },
+  setOrders (state, payload) {
+    state.orders = payload
   },
   setPostList (state, payload) {
     state.post.list = payload
@@ -130,8 +151,14 @@ export const mutations = {
   setPostFavorite (state, payload) {
     state.post.favorite = payload
   },
+  setPostFavorites (state, payload) {
+    state.post.favorites = payload
+  },
   setPostUnfavorite (state, payload) {
     state.post.unfavorite = payload
+  },
+  setPostUnfavorites (state, payload) {
+    state.post.unfavorites = payload
   },
   setCommunityList (state, payload) {
     state.community.list = payload
@@ -175,32 +202,6 @@ export const mutations = {
   setRememberPath (state, payload) {
     state.loggedIn.rememberPath = payload
   },
-  pushProductToCart (state, product) {
-    state.items.push({
-      id: product.id,
-      quantity: product.quantity
-    })
-  },
-  incrementItemQuantity (state, product) {
-    state.items = state.items.map((item) => item.id === product.id ? {...item, quantity: item.quantity + product.quantity} : {...item, quantity: item.quantity})
-  },
-  pullProductFromCart (state, product) {
-    const itemQuantity = state.items.find((item) => item.id === product.id).quantity
-    state.items = state.items.filter((item) => item.id !== product.id)
-    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, inventory: x.inventory + itemQuantity} : {...x})
-  },
-  setQuantity (state, { product, quantity }) {
-    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, quantity} : {...x})
-  },
-  setCurrentQuantity (state, quantity) {
-    state.product.current.quantity = quantity 
-  },
-  decrementProductInventory (state, product) {
-    state.product.list = state.product.list.map((x) => x.id === product.id ? {...x, inventory: x.inventory - product.quantity} : {...x})
-  },
-  decrementCurrentProductInventory (state, product) {
-    state.product.current.inventory -= product.quantity
-  },
   setProductSearchCondition (state, { name, seller, text, type, prefecture }) {
     state.product.searchCondition.name = name
     state.product.searchCondition.seller = seller
@@ -237,9 +238,34 @@ export const actions = {
     favorite = favorite || []
     commit('setProductFavorite', favorite)
   },
+  getProductFavorites ({ commit }, favorites) {
+    favorites = favorites || []
+    commit('setProductFavorites', favorites)
+  },
   getProductUnfavorite ({ commit }, unfavorite) {
     unfavorite = unfavorite || []
     commit('setProductUnfavorite', unfavorite)
+  },
+  getProductUnfavorites ({ commit }, unfavorites) {
+    unfavorites = unfavorites || []
+    commit('setProductUnfavorites', unfavorites)
+  },
+  getProductQuantity ({ commit }, { id, quantity }) {
+    commit('setProductQuantity', { id, quantity })
+  },
+  getProductFavoriteQuantity ({ commit }, { id, quantity }) {
+    commit('setProductFavoriteQuantity', { id, quantity })
+  },
+  getCurrentProductQuantity ({ commit }, quantity) {
+    commit('setCurrentProductQuantity', quantity)
+  },
+  getCarts ({ commit }, carts) {
+    carts = carts || []
+    commit('setCarts', carts) 
+  },
+  getOrders ({ commit }, orders) {
+    orders = orders || []
+    commit('setOrders', orders) 
   },
   getPostList ({ commit }, posts) {
     posts = posts || []
@@ -256,9 +282,17 @@ export const actions = {
     favorite = favorite || []
     commit('setPostFavorite', favorite)
   },
+  getPostFavorites ({ commit }, favorites) {
+    favorites = favorites || []
+    commit('setPostFavorites', favorites)
+  },
   getPostUnfavorite ({ commit }, unfavorite) {
     unfavorite = unfavorite || []
     commit('setPostUnfavorite', unfavorite)
+  },
+  getPostUnfavorites ({ commit }, unfavorites) {
+    unfavorites = unfavorites || []
+    commit('setPostUnfavorites', unfavorites)
   },
   getCommunityList ({ commit }, communities) {
     communities = communities || []
@@ -314,33 +348,6 @@ export const actions = {
     }
     params = params || {}
     commit('setRememberPath', { name, params })
-  },
-  addProductToCart ({ state, commit }, product) {
-    const cartItem = state.items.find(item => item.id === product.id)
-    if(!cartItem) {
-      commit('pushProductToCart', product)
-    } else {
-      commit('incrementItemQuantity', product)
-    }
-    commit('decrementProductInventory', product)
-  },
-  addCurrentProductToCart ({ state, commit }, product) {
-    const cartItem = state.items.find(item => item.id === product.id)
-    if(!cartItem) {
-      commit('pushProductToCart', product)
-    } else {
-      commit('incrementItemQuantity', product)
-    }
-    commit('decrementCurrentProductInventory', product)
-  },
-  removeProductFromCart ({ commit }, product) {
-    commit('pullProductFromCart', product)
-  },
-  updateQuantity ({ commit }, { product, quantity }) {
-    commit('setQuantity', { product, quantity })
-  },
-  updateCurrentQuantity ({ commit }, quantity ) {
-    commit('setCurrentQuantity', quantity )
   },
   updateProductSearchCondition ({ commit }, { name, seller, text, type, prefecture }) {
     commit('setProductSearchCondition', { name, seller, text, type, prefecture })

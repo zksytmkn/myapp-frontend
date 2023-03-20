@@ -137,9 +137,9 @@
                               outlined
                               label="数量"
                               type="number"
-                              :rules="inventoryRules"
+                              :rules="stockRules"
                               :disabled="sentIt"
-                              v-model="inputted.quantity"
+                              v-model="inputted.stock"
                             >
                             </v-text-field>
                           </v-col>
@@ -223,7 +223,7 @@ export default {
       priceRules: [
         v => !!v || '価格を入力してください'
       ],
-      inventoryRules: [
+      stockRules: [
         v => !!v || '数量を入力してください'
       ],
       textRules: [
@@ -231,7 +231,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', seller: this.$auth.user.name, type: '', prefecture: '', price: null, quantity: 1, inventory: null, text: '', image: null },
+      inputted: { name: '', user_id: this.$auth.user.id, type: '', prefecture: '', price: null, stock: null, text: '', image: null },
       typeItems: [
         '野菜',
         '果物'
@@ -302,12 +302,11 @@ export default {
       if (this.isValid) {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
-        formData.append('seller', this.inputted.seller)
+        formData.append('user_id', this.inputted.user_id)
         formData.append('type', this.inputted.type)
         formData.append('prefecture', this.inputted.prefecture)
         formData.append('price', this.inputted.price)
-        formData.append('quantity', this.inputted.quantity)
-        formData.append('inventory', this.inputted.inventory)
+        formData.append('stock', this.inputted.stock)
         formData.append('text', this.inputted.text)
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)
@@ -343,7 +342,7 @@ export default {
     this.inputted.type = this.$store.state.product.current.type
     this.inputted.prefecture = this.$store.state.product.current.prefecture
     this.inputted.price = this.$store.state.product.current.price
-    this.inputted.inventory = this.$store.state.product.current.inventory
+    this.inputted.stock = this.$store.state.product.current.stock
     this.inputted.text = this.$store.state.product.current.text
   }
 }

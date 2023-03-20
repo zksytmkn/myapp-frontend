@@ -26,8 +26,9 @@
                     class="text-h5 font-weight-bold"
                     style="white-space:pre-line; text-shadow:1px 1px 1px black;"
                   >
-                    Various agricultural posts are here !
-                    Please look around and enjoy it !
+                    Farming, gardening, food loss ... and so on.
+                    many posts and murmuring are here.
+                    So, please take a look. ☺︎☺︎☺︎
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>

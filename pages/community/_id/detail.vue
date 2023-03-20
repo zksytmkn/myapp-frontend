@@ -559,8 +559,8 @@ export default {
     messages() {
       const copyMessages = Array.from(this.$store.state.community.message)
       return copyMessages.sort((a, b) => {
-        if (a.updated_at < b.updated_at) { return -1 }
-        if (a.updated_at > b.updated_at) { return 1 }
+        if (a.created_at < b.created_at) { return -1 }
+        if (a.created_at > b.created_at) { return 1 }
         return 0
       })
     },

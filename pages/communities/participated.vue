@@ -154,8 +154,8 @@ export default {
     participatedCommunities() {
       const copyParticipatedCommunities = Array.from(this.$store.state.community.participation)
       return copyParticipatedCommunities.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
         return 0
       }).slice(this.pageSize*(this.page-1),this.pageSize*(this.page))
     }

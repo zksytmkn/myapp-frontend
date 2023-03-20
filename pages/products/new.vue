@@ -118,8 +118,8 @@
                               outlined
                               label="数量"
                               type="number"
-                              v-model="inputted.inventory"
-                              :rules="inventoryRules"
+                              v-model="inputted.stock"
+                              :rules="stockRules"
                               :disabled="sentIt"
                             >
                             </v-text-field>
@@ -272,7 +272,7 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      {{ $store.state.product.favorite.filter(favorite => favorite.id === product.id).length }}
+                      {{ $store.state.product.favorites.filter(favorites => favorites.product_id === product.id).length }}
                     </span>
                     <v-btn
                       v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
@@ -305,7 +305,7 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      {{ $store.state.product.unfavorite.filter(unfavorite => unfavorite.id === product.id).length }}
+                      {{ $store.state.product.unfavorites.filter(unfavorites => unfavorites.product_id === product.id).length }}
                     </span>
                   </v-card-actions>
                 </v-col>
@@ -407,7 +407,7 @@ export default {
       priceRules: [
         v => !!v || '価格を入力してください'
       ],
-      inventoryRules: [
+      stockRules: [
         v => !!v || '数量を入力してください'
       ],
       textRules: [
@@ -415,7 +415,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, type: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, inventory: null, text: '', image: null },
+      inputted: { name: '', user_id: this.$auth.user.id, type: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, stock: null, text: '', image: null },
       typeItems: [
         '野菜',
         '果物'
@@ -482,8 +482,8 @@ export default {
           formData.append('type', this.inputted.type)
           formData.append('prefecture', this.inputted.prefecture)
           formData.append('price', this.inputted.price)
-          formData.append('quantity', this.inputted.quantity)
-          formData.append('inventory', this.inputted.inventory)
+          formData.append('quantity', this.inputted.price)
+          formData.append('stock', this.inputted.stock)
           formData.append('text', this.inputted.text)
           if (this.inputted.image !== null) {
             formData.append('image', this.inputted.image)
@@ -542,11 +542,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites')
         ])
         .then(response => {
           this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductUnfavorite', response[1])
+          this.$store.dispatch('getProductFavorites', response[1])
+          this.$store.dispatch('getProductUnfavorite', response[2])
+          this.$store.dispatch('getProductUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -559,8 +563,14 @@ export default {
         await this.$axios.$delete('/api/v1/product_favorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`)
-        .then(favorite => this.$store.dispatch('getProductFavorite', favorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_favorites')
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductFavorite', response[0])
+          this.$store.dispatch('getProductFavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     },
@@ -574,11 +584,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites'),
         ])
         .then(response => {
           this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductUnfavorite', response[1])
+          this.$store.dispatch('getProductFavorites', response[1])
+          this.$store.dispatch('getProductUnfavorite', response[2])
+          this.$store.dispatch('getProductUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -591,8 +605,14 @@ export default {
         await this.$axios.$delete('/api/v1/product_unfavorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
-        .then(unfavorite => this.$store.dispatch('getProductUnfavorite', unfavorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites'),
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductUnfavorite', response[0])
+          this.$store.dispatch('getProductUnfavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     }
@@ -608,8 +628,8 @@ export default {
     newProducts () {
       const copyNewProducts = Array.from(this.$store.state.product.list.filter((x) => x.user_id === this.$auth.user.id))
       return copyNewProducts.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
         return 0
       })
     }

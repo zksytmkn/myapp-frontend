@@ -164,7 +164,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', maker: this.$auth.user.name, text: '', image: null }
+      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null }
     }
   },
   computed: {
@@ -182,7 +182,7 @@ export default {
       if (this.isValid) {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
-        formData.append('maker', this.inputted.maker)
+        formData.append('user_id', this.inputted.user_id)
         formData.append('text', this.inputted.text)
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)

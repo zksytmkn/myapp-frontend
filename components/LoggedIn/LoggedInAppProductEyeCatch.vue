@@ -26,8 +26,9 @@
                     class="text-h5 font-weight-bold"
                     style="white-space:pre-line; text-shadow:1px 1px 1px black;"
                   >
-                    Various agricultural products are here !
-                    Please look around and enjoy it !
+                    Orang, apple, potato, carrot, tomato ... and so on.
+                    many fruits and vegetables are here.
+                    So, please enjoy it. ☺︎☺︎☺︎
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>

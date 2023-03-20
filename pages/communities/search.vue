@@ -260,8 +260,8 @@ export default {
       filter((x) => x.name.includes(searchCondition.name) && x.user.name.includes(searchCondition.maker))
 
       return copySearchedCommunities.sort((a, b) => {
-        if (a.updated_at > b.updated_at) { return -1 }
-        if (a.updated_at < b.updated_at) { return 1 }
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
         return 0
       })
     }

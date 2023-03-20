@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  middleware: ['authentication', 'get-post-list', 'get-post-favorite', 'get-post-unfavorite'],
+  middleware: ['authentication', 'get-post-list', 'get-post-favorite', 'get-post-favorites', 'get-post-unfavorite', 'get-post-unfavorites'],
   data () {
     return {
       drawer: null

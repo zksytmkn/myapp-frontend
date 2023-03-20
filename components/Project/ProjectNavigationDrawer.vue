@@ -123,7 +123,7 @@ export default {
             {
               name: '購入済み',
               icon: 'mdi-cart-off',
-              link: '/products/purchased'
+              link: '/products/ordered'
             },
             {
               name: 'いいね',

@@ -84,8 +84,8 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="(product, i) in cartProducts"
-          :key="`product-${i}`"
+          v-for="(cart, i) in cartProducts"
+          :key="`cart-${i}`"
           cols="6"
         >
           <v-card>
@@ -105,20 +105,20 @@
                     style="max-width:360px;"
                   >
                     <span
-                      v-show="product.name.length>7"
+                      v-show="cart.product.name.length>7"
                     >
-                      {{ product.name.substring(0, 7)+'...' }}
+                      {{ cart.product.name.substring(0, 7)+'...' }}
                     </span>
                     <span
-                      v-show="product.name.length<=7"
+                      v-show="cart.product.name.length<=7"
                     >
-                      {{ product.name }}
+                      {{ cart.product.name }}
                     </span>
                     <v-spacer />
                     <v-btn
                       text
                       outlined
-                      :to="$my.productLinkToDetail(product.id)"
+                      :to="$my.productLinkToDetail(cart.product_id)"
                       class="font-weight-bold"
                       style="text-transform:none"
                     >
@@ -129,9 +129,9 @@
                     class="pa-1"
                   >
                     <v-btn
-                      v-show="!$store.state.product.favorite.some(favorite => favorite.id === product.id)"
-                      @click="addProductFavorite(product.id)"
-                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === product.id) }"
+                      v-show="!$store.state.product.favorite.some(favorite => favorite.id === cart.product_id)"
+                      @click="addProductFavorite(cart.product_id)"
+                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === cart.product_id) }"
                       class="ml-0"
                       style="background:grey"
                       fab
@@ -143,9 +143,9 @@
                       </v-icon>
                     </v-btn>
                     <v-btn
-                      v-show="$store.state.product.favorite.some(favorite => favorite.id === product.id)"
-                      @click="deleteProductFavorite(product.id)"
-                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === product.id) }"
+                      v-show="$store.state.product.favorite.some(favorite => favorite.id === cart.product_id)"
+                      @click="deleteProductFavorite(cart.product_id)"
+                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === cart.product_id) }"
                       class="ml-0"
                       style="background:grey"
                       fab
@@ -159,12 +159,12 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      {{ $store.state.product.favorite.filter(favorite => favorite.id === product.id).length }}
+                      {{ $store.state.product.favorites.filter(favorites => favorites.product_id === cart.product_id).length }}
                     </span>
                     <v-btn
-                      v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
-                      @click="addProductUnfavorite(product.id)"
-                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id) }"
+                      v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id)"
+                      @click="addProductUnfavorite(cart.product_id)"
+                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id) }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -176,9 +176,9 @@
                       </v-icon>
                     </v-btn>
                     <v-btn
-                      v-show="$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
-                      @click="deleteProductUnfavorite(product.id)"
-                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id) }"
+                      v-show="$store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id)"
+                      @click="deleteProductUnfavorite(cart.product_id)"
+                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id) }"
                       class="ml-2"
                       style="background:grey"
                       fab
@@ -192,7 +192,7 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      {{ $store.state.product.unfavorite.filter(unfavorite => unfavorite.id === product.id).length }}
+                      {{ $store.state.product.unfavorites.filter(unfavorites => unfavorites.product_id === cart.product_id).length }}
                     </span>
                   </v-card-actions>
                 </v-col>
@@ -204,22 +204,22 @@
                     class="pb-0"
                   >
                     <span
-                      v-show="product.text.length>90"
+                      v-show="cart.product.text.length>90"
                     >
-                      {{ product.text.substring(0, 90)+'...' }}
+                      {{ cart.product.text.substring(0, 90)+'...' }}
                     </span>
                     <span
-                    v-show="product.text.length<=90"
+                    v-show="cart.product.text.length<=90"
                     >
-                      {{ product.text }}
+                      {{ cart.product.text }}
                     </span>
                   </v-card-text>
                   <v-card-subtitle
                     class="pt-0 font-weight-bold"
                     style="white-space:pre-line; line-height:2;"
                   >
-                    ¥{{ product.price.toLocaleString() }} × {{product.quantity }}
-                    小計（税込）：¥{{ Math.floor(product.price *product.quantity * 1.1).toLocaleString() }}
+                    ¥{{ cart.product.price.toLocaleString() }} × {{ cart.quantity }}
+                    小計（税込）：¥{{ Math.floor(cart.product.price * cart.quantity * 1.1).toLocaleString() }}
                   </v-card-subtitle>
                   <v-divider/>
                   <v-card-actions
@@ -227,7 +227,7 @@
                   >
                     <v-container>
                       <v-btn
-                        @click="$store.dispatch('removeProductFromCart',product)"
+                        @click="removeProductFromCart(cart.product_id, cart.quantity, cart.id)"
                         class="font-weight-bold"
                         color="teal"
                         block
@@ -260,6 +260,8 @@ import { mapGetters } from 'vuex'
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
+  layout: 'logged-in',
+  middleware: ['get-cart'],
   data () {
     return {
       noImg,
@@ -267,7 +269,6 @@ export default {
       pageSize: 10
     }
   },
-  computed: mapGetters(['cartProducts','cartTotalPrice']),
   methods: {
     addProductFavorite(id) {
       const asyncFunc = async() => {
@@ -279,11 +280,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites')
         ])
         .then(response => {
           this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductUnfavorite', response[1])
+          this.$store.dispatch('getProductFavorites', response[1])
+          this.$store.dispatch('getProductUnfavorite', response[2])
+          this.$store.dispatch('getProductUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -296,8 +301,14 @@ export default {
         await this.$axios.$delete('/api/v1/product_favorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`)
-        .then(favorite => this.$store.dispatch('getProductFavorite', favorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_favorites')
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductFavorite', response[0])
+          this.$store.dispatch('getProductFavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     },
@@ -311,11 +322,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites'),
         ])
         .then(response => {
           this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductUnfavorite', response[1])
+          this.$store.dispatch('getProductFavorites', response[1])
+          this.$store.dispatch('getProductUnfavorite', response[2])
+          this.$store.dispatch('getProductUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -328,11 +343,54 @@ export default {
         await this.$axios.$delete('/api/v1/product_unfavorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
-        .then(unfavorite => this.$store.dispatch('getProductUnfavorite', unfavorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites'),
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductUnfavorite', response[0])
+          this.$store.dispatch('getProductUnfavorites', response[1])
+        })
+      }
+      asyncFunc().finally(response => console.log(response))
+    },
+    removeProductFromCart(productId, quantity, cartId) {
+      const asyncFunc = async() => {
+        const productQuantity = Number(this.$store.state.product.list.find(product => product.id === productId).stock) + Number(quantity)
+        const formDataProducts = new FormData()
+        formDataProducts.append('stock', productQuantity)
+        await Promise.all([
+          this.$axios.$delete(`/api/v1/carts/${cartId}`),
+          this.$axios.$patch(`/api/v1/products/${productId}`, formDataProducts)
+        ])
+        .then(response => {
+          console.log(response[0])
+          console.log(response[1])
+        })
+        .catch(error => {
+          console.log(error[0])
+          console.log(error[1])
+        })
+        await Promise.all([
+          this.$axios.$get(`/api/v1/carts/${this.$auth.user.id}`)
+        ])
+        .then(response => {
+          this.$store.dispatch('getCarts', response[0])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     }
+  },
+  computed: {
+    cartProducts() {
+      const copyCartProducts = Array.from(this.$store.state.carts)
+      return copyCartProducts.sort((a, b) => {
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
+        return 0
+      })
+    },
+    ...mapGetters(['cartTotalPrice'])
   }
 }
 </script>

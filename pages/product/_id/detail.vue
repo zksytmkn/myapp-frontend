@@ -92,7 +92,7 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      {{ $store.state.product.favorite.filter(favorite => favorite.id === currentProduct.id).length }}
+                      {{ $store.state.product.favorites.filter(favorites => favorites.product_id === currentProduct.id).length }}
                     </span>
                     <v-btn
                       v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === currentProduct.id)"
@@ -125,7 +125,7 @@
                     <span
                       class="font-weight-bold ml-1"
                     >
-                      {{ $store.state.product.unfavorite.filter(unfavorite => unfavorite.id === currentProduct.id).length }}
+                      {{ $store.state.product.unfavorites.filter(unfavorites => unfavorites.product_id === currentProduct.id).length }}
                     </span>
                     <v-btn
                       @click="comment = !comment"
@@ -210,17 +210,17 @@
                   </v-card-title>
                   <v-divider/>
                   <v-container
-                    v-if="currentProduct.user.id!==$auth.user.id"
+                    v-if="currentProduct.user_id!==$auth.user.id"
                   >
                     <v-card-actions
                       class="pa-0"
                       style="width:40%;"
                     >
                       <v-select
-                        @change="(quantity) => $store.dispatch('updateCurrentQuantity', quantity)"
                         :value="currentProduct.quantity"
+                        @change="quantity => $store.dispatch('getCurrentProductQuantity', quantity)"
                         class="mt-6"
-                        :items="[...Array(currentProduct.inventory).keys()].map(i => ++i)"
+                        :items="[...Array(currentProduct.stock).keys()].map(i => ++i)"
                         solo
                         dense
                         rounded
@@ -233,8 +233,8 @@
                       style="width:40%;"
                     >
                       <v-btn
-                        @click="$store.dispatch('addCurrentProductToCart', currentProduct)"
-                        :disabled="!currentProduct.inventory"
+                        @click="addProductToCart(currentProduct.id, currentProduct.quantity)"
+                        :disabled="!currentProduct.stock"
                         class="font-weight-bold"
                         color="teal"
                         block
@@ -245,7 +245,7 @@
                     </v-card-actions>
                   </v-container>
                   <v-container
-                    v-if="currentProduct.user.id===$auth.user.id"
+                    v-if="currentProduct.user_id===$auth.user.id"
                   >
                     <v-card-actions
                       style="width:40%;"
@@ -450,6 +450,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
+  middleware: ['get-cart'],
   data () {
     return {
       noImg,
@@ -536,11 +537,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites')
         ])
         .then(response => {
           this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductUnfavorite', response[1])
+          this.$store.dispatch('getProductFavorites', response[1])
+          this.$store.dispatch('getProductUnfavorite', response[2])
+          this.$store.dispatch('getProductUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -553,8 +558,14 @@ export default {
         await this.$axios.$delete('/api/v1/product_favorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`)
-        .then(favorite => this.$store.dispatch('getProductFavorite', favorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_favorites')
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductFavorite', response[0])
+          this.$store.dispatch('getProductFavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
     },
@@ -568,11 +579,15 @@ export default {
         .catch(error => console.log(error))
         await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites'),
         ])
         .then(response => {
           this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductUnfavorite', response[1])
+          this.$store.dispatch('getProductFavorites', response[1])
+          this.$store.dispatch('getProductUnfavorite', response[2])
+          this.$store.dispatch('getProductUnfavorites', response[3])
         })
       }
       asyncFunc().finally(response => console.log(response))
@@ -585,10 +600,82 @@ export default {
         await this.$axios.$delete('/api/v1/product_unfavorites', {data: formData})
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        await this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`)
-        .then(unfavorite => this.$store.dispatch('getProductUnfavorite', unfavorite))
+        await Promise.all([
+          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+          this.$axios.$get('api/v1/product_unfavorites'),
+        ])
+        .then(response => {
+          this.$store.dispatch('getProductUnfavorite', response[0])
+          this.$store.dispatch('getProductUnfavorites', response[1])
+        })
       }
       asyncFunc().finally(response => console.log(response))
+    },
+    addProductToCart(id, quantity) {
+      if(!this.$store.state.carts.length || !this.$store.state.carts.some(cart => cart.product_id === id)) {
+        const asyncFunc = async() => {
+          const productQuantity = Number(this.$store.state.product.current.stock) - Number(quantity)
+          const formDataCarts = new FormData()
+          formDataCarts.append('user_id', this.$auth.user.id)
+          formDataCarts.append('product_id', id)
+          formDataCarts.append('quantity', quantity)
+          const formDataProducts = new FormData()
+          formDataProducts.append('stock', productQuantity)
+          await Promise.all([
+            this.$axios.$post('/api/v1/carts', formDataCarts),
+            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+          ])
+          .then(response => {
+            console.log(response[0])
+            console.log(response[1])
+          })
+          .catch(error => {
+            console.log(error[0])
+            console.log(error[1])
+          })
+          await Promise.all([
+            this.$axios.$get(`/api/v1/carts/${this.$auth.user.id}`),
+            this.$axios.$get(`/api/v1/products/${id}`)
+          ])
+          .then(response => {
+            this.$store.dispatch('getCarts', response[0])
+            this.$store.dispatch('getCurrentProduct', response[1])
+          })
+        }
+        asyncFunc().finally(response => console.log(response))
+      }
+      else if(this.$store.state.carts.some(cart => cart.product_id === id)) {
+        const asyncFunc = async() => {
+          const cartId = this.$store.state.carts.find(cart => cart.product_id === id).id
+          const cartQuantity = Number(this.$store.state.carts.find(cart => cart.product_id === id).quantity) + Number(quantity)
+          const productQuantity = Number(this.$store.state.product.current.stock) - Number(quantity)
+          const formDataCarts = new FormData()
+          formDataCarts.append('quantity', cartQuantity)
+          const formDataProducts = new FormData()
+          formDataProducts.append('stock', productQuantity)
+          await Promise.all([
+            this.$axios.$patch(`/api/v1/carts/${cartId}`, formDataCarts),
+            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+          ])
+          .then(response => {
+            console.log(response[0])
+            console.log(response[1])
+          })
+          .catch(error => {
+            console.log(error[0])
+            console.log(error[1])
+          })
+          await Promise.all([
+            this.$axios.$get(`/api/v1/carts/${this.$auth.user.id}`),
+            this.$axios.$get(`/api/v1/products/${id}`)
+          ])
+          .then(response => {
+            this.$store.dispatch('getCarts', response[0])
+            this.$store.dispatch('getCurrentProduct', response[1])
+          })
+        }
+        asyncFunc().finally(response => console.log(response))
+      }
     }
   },
   computed: {
@@ -599,8 +686,8 @@ export default {
     comments() {
       const copyComments = Array.from(this.$store.state.product.comment)
       return copyComments.sort((a, b) => {
-        if (a.updated_at < b.updated_at) { return -1 }
-        if (a.updated_at > b.updated_at) { return 1 }
+        if (a.created_at < b.created_at) { return -1 }
+        if (a.created_at > b.created_at) { return 1 }
         return 0
       })
     },
