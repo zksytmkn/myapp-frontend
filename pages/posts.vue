@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  layout: 'posts',
+  layout: 'post',
   validate ({ route }) {
     return route.name !== 'posts'
   }

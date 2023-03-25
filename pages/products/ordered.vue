@@ -295,7 +295,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
-  middleware: ['get-order'],
+  middleware: ['get-order-list'],
   data () {
     return {
       noImg,
@@ -310,7 +310,7 @@ export default {
         if (a.created_at > b.created_at) { return -1 }
         if (a.created_at < b.created_at) { return 1 }
         return 0
-      }).slice(this.pageSize*(this.page-1),this.pageSize*(this.page))
+      })
     }
   }
 }

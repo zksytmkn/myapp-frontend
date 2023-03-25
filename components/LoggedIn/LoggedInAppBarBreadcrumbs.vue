@@ -52,8 +52,14 @@ export default {
       }
 
       if (
+        currentRouteName.match(/information/) &&
+        !this.$vuetify.breakpoint.xs
+      ) {
+        items.unshift({ text: "お知らせ" })
+      }
+
+      if (
         currentRouteName.match(/settings/) &&
-        !currentRouteName.match(/information/) &&
         !this.$vuetify.breakpoint.xs
       ) {
         items.unshift({ text: "設定" })

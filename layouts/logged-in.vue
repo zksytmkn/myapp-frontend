@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  middleware: ['authentication'],
+  middleware: ['authentication', 'get-cart'],
   data () {
     return {
       drawer: null

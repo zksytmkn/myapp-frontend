@@ -21,7 +21,6 @@
             </v-list-item>
 
             <v-divider/>
-
             <v-list-item
               :to="$my.userLinkToProfile(CurrentUser.id)"
             >
@@ -291,7 +290,7 @@
 import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 
 export default {
-  layout: 'logged-in',
+  layout: 'mypage',
   middleware: ['get-user-current', 'get-user-relationship'],
   data () {
     return {

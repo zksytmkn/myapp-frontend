@@ -129,11 +129,6 @@ export default {
               name: 'いいね',
               icon: 'mdi-thumb-up',
               link: '/products/like'
-            },
-            {
-              name: 'おすすめ',
-              icon: 'mdi-cards-heart',
-              link: '/products/recommend'
             }
           ]
         },
@@ -158,11 +153,6 @@ export default {
               name: 'いいね',
               icon: 'mdi-thumb-up',
               link: '/posts/like'
-            },
-            {
-              name: 'おすすめ',
-              icon: 'mdi-cards-heart',
-              link: '/posts/recommend'
             }
           ]
         },
@@ -197,7 +187,7 @@ export default {
         }
       ],
       otherMenus: [
-        { name: 'お知らせ', icon: 'mdi-bell', link: '/settings/information' },
+        { name: 'お知らせ', icon: 'mdi-bell', link: '/information/buyer' },
         { name: '設定', icon: 'mdi-cog', link: '/settings/profile' }
       ]
     }

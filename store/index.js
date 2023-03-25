@@ -78,7 +78,10 @@ export const state = () => ({
     timeout: 4000
   },
   carts: [],
-  orders: []
+  order: {
+    list: [],
+    current: null
+  }
 })
 
 export const getters = {
@@ -137,7 +140,10 @@ export const mutations = {
     state.carts = payload
   },
   setOrders (state, payload) {
-    state.orders = payload
+    state.order.list = payload
+  },
+  setCurrentOrder (state, payload) {
+    state.order.current = payload
   },
   setPostList (state, payload) {
     state.post.list = payload
@@ -265,7 +271,10 @@ export const actions = {
   },
   getOrders ({ commit }, orders) {
     orders = orders || []
-    commit('setOrders', orders) 
+    commit('setOrders', orders)
+  },
+  getCurrentOrder ({ commit }, order) {
+    commit('setCurrentOrder', order) 
   },
   getPostList ({ commit }, posts) {
     posts = posts || []

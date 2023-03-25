@@ -1,4 +1,4 @@
 export default async ({ store, $axios }) => {
-  await $axios.$get(`/api/v1/carts/${store.state.user.login.id}`)
+  await $axios.$get('/api/v1/carts')
     .then(carts => store.dispatch('getCarts', carts))
 }

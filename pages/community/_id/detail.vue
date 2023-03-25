@@ -167,7 +167,7 @@
                       コミュニティに参加する
                     </v-btn>
                     <v-btn
-                      @click="withdrawCommunity(currentCommunity.id, $auth.user.id)"
+                      @click="withdrawCommunity(currentCommunity.id)"
                       v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
@@ -468,7 +468,7 @@ export default {
       }
       asyncFunc().finally(response => console.log(response))
     },
-    participateInCommunity(communityId, userId) {
+    participateInCommunity(communityId) {
       const asyncFunc = async() => {
         const formData = new FormData()
         formData.append('user_id', this.$auth.user.id)
@@ -486,7 +486,7 @@ export default {
           return this.$store.dispatch('getToast', { msg, color })
         })
         await Promise.all([
-          this.$axios.$get(`/api/v1/participations/${userId}`),
+          this.$axios.$get('/api/v1/participation'),
           this.$axios.$get(`/api/v1/communities/${communityId}`),
         ])
         .then(response => {
@@ -496,7 +496,7 @@ export default {
       }
       asyncFunc().finally(response => console.log(response))
     },
-    withdrawCommunity(communityId, userId) {
+    withdrawCommunity(communityId) {
       const asyncFunc = async() => {
         const formData = new FormData()
         formData.append('user_id', this.$auth.user.id)
@@ -514,7 +514,7 @@ export default {
           return this.$store.dispatch('getToast', { msg, color })
         })
         await Promise.all([
-          this.$axios.$get(`/api/v1/participations/${userId}`),
+          this.$axios.$get('/api/v1/participations'),
           this.$axios.$get(`/api/v1/communities/${communityId}`),
         ])
         .then(response => {

@@ -383,7 +383,6 @@
 import noImg from '~/assets/images/logged-in/no.png'
 export default {
   layout: 'logged-in',
-  middleware: ['get-product-list'],
   data () {
     const nameMax = 16
     const textMax = 300

@@ -145,8 +145,8 @@
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout: 'logged-in',
-  middleware: ['get-user-relationship', 'get-user-relationship'],
+  layout: 'mypage',
+  middleware: ['get-user-current', 'get-user-relationship'],
   data () {
     return {
       noImg

@@ -124,7 +124,7 @@
             justify="center"
           >
             <v-btn
-              @click="addOrder()"
+              @click="addOrder"
               class="font-weight-bold mt-6 mb-6 mr-2"
               color="teal"
               dark
@@ -150,7 +150,6 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  middleware: ['get-cart'],
   computed: mapGetters(['cartProducts','cartTotalPrice']),
   methods: {
     addOrder() {
@@ -158,12 +157,11 @@ export default {
         const formData = new FormData()
         formData.append('user_id', this.$auth.user.id)
         formData.append('billing_amount', Math.floor(this.$store.getters.cartTotalPrice))
-        formData.append('status', 'confirm_payment')
         await this.$axios.$post('/api/v1/orders', formData)
         .then(response => console.log(response))
         .catch(error => console.log(error))
         await Promise.all([
-          this.$axios.$get(`/api/v1/carts/${this.$auth.user.id}`)
+          this.$axios.$get('/api/v1/carts')
         ])
         .then(response => {
           this.$store.dispatch('getCarts', response[0])

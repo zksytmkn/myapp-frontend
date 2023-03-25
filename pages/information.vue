@@ -5,9 +5,9 @@
 <script>
 export default {
   layout: 'logged-in',
-  middleware: ['get-user-list'],
+  middleware: ['get-order-list', 'get-product-list'],
   validate ({ route }) {
-    return route.name !== 'mypage'
+    return route.name !== 'information'
   }
 }
 </script>

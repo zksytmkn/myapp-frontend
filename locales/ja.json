@@ -27,6 +27,14 @@
       "password": "パスワード変更",
       "profile": "プロフィール編集"
     },
+    "information": {
+      "id": {
+        "detail": "詳細"
+      },
+      "buyer": "注文（購入）",
+      "seller": "注文（販売）",
+      "close": "注文（完了）"
+    },
     "product": {
       "id": {
         "detail": "詳細",
@@ -40,7 +48,6 @@
       "new": "出品",
       "register": "レジ",
       "ordered": "購入済み",
-      "recommend": "おすすめ",
       "search": "検索"
     },
     "post": {
@@ -53,7 +60,6 @@
       "like": "いいね",
       "list": "一覧",
       "new": "投稿",
-      "recommend": "おすすめ",
       "search": "検索"
     },
     "community": {

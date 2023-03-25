@@ -107,6 +107,15 @@
                   <v-col
                     cols="11"
                   >
+                  <v-list>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-subtitle>
+                            ※このページは他ユーザーには表示されません
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
                     <v-list>
                       <v-list-item>
                         <v-list-item-content>
@@ -143,6 +152,6 @@
 
 <script>
 export default {
-  layout: 'logged-in'
+  layout: 'mypage'
 }
 </script>

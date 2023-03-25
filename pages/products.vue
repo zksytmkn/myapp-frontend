@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  layout: 'products',
+  layout: 'product',
   validate ({ route }) {
     return route.name !== 'products'
   }

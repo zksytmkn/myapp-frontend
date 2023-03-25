@@ -261,7 +261,6 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
-  middleware: ['get-cart'],
   data () {
     return {
       noImg,
@@ -372,7 +371,7 @@ export default {
           console.log(error[1])
         })
         await Promise.all([
-          this.$axios.$get(`/api/v1/carts/${this.$auth.user.id}`)
+          this.$axios.$get('/api/v1/carts')
         ])
         .then(response => {
           this.$store.dispatch('getCarts', response[0])
