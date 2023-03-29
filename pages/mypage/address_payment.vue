@@ -3,84 +3,7 @@
     class="mt-3"
   >
     <v-row>
-      <v-col
-        cols="3"
-      >
-        <v-sheet
-          rounded="lg"
-        >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  マイページ
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider/>
-
-            <v-list-item
-              :to="$my.userLinkToProfile(this.$auth.user.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                プロフィール
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              :to="$my.userLinkToFollowing(this.$auth.user.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account-arrow-right
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                フォロー
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              :to="$my.userLinkToFollowed(this.$auth.user.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account-arrow-left
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                フォロワー
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              to="/mypage/address_payment"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-credit-card-marker-outline
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                住所＆お支払い
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-sheet>
-      </v-col>
+      <mypage-menu/>
       <v-col
         cols="9"
       >
@@ -111,7 +34,7 @@
                       <v-list-item>
                         <v-list-item-content>
                           <v-list-item-subtitle>
-                            ※このページは他ユーザーには表示されません
+                            ＊このページは他ユーザーには表示されません
                           </v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>
@@ -151,7 +74,9 @@
 </template>
 
 <script>
+import MypageMenu from '../../components/Mypage/MypageMenu.vue'
 export default {
+  components: { MypageMenu },
   layout: 'mypage'
 }
 </script>

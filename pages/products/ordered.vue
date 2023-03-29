@@ -305,7 +305,8 @@ export default {
   },
   computed: {
     orderedProducts () {
-      const copyOrderedProducts = Array.from(this.$store.state.product.list.filter(product => this.$store.state.orders.orderDetail.some(order => order.product_id === product.id)))
+      const copyOrderedProducts = Array.from(this.$store.state.product.list.filter(product => 
+      this.$store.state.order.list.buyer.concat(this.$store.state.order.list.close).some(order => order.product_id === product.id)))
       return copyOrderedProducts.sort((a, b) => {
         if (a.created_at > b.created_at) { return -1 }
         if (a.created_at < b.created_at) { return 1 }

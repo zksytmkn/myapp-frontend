@@ -256,7 +256,7 @@ export default {
   layout: 'logged-in',
   middleware: ['get-community-list'],
   data () {
-    const nameMax = 16
+    const nameMax = 13
     const textMax = 300
     return {
       noImg,

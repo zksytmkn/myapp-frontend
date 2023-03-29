@@ -3,84 +3,7 @@
     class="mt-3 mb-3"
   >
     <v-row>
-      <v-col
-        cols="3"
-      >
-        <v-sheet
-          rounded="lg"
-        >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  マイページ
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider/>
-            <v-list-item
-              :to="$my.userLinkToProfile(CurrentUser.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                プロフィール
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              :to="$my.userLinkToFollowing(CurrentUser.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account-arrow-right
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                フォロー
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              :to="$my.userLinkToFollowed(CurrentUser.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account-arrow-left
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                フォロワー
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              v-show="CurrentUser.id===this.$auth.user.id"
-              to="/mypage/address_payment"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-credit-card-marker-outline
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                住所＆お支払い
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-sheet>
-      </v-col>
+      <mypage-menu/>
       <v-col
         cols="9"
       >
@@ -94,12 +17,12 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title
-                  v-show="CurrentUser.id===this.$auth.user.id"
+                  v-show="CurrentUser.id===$auth.user.id"
                 >
                   あなたのプロフィール
                 </v-list-item-title>
                 <v-list-item-title
-                  v-show="CurrentUser.id!==this.$auth.user.id"
+                  v-show="CurrentUser.id!==$auth.user.id"
                 >
                   {{ CurrentUser.name }}さんのプロフィール
                 </v-list-item-title>
@@ -141,12 +64,12 @@
                             class="font-weight-bold text-h6"
                           >
                             <span
-                              v-show="CurrentUser.name.length>16"
+                              v-show="CurrentUser.name.length>13"
                             >
-                              {{ CurrentUser.name.substring(0, 16)+'...' }}
+                              {{ CurrentUser.name.substring(0, 13)+'...' }}
                             </span>
                             <span
-                              v-show="CurrentUser.name.length<=16"
+                              v-show="CurrentUser.name.length<=13"
                             >
                               {{ CurrentUser.name }}
                             </span>
@@ -188,12 +111,12 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                           <v-list-item-title
-                            v-show="CurrentUser.id===this.$auth.user.id"
+                            v-show="CurrentUser.id===$auth.user.id"
                           >
                             あなたの出品した農産物を見る
                           </v-list-item-title>
                           <v-list-item-title
-                            v-show="CurrentUser.id!==this.$auth.user.id"
+                            v-show="CurrentUser.id!==$auth.user.id"
                           >
                             {{ CurrentUser.name }}さんの出品した農産物を見る
                           </v-list-item-title>
@@ -213,12 +136,12 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                           <v-list-item-title
-                            v-show="CurrentUser.id===this.$auth.user.id"
+                            v-show="CurrentUser.id===$auth.user.id"
                           >
                             あなたのを投稿したつぶやきを見る
                           </v-list-item-title>
                           <v-list-item-title
-                            v-show="CurrentUser.id!==this.$auth.user.id"
+                            v-show="CurrentUser.id!==$auth.user.id"
                           >
                             {{ CurrentUser.name }}さんの投稿したつぶやきを見る
                           </v-list-item-title>
@@ -238,12 +161,12 @@
                         </v-list-item-avatar>
                         <v-list-item-content>
                           <v-list-item-title
-                            v-show="CurrentUser.id===this.$auth.user.id"
+                            v-show="CurrentUser.id===$auth.user.id"
                           >
                             あなたの作成したコミュニティを見る
                           </v-list-item-title>
                           <v-list-item-title
-                            v-show="CurrentUser.id!==this.$auth.user.id"
+                            v-show="CurrentUser.id!==$auth.user.id"
                           >
                             {{ CurrentUser.name }}さんの作成したコミュニティを見る
                           </v-list-item-title>
@@ -253,7 +176,7 @@
                   </v-col>
                   <v-col
                     cols="11"
-                    v-show="CurrentUser.id!==this.$auth.user.id"
+                    v-show="CurrentUser.id!==$auth.user.id"
                   >
                     <v-row
                       justify="center"
@@ -262,7 +185,7 @@
                         color="teal"
                         class="white--text mt-6 mb-9 mr-2 font-weight-bold"
                         @click="addRelationship(CurrentUser.id)"
-                        v-show="!this.$store.state.user.relationship.followed.some(user => user.id === this.$auth.user.id)"
+                        v-show="!this.$store.state.user.relationship.followed.some(user => user.id === $auth.user.id)"
                       >
                         {{ CurrentUser.name }}さんをフォローする
                       </v-btn>
@@ -270,7 +193,7 @@
                         color="teal"
                         class="white--text mt-6 mb-9 mr-2 font-weight-bold"
                         @click="deleteRelationship(CurrentUser.id)"
-                        v-show="this.$store.state.user.relationship.followed.some(user => user.id === this.$auth.user.id)"
+                        v-show="this.$store.state.user.relationship.followed.some(user => user.id === $auth.user.id)"
                       >
                       {{ CurrentUser.name }}さんをフォロー解除する
                       </v-btn>

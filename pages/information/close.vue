@@ -43,12 +43,12 @@
                   </v-icon>
                 </v-list-item-avatar>
                 <v-list-item-title
-                  v-show="!order.product.user_id === this.$auth.user.id"
+                  v-show="order.product.user_id !== $auth.user.id"
                 >
                   {{ order.product.name }}を購入しました。
                 </v-list-item-title>
                 <v-list-item-title
-                  v-show="order.product.user_id === this.$auth.user.id"
+                  v-show="order.product.user_id === $auth.user.id"
                 >
                   {{ order.product.name }}が購入されました。
                 </v-list-item-title>
@@ -86,7 +86,7 @@ export default {
   },
   computed: {
     orderMenus () {
-      const copyOrderMenus = Array.from(this.$store.state.order.list.orderDetail.filter(orderDetail => orderDetail.status === "delivered"))
+      const copyOrderMenus = Array.from(this.$store.state.order.list.close)
       return copyOrderMenus.sort((a, b) => {
         if (a.created_at > b.created_at) { return -1 }
         if (a.created_at < b.created_at) { return 1 }

@@ -3,85 +3,7 @@
     class="mt-3"
   >
     <v-row>
-      <v-col
-        cols="3"
-      >
-        <v-sheet
-          rounded="lg"
-        >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  マイページ
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-divider/>
-
-            <v-list-item
-              :to="$my.userLinkToProfile(CurrentUser.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                プロフィール
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              :to="$my.userLinkToFollowing(CurrentUser.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account-arrow-right
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                フォロー
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              :to="$my.userLinkToFollowed(CurrentUser.id)"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-account-arrow-left
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                フォロワー
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              v-show="CurrentUser.id===this.$auth.user.id"
-              to="/mypage/address_payment"
-            >
-              <v-list-item-avatar
-                left
-              >
-                <v-icon>
-                  mdi-credit-card-marker-outline
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title>
-                住所＆お支払い
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-sheet>
-      </v-col>
+      <mypage-menu/>
       <v-col
         cols="9"
       >
@@ -93,12 +15,12 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title
-                  v-show="CurrentUser.id===this.$auth.user.id"
+                  v-show="CurrentUser.id===$auth.user.id"
                 >
                   あなたのフォロー
                 </v-list-item-title>
                 <v-list-item-title
-                  v-show="CurrentUser.id!==this.$auth.user.id"
+                  v-show="CurrentUser.id!==$auth.user.id"
                 >
                   {{ CurrentUser.name }}さんのフォロー
                 </v-list-item-title>

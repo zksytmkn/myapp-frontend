@@ -37,7 +37,7 @@
                         <v-list-item-text
                           style="white-space:pre-line;"
                         >
-                            ※プロフィールやメールアドレスを変更したい場合は、下記のメニューから変更できます。
+                            ＊プロフィールやメールアドレスを変更したい場合は、下記のメニューから変更できます。
                             退会の手続きは必要ありません。引き続きEdibleをお楽しみください。
                         </v-list-item-text>
                       </v-container>
@@ -72,7 +72,7 @@
                       <v-list-item>
                         <v-list-item-title>
                           <div class="red--text">
-                            ※Edibleを退会すると、これまでに登録したデータなどが失われ、元に戻すことはできません。
+                            ＊Edibleを退会すると、これまでに登録したデータなどが失われ、元に戻すことはできません。
                           </div>
                         </v-list-item-title>
                       </v-list-item>

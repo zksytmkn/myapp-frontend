@@ -40,12 +40,12 @@
                     style="max-width:430px;"
                   >
                     <span
-                      v-show="currentCommunity.name.length>16"
+                      v-show="currentCommunity.name.length>13"
                     >
-                      {{ currentCommunity.name.substring(0, 16)+'...' }}
+                      {{ currentCommunity.name.substring(0, 13)+'...' }}
                     </span>
                     <span
-                      v-show="currentCommunity.name.length<=16"
+                      v-show="currentCommunity.name.length<=13"
                     >
                       {{ currentCommunity.name }}
                     </span>
@@ -70,9 +70,16 @@
                     >
                       <nuxt-link
                         :to="$my.userLinkToProfile(currentCommunity.user_id)"
-                        class="text-decoration-none grey--text text--darken-2"
+                        class="text-decoration-none teal--text text--darken-2"
                       >
                         by {{ currentCommunity.user.name }}
+                      </nuxt-link>
+                      <nuxt-link
+                        v-show="invitingUser"
+                        :to="$my.userLinkToProfile(invitingUser?.id)"
+                        class="text-decoration-none orange--text text--darken-2"
+                      >
+                        （{{ invitingUser?.name }}さんに招待されました。）
                       </nuxt-link>
                     </span>
                     <v-spacer/>
@@ -486,7 +493,7 @@ export default {
           return this.$store.dispatch('getToast', { msg, color })
         })
         await Promise.all([
-          this.$axios.$get('/api/v1/participation'),
+          this.$axios.$get('/api/v1/participations'),
           this.$axios.$get(`/api/v1/communities/${communityId}`),
         ])
         .then(response => {
@@ -527,7 +534,8 @@ export default {
     inviteUser(userId, communityId) {
       const asyncFunc = async() => {
         const formData = new FormData()
-        formData.append('user_id', userId)
+        formData.append('inviting_id', this.$auth.user.id)
+        formData.append('invited_id', userId)
         formData.append('community_id', communityId)
         await this.$axios.$post('/api/v1/invitations', formData)
         .then(response => {
@@ -574,7 +582,7 @@ export default {
     },
     allUsers() {
       const participatedUser = this.$store.state.community.current.participation
-      const invitedUser = this.$store.state.community.current.invitation
+      const invitedUser = this.$store.state.community.current.invited
       const excludedUser = participatedUser.concat(invitedUser)
       const copyAllUsers = Array.from(this.$store.state.user.list.filter(function(user, index, array) {
         return !excludedUser.some(function(excluded) {
@@ -582,6 +590,10 @@ export default {
         })
       }))
       return copyAllUsers
+    },
+    invitingUser() {
+      const copyInvitingUser = this.$store.state.community.current.inviting
+      return copyInvitingUser
     }
   }
 }

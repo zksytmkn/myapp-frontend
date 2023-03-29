@@ -69,7 +69,7 @@
                         justify="center"
                       >
                         <v-btn
-                          type="submit"
+                          @click="editAddress"
                           :disabled="!isValid || loading"
                           :loading="loading"
                           color="appblue"
@@ -121,10 +121,18 @@ export default {
     }
   },
   methods: {
-    searchAddressInfo () {
+    searchAddressInfo() {
       axios.get(url + this.inputted.zipcode).then((res) => {
       this.inputted.street = res.data.results[0].address1 + res.data.results[0].address2 + res.data.results[0].address3
       })
+    },
+    editAddress() {
+      const asyncFunc = async() => {
+        const formData = new FormData()
+        formData.append('zipcode', this.inputted.zipcode)
+        formData.append('street', this.inputted.street)
+        formData.append('building', this.inputted.building)
+      }
     },
     formReset() {
       this.sentIt = false

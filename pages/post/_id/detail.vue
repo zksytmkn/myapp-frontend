@@ -33,7 +33,7 @@
                     <v-card-subtitle>
                       <nuxt-link
                       :to="$my.userLinkToProfile(currentPost.user_id)"
-                      class="text-decoration-none grey--text text--darken-2"
+                      class="text-decoration-none teal--text text--darken-2"
                       >
                         by {{ currentPost.user.name }}
                       </nuxt-link>

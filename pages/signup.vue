@@ -47,7 +47,7 @@
             class="text-center grey--text"
           >
             <small>
-              ※こちらは上記を入力せずにご利用いただけます。
+              ＊こちらは上記を入力せずにご利用いただけます。
             </small>
           </v-container>
         </v-form>

@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     orderMenus () {
-      const copyOrderMenus = Array.from(this.$store.state.order.list.orderDetail.filter(orderDetail => orderDetail.product.user_id === this.$auth.user.id))
+      const copyOrderMenus = Array.from(this.$store.state.order.list.seller)
       return copyOrderMenus.sort((a, b) => {
         if (a.created_at > b.created_at) { return -1 }
         if (a.created_at < b.created_at) { return 1 }

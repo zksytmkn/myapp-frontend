@@ -39,12 +39,12 @@
                     style="max-width:430px;"
                   >
                     <span
-                      v-show="currentProduct.name.length>16"
+                      v-show="currentProduct.name.length>13"
                     >
-                      {{ currentProduct.name.substring(0, 16)+'...' }}
+                      {{ currentProduct.name.substring(0, 13)+'...' }}
                     </span>
                     <span
-                      v-show="currentProduct.name.length<=16"
+                      v-show="currentProduct.name.length<=13"
                     >
                       {{ currentProduct.name }}
                     </span>
@@ -177,7 +177,7 @@
                   <v-card-subtitle>
                     <nuxt-link
                       :to="$my.userLinkToProfile(currentProduct.user_id)"
-                      class="text-decoration-none grey--text text--darken-2"
+                      class="text-decoration-none teal--text text--darken-2"
                     >
                       <span
                         v-show="currentProduct.user.name.length>10"

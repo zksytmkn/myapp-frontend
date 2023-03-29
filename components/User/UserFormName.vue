@@ -18,7 +18,7 @@ export default {
     }
   },
   data () {
-    const max = 16
+    const max = 13
     return {
       max,
       rules: [

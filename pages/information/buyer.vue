@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     orderMenus () {
-      const copyOrderMenus = Array.from(this.$store.state.order.list.orderDetail)
+      const copyOrderMenus = Array.from(this.$store.state.order.list.buyer)
       return copyOrderMenus.sort((a, b) => {
         if (a.created_at > b.created_at) { return -1 }
         if (a.created_at < b.created_at) { return 1 }

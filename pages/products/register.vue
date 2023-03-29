@@ -63,7 +63,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    お届け先情報
+                    お届け先
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -73,7 +73,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-text>
-                    お届け先住所：{{ this.$store.state.user.login.zipcode }}
+                    お届け先住所：〒{{ this.$store.state.user.login.zipcode }}
                     <br/><br/>
                     {{ this.$store.state.user.login.street }}
                     {{ this.$store.state.user.login.building }}
@@ -91,7 +91,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    お支払い情報
+                    お支払い
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -157,6 +157,9 @@ export default {
         const formData = new FormData()
         formData.append('user_id', this.$auth.user.id)
         formData.append('billing_amount', Math.floor(this.$store.getters.cartTotalPrice))
+        formData.append('zipcode', this.$auth.user.zipcode)
+        formData.append('street', this.$auth.user.street)
+        formData.append('building', this.$auth.user.building)
         await this.$axios.$post('/api/v1/orders', formData)
         .then(response => console.log(response))
         .catch(error => console.log(error))
