@@ -90,10 +90,10 @@
                           dense
                           outlined
                           label="種類"
-                          :items="typeItems"
-                          :rules="typeRules"
+                          :items="categoryItems"
+                          :rules="categoryRules"
                           :disabled="sentIt"
-                          v-model="inputted.type"
+                          v-model="inputted.category"
                         >
                         </v-select>
                       </v-col>
@@ -152,9 +152,9 @@
                           dense
                           outlined
                           label="説明文"
-                          :rules="textRules"
+                          :rules="descriptionRules"
                           :disabled="sentIt"
-                          v-model="inputted.text"
+                          v-model="inputted.description"
                         >
                         </v-textarea>
                       </v-col>
@@ -201,7 +201,7 @@ export default {
   layout: 'logged-in',
   data () {
     const nameMax = 13
-    const textMax = 300
+    const descriptionMax = 300
     return {
       noImg,
       isValid: false,
@@ -214,7 +214,7 @@ export default {
         v => !!v || '',
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
-      typeRules: [
+      categoryRules: [
         v => !!v || '種類を選択してください'
       ],
       prefectureRules: [
@@ -226,13 +226,13 @@ export default {
       stockRules: [
         v => !!v || '数量を入力してください'
       ],
-      textRules: [
-        textMax,
+      descriptionRules: [
+        descriptionMax,
         v => !!v || '',
-        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
+        v => (!!v && descriptionMax >= v.length) || `${descriptionMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, type: '', prefecture: '', price: null, stock: null, text: '', image: null },
-      typeItems: [
+      inputted: { name: '', user_id: this.$auth.user.id, category: '', prefecture: '', price: null, stock: null, description: '', image: null },
+      categoryItems: [
         '野菜',
         '果物'
       ],
@@ -303,11 +303,11 @@ export default {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
         formData.append('user_id', this.inputted.user_id)
-        formData.append('type', this.inputted.type)
+        formData.append('category', this.inputted.category)
         formData.append('prefecture', this.inputted.prefecture)
         formData.append('price', this.inputted.price)
         formData.append('stock', this.inputted.stock)
-        formData.append('text', this.inputted.text)
+        formData.append('description', this.inputted.description)
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)
         }
@@ -339,11 +339,11 @@ export default {
   },
   mounted() {
     this.inputted.name = this.$store.state.product.current.name
-    this.inputted.type = this.$store.state.product.current.type
+    this.inputted.category = this.$store.state.product.current.category
     this.inputted.prefecture = this.$store.state.product.current.prefecture
     this.inputted.price = this.$store.state.product.current.price
     this.inputted.stock = this.$store.state.product.current.stock
-    this.inputted.text = this.$store.state.product.current.text
+    this.inputted.description = this.$store.state.product.current.description
   }
 }
 </script>

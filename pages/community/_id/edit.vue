@@ -97,8 +97,8 @@
                           dense
                           outlined
                           label="紹介文"
-                          v-model="inputted.text"
-                          :rules="textRules"
+                          v-model="inputted.description"
+                          :rules="descriptionRules"
                           :disabled="sentIt"
                         >
                         </v-textarea>
@@ -146,7 +146,7 @@ export default {
   layout: 'logged-in',
   data () {
     const nameMax = 13
-    const textMax = 300
+    const descriptionMax = 300
     return {
       noImg,
       isValid: false,
@@ -159,12 +159,12 @@ export default {
         v => !!v || '',
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
-      textRules: [
-        textMax,
+      descriptionRules: [
+        descriptionMax,
         v => !!v || '',
-        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
+        v => (!!v && descriptionMax >= v.length) || `${descriptionMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null }
+      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null }
     }
   },
   computed: {
@@ -183,7 +183,7 @@ export default {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
         formData.append('user_id', this.inputted.user_id)
-        formData.append('text', this.inputted.text)
+        formData.append('description', this.inputted.description)
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)
         }
@@ -215,7 +215,7 @@ export default {
   },
   mounted() {
     this.inputted.name = this.$store.state.community.current.community.name
-    this.inputted.text = this.$store.state.community.current.community.text
+    this.inputted.description = this.$store.state.community.current.community.description
   }
 }
 </script>

@@ -129,14 +129,14 @@
                   </v-card-title>
                   <v-card-text>
                     <span
-                      v-show="currentCommunity.text.length>300"
+                      v-show="currentCommunity.description.length>300"
                     >
-                      {{ currentCommunity.text.substring(0, 300)+'...' }}
+                      {{ currentCommunity.description.substring(0, 300)+'...' }}
                     </span>
                     <span
-                      v-show="currentCommunity.text.length<=300"
+                      v-show="currentCommunity.description.length<=300"
                     >
-                      {{ currentCommunity.text }}
+                      {{ currentCommunity.description }}
                     </span>
                   </v-card-text>
 

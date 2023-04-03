@@ -94,8 +94,8 @@
                       dense
                       outlined
                       label="紹介文"
-                      v-model="inputted.text"
-                      :rules="textRules"
+                      v-model="inputted.description"
+                      :rules="descriptionRules"
                       :disabled="sentIt"
                     >
                     </v-textarea>
@@ -214,14 +214,14 @@
                                 class="caption grey--text text--darken-1"
                               >
                                 <span
-                                  v-show="community.text.length>23"
+                                  v-show="community.description.length>23"
                                 >
-                                  {{ community.text.substring(0, 23)+'...'}}
+                                  {{ community.description.substring(0, 23)+'...'}}
                                 </span>
                                 <span
-                                  v-show="community.text.length<=23"
+                                  v-show="community.description.length<=23"
                                 >
-                                  {{ community.text }}
+                                  {{ community.description }}
                                 </span>
                               </v-card-text>
                             </v-row>
@@ -257,7 +257,7 @@ export default {
   middleware: ['get-community-list'],
   data () {
     const nameMax = 13
-    const textMax = 300
+    const descriptionMax = 300
     return {
       noImg,
       page: 1,
@@ -272,12 +272,12 @@ export default {
         v => !!v || '',
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
-      textRules: [
-        textMax,
+      descriptionRules: [
+        descriptionMax,
         v => !!v || '',
-        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
+        v => (!!v && descriptionMax >= v.length) || `${descriptionMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null },
+      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null },
       container: {
         sm: 10,
         md: 8
@@ -315,7 +315,7 @@ export default {
           const formData = new FormData()
           formData.append('name', this.inputted.name)
           formData.append('user_id', this.inputted.user_id)
-          formData.append('text', this.inputted.text)
+          formData.append('description', this.inputted.description)
           if (this.inputted.image !== null) {
             formData.append('image', this.inputted.image)
           }

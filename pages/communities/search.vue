@@ -84,7 +84,7 @@
                 >
                   <v-text-field
                     label="紹介文"
-                    v-model="searched.text"
+                    v-model="searched.description"
                     outlined
                     dense
                   >
@@ -98,7 +98,7 @@
                     justify="center"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateCommunitySearchCondition', { name: searched.name, maker: searched.maker, text: searched.text })"
+                      @click="$store.dispatch('updateCommunitySearchCondition', { name: searched.name, maker: searched.maker, description: searched.description })"
                       class="font-weight-bold mt-3 mb-9"
                       color="teal"
                       dark
@@ -196,14 +196,14 @@
                                 class="caption grey--text text--darken-1"
                               >
                                 <span
-                                  v-show="community.text.length>23"
+                                  v-show="community.description.length>23"
                                 >
-                                  {{ community.text.substring(0, 23)+'...'}}
+                                  {{ community.description.substring(0, 23)+'...'}}
                                 </span>
                                 <span
-                                  v-show="community.text.length<=23"
+                                  v-show="community.description.length<=23"
                                 >
-                                  {{ community.text }}
+                                  {{ community.description }}
                                 </span>
                               </v-card-text>
                             </v-row>
@@ -249,7 +249,7 @@ export default {
         height: 110,
         elevation: 4
       },
-      searched: { name: '', maker: '', text: '' }
+      searched: { name: '', maker: '', description: '' }
     }
   },
   computed: {
@@ -269,7 +269,7 @@ export default {
   mounted() {
     this.searched.name = this.$store.state.community.searchCondition.name
     this.searched.maker = this.$store.state.community.searchCondition.maker
-    this.searched.text = this.$store.state.community.searchCondition.text
+    this.searched.description = this.$store.state.community.searchCondition.description
   }
 }
 </script>

@@ -82,8 +82,8 @@
                           dense
                           outlined
                           label="タイトル"
-                          v-model="inputted.name"
-                          :rules="nameRules"
+                          v-model="inputted.title"
+                          :rules="titleRules"
                           :disabled="sentIt"
                         >
                         </v-text-field>
@@ -95,8 +95,8 @@
                           dense
                           outlined
                           label="つぶやき"
-                          v-model="inputted.text"
-                          :rules="textRules"
+                          v-model="inputted.body"
+                          :rules="bodyRules"
                           :disabled="sentIt"
                         >
                         </v-textarea>
@@ -190,14 +190,14 @@
                 class="text-decoration-none"
               >
                 <span
-                  v-show="item.name.length>13"
+                  v-show="item.title.length>13"
                 >
-                  {{ item.name.substring(0, 13)+'...' }}
+                  {{ item.title.substring(0, 13)+'...' }}
                 </span>
                 <span
-                  v-show="item.name.length<=13"
+                  v-show="item.title.length<=13"
                 >
-                  {{ item.name }}
+                  {{ item.title }}
                 </span>
               </nuxt-link>
             </template>
@@ -205,14 +205,14 @@
               v-slot:[`item.text`]="{ item }"
             >
               <span
-                v-show="item.text.length>37"
+                v-show="item.body.length>37"
               >
-                {{ item.text.substring(0, 37)+'...' }}
+                {{ item.body.substring(0, 37)+'...' }}
               </span>
               <span
-                v-show="item.text.length<=37"
+                v-show="item.body.length<=37"
               >
-                {{ item.text }}
+                {{ item.body }}
               </span>
             </template>
             <template
@@ -312,8 +312,8 @@ export default {
   layout: 'logged-in',
   middleware: ['get-post-list'],
   data () {
-    const nameMax = 30
-    const textMax = 600
+    const titleMax = 30
+    const bodyMax = 600
     return {
       noImg,
       page: 1,
@@ -337,7 +337,7 @@ export default {
         },
         {
           text: 'つぶやき',
-          value: 'text'
+          value: 'body'
         },
         {
           text: 'いいね履歴',
@@ -353,17 +353,17 @@ export default {
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
-      nameRules: [
-        nameMax,
+      titleRules: [
+        titleMax,
         v => !!v || '',
-        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
+        v => (!!v && titleMax >= v.length) || `${titleMax}文字以内で入力してください`
       ],
-      textRules: [
-        textMax,
+      bodyRules: [
+        bodyMax,
         v => !!v || '',
-        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
+        v => (!!v && bodyMax >= v.length) || `${bodyMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null }
+      inputted: { title: '', user_id: this.$auth.user.id, body: '', image: null }
     }
   },
   computed: {
@@ -390,9 +390,9 @@ export default {
       if (this.isValid) {
         const asyncFunc = async() => {
           const formData = new FormData()
-          formData.append('name', this.inputted.name)
+          formData.append('title', this.inputted.title)
           formData.append('user_id', this.inputted.user_id)
-          formData.append('text', this.inputted.text)
+          formData.append('body', this.inputted.body)
           if (this.inputted.image !== null) {
             formData.append('image', this.inputted.image)
           }

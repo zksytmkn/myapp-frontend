@@ -208,11 +208,11 @@ export const mutations = {
   setRememberPath (state, payload) {
     state.loggedIn.rememberPath = payload
   },
-  setProductSearchCondition (state, { name, seller, text, type, prefecture }) {
+  setProductSearchCondition (state, { name, seller, text, category, prefecture }) {
     state.product.searchCondition.name = name
     state.product.searchCondition.seller = seller
     state.product.searchCondition.text = text
-    state.product.searchCondition.type = type
+    state.product.searchCondition.category = category
     state.product.searchCondition.prefecture = prefecture
   },
   setPostSearchCondition (state, { name, poster, text }) {
@@ -358,8 +358,8 @@ export const actions = {
     params = params || {}
     commit('setRememberPath', { name, params })
   },
-  updateProductSearchCondition ({ commit }, { name, seller, text, type, prefecture }) {
-    commit('setProductSearchCondition', { name, seller, text, type, prefecture })
+  updateProductSearchCondition ({ commit }, { name, seller, text, category, prefecture }) {
+    commit('setProductSearchCondition', { name, seller, text, category, prefecture })
   },
   updatePostSearchCondition ({ commit }, { name, poster, text }) {
     commit('setPostSearchCondition', { name, poster, text })

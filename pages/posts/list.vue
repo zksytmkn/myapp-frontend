@@ -42,14 +42,14 @@
                 class="text-decoration-none teal--text"
               >
                 <span
-                  v-show="item.name.length>13"
+                  v-show="item.title.length>13"
                 >
-                  {{ item.name.substring(0, 13)+'...' }}
+                  {{ item.title.substring(0, 13)+'...' }}
                 </span>
                 <span
-                  v-show="item.name.length<=13"
+                  v-show="item.title.length<=13"
                 >
-                  {{ item.name }}
+                  {{ item.title }}
                 </span>
               </nuxt-link>
             </template>
@@ -57,14 +57,14 @@
               v-slot:[`item.text`]="{ item }"
             >
               <span
-                v-show="item.text.length>37"
+                v-show="item.body.length>37"
               >
-                {{ item.text.substring(0, 37)+'...' }}
+                {{ item.body.substring(0, 37)+'...' }}
               </span>
               <span
-                v-show="item.text.length<=37"
+                v-show="item.body.length<=37"
               >
-                {{ item.text }}
+                {{ item.body }}
               </span>
             </template>
             <template
@@ -182,7 +182,7 @@ export default {
         },
         {
           text: 'つぶやき',
-          value: 'text'
+          value: 'body'
         },
         {
           text: 'いいね履歴',

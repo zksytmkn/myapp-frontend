@@ -13,7 +13,7 @@
           <v-form
             ref="edit"
             v-model="isValid"
-            @submit.prevent="editProfile($store.state.user.login.id)"
+            @submit.prevent="editPassword"
           >
             <v-list
               color="transparent"
@@ -36,21 +36,23 @@
                     >
                       <user-form-password
                         label="現在のパスワード"
+                        :password.sync="inputted.current_password"
                       />
                     </v-col>
                     <v-col
                       cols="11"
                     >
                       <user-form-password
-                        label="パスワード [8文字以上]"
+                        label="新しいパスワード [8文字以上]"
+                        :password.sync="inputted.password"
                       />
                     </v-col>
                     <v-col
                       cols="11"
                     >
                       <user-form-password
-                        label="パスワード(確認)"
-                        :disabled="sentIt"
+                        label="新しいパスワード(確認)"
+                        :password.sync="inputted.password_confirmation"
                       />
                     </v-col>
                     <v-col
@@ -96,20 +98,46 @@ export default {
     return {
       isValid: false,
       loading: false,
-      params: { auth: { email: '', password: '' } }
+      inputted: { current_password: '', password: '', password_confirmation: '' }
     }
   },
   methods: {
-    async editPassword(id) {
-      this.loading = true
+    async editPassword() {
+      this.loading = true;
       if (this.isValid) {
-        await this.$axios
+        if (this.inputted.password === this.inputted.password_confirmation) {
+          const formData = new FormData();
+          formData.append("password", this.inputted.password);
+          formData.append("current_password", this.inputted.current_password);
+          await this.$axios.$patch("/api/v1/users/send_password_reset_confirmation", formData)
+            .then(response => {
+              const msg = 'パスワードを変更しました';
+              const color = 'success';
+              this.$store.dispatch('getToast', { msg, color });
+              return this.$axios.$post('/api/v1/auth_token/refresh')
+                .then(response => this.$auth.login(response));
+            })
+            .catch(error => {
+              const msg = error.response.data.message || '現在のパスワードが間違っております';
+              const color = 'error';
+              this.$store.dispatch('getToast', { msg, color });
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+        } else {
+          const msg = '新しいパスワードと確認用パスワードが一致しません';
+          const color = 'error';
+          this.$store.dispatch('getToast', { msg, color });
+          this.loading = false;
+        }
+      } else {
+        this.loading = false;
       }
-      this.loading = false
     },
     formReset() {
-      this.sentIt = false
-      this.$refs.edit.reset()
+      this.sentIt = false;
+      this.$refs.edit.reset();
     }
   }
 }

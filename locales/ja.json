@@ -11,6 +11,10 @@
     "signup": "会員登録",
     "login": "ログイン",
     "logout": "ログアウト",
+    "auth": {
+      "reset_password": "ログイン",
+      "reset_password_confirmation": "ログイン"
+    },
     "mypage": {
       "id": {
         "profile": "プロフィール",

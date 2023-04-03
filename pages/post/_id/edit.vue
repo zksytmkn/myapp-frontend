@@ -85,7 +85,7 @@
                           outlined
                           label="タイトル"
                           v-model="inputted.name"
-                          :rules="nameRules"
+                          :rules="titleRules"
                           :disabled="sentIt"
                         >
                         </v-text-field>
@@ -97,8 +97,8 @@
                           dense
                           outlined
                           label="つぶやき"
-                          v-model="inputted.text"
-                          :rules="textRules"
+                          v-model="inputted.body"
+                          :rules="bodyRules"
                           :disabled="sentIt"
                         >
                         </v-textarea>
@@ -145,8 +145,8 @@ import noImg from '~/assets/images/logged-in/no.png'
 export default {
   layout: 'logged-in',
   data () {
-    const nameMax = 30
-    const textMax = 600
+    const titleMax = 30
+    const bodyMax = 600
     return {
       noImg,
       isValid: false,
@@ -154,17 +154,17 @@ export default {
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
-      nameRules: [
-        nameMax,
+      titleRules: [
+        titleMax,
         v => !!v || '',
-        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
+        v => (!!v && titleMax >= v.length) || `${titleMax}文字以内で入力してください`
       ],
-      textRules: [
-        textMax,
+      bodyRules: [
+        bodyMax,
         v => !!v || '',
-        v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
+        v => (!!v && bodyMax >= v.length) || `${bodyMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, text: '', image: null }
+      inputted: { title: '', user_id: this.$auth.user.id, body: '', image: null }
     }
   },
   computed: {
@@ -181,9 +181,9 @@ export default {
       this.loading = true
       if (this.isValid) {
         const formData = new FormData()
-        formData.append('name', this.inputted.name)
+        formData.append('title', this.inputted.title)
         formData.append('user_id', this.inputted.user_id)
-        formData.append('text', this.inputted.text)
+        formData.append('body', this.inputted.body)
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)
         }
@@ -214,8 +214,8 @@ export default {
     }
   },
   mounted() {
-    this.inputted.name = this.$store.state.post.current.name
-    this.inputted.text = this.$store.state.post.current.text
+    this.inputted.title = this.$store.state.post.current.title
+    this.inputted.body = this.$store.state.post.current.body
   }
 }
 </script>

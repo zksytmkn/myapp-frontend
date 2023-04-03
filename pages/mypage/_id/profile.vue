@@ -80,14 +80,14 @@
                           <br/>
                           <v-list-item-text>
                             <span
-                              v-show="CurrentUser.text.length>120"
+                              v-show="CurrentUser.profile_text.length>120"
                             >
-                              {{ CurrentUser.text.substring(0, 120)+'...' }}
+                              {{ CurrentUser.profile_text.substring(0, 120)+'...' }}
                             </span>
                             <span
-                              v-show="CurrentUser.text.length<=120"
+                              v-show="CurrentUser.profile_text.length<=120"
                             >
-                              {{ CurrentUser.text }}
+                              {{ CurrentUser.profile_text }}
                             </span>
                           </v-list-item-text>
                         </v-col>
@@ -100,7 +100,7 @@
                     <v-list>
                       <v-list-item
                         to="/products/search"
-                        @click="$store.dispatch('updateProductSearchCondition', { name: '', seller: $store.state.user.current.name, text: '', type: [], prefecture: [] })"
+                        @click="$store.dispatch('updateProductSearchCondition', { name: '', seller: $store.state.user.current.name, description: '', type: [], prefecture: [] })"
                       >
                         <v-list-item-avatar
                           left
@@ -125,7 +125,7 @@
 
                       <v-list-item
                         to="/posts/search"
-                        @click="$store.dispatch('updatePostSearchCondition', { name: '', poster: $store.state.user.current.name, text: '' })"
+                        @click="$store.dispatch('updatePostSearchCondition', { title: '', poster: $store.state.user.current.name, body: '' })"
                       >
                         <v-list-item-avatar
                           left

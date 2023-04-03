@@ -56,7 +56,7 @@
                   <v-text-field
                     class="mt-10"
                     label="タイトル"
-                    v-model="searched.name"
+                    v-model="searched.title"
                     outlined
                     dense
                   >
@@ -82,7 +82,7 @@
                 >
                   <v-text-field
                     label="つぶやき"
-                    v-model="searched.text"
+                    v-model="searched.body"
                     outlined
                     dense
                   >
@@ -95,7 +95,7 @@
                     justify="center"
                   >
                     <v-btn
-                      @click="$store.dispatch('updatePostSearchCondition', { name: searched.name, poster: searched.poster, text: searched.text })"
+                      @click="$store.dispatch('updatePostSearchCondition', { title: searched.title, poster: searched.poster, body: searched.body })"
                       class="font-weight-bold mt-3 mb-9"
                       color="teal"
                       dark
@@ -168,14 +168,14 @@
                 class="text-decoration-none"
               >
                 <span
-                  v-show="item.name.length>13"
+                  v-show="item.title.length>13"
                 >
-                  {{ item.name.substring(0, 13)+'...' }}
+                  {{ item.title.substring(0, 13)+'...' }}
                 </span>
                 <span
-                  v-show="item.name.length<=13"
+                  v-show="item.title.length<=13"
                 >
-                  {{ item.name }}
+                  {{ item.title }}
                 </span>
               </nuxt-link>
             </template>
@@ -183,14 +183,14 @@
               v-slot:[`item.text`]="{ item }"
             >
               <span
-                v-show="item.text.length>37"
+                v-show="item.body.length>37"
               >
-                {{ item.text.substring(0, 37)+'...' }}
+                {{ item.body.substring(0, 37)+'...' }}
               </span>
               <span
-                v-show="item.text.length<=37"
+                v-show="item.body.length<=37"
               >
-                {{ item.text }}
+                {{ item.body }}
               </span>
             </template>
             <template
@@ -298,7 +298,7 @@ export default {
         },
         {
           text: 'つぶやき',
-          value: 'text'
+          value: 'body'
         },
         {
           text: 'いいね履歴',
@@ -311,7 +311,7 @@ export default {
           value: 'updatedAt'
         }
       ],
-      searched: {name: '', poster: '', text: ''}
+      searched: {title: '', poster: '', body: ''}
     }
   },
   methods: {
@@ -405,7 +405,7 @@ export default {
       const searchCondition = this.$store.state.post.searchCondition
 
       const copySearchedPosts = Array.from(this.$store.state.post.list).
-      filter((x) => x.name.includes(searchCondition.name) && x.user.name.includes(searchCondition.poster))
+      filter((x) => x.title.includes(searchCondition.title) && x.user.name.includes(searchCondition.poster))
 
       return copySearchedPosts.sort((a, b) => {
         if (a.created_at > b.created_at) { return -1 }
@@ -415,9 +415,9 @@ export default {
     }
   },
   mounted() {
-    this.searched.name = this.$store.state.post.searchCondition.name
+    this.searched.title = this.$store.state.post.searchCondition.title
     this.searched.poster = this.$store.state.post.searchCondition.poster
-    this.searched.text = this.$store.state.post.searchCondition.text
+    this.searched.body = this.$store.state.post.searchCondition.body
   }
 }
 </script>

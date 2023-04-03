@@ -13,7 +13,7 @@
           <v-form
             ref="edit"
             v-model="isValid"
-            @submit.prevent="editProfile($store.state.user.login.id)"
+            @submit.prevent="editProfile"
           >
             <v-list
               color="transparent"
@@ -88,7 +88,7 @@
                         dense
                         outlined
                         label="プロフィール文"
-                        v-model="inputted.text"
+                        v-model="inputted.profile_text"
                         :rules="textRules"
                         :disabled="sentIt"
                       >
@@ -157,7 +157,7 @@ export default {
         v => !!v || '',
         v => (!!v && textMax >= v.length) || `${textMax}文字以内で入力してください`
       ],
-      inputted: { name: '', prefecture: '', text: '', image: null },
+      inputted: { name: '', prefecture: '', profile_text: '', image: null },
       prefectureItems: [
         '北海道',
         '青森県',
@@ -210,34 +210,38 @@ export default {
     }
   },
   methods: {
-    async editProfile(id) {
+    editProfile() {
       this.loading = true
       if (this.isValid) {
-        const formData = new FormData()
-        formData.append('name', this.inputted.name)
-        formData.append('prefecture', this.inputted.prefecture)
-        formData.append('text', this.inputted.text)
-        if (this.inputted.image !== null) {
-          formData.append('image', this.inputted.image)
-        }
-        const config = {
-          header: {
-            "Content-Type": "multipart/form-data"
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('name', this.inputted.name)
+          formData.append('prefecture', this.inputted.prefecture)
+          formData.append('profile_text', this.inputted.profile_text)
+          if (this.inputted.image !== null) {
+            formData.append('image', this.inputted.image)
           }
+          const config = {
+            header: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+          await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData, config)
+          .then(response => {
+            const msg = 'プロフィールを編集しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = 'プロフィールを編集できませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$post('/api/v1/auth_token/refresh')
+          .then(response => this.$auth.login(response))
         }
-        await this.$axios.$patch(`/api/v1/products/${id}`, formData, config)
-        .then(response => {
-          this.$router.back()
-          const msg = 'プロフィールを編集しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'プロフィールを編集できませんでした'
-          const color = 'error'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
+        asyncFunc().finally(response => console.log(response))
       }
       this.loading = false
     },
@@ -258,7 +262,7 @@ export default {
   mounted() {
     this.inputted.name = this.$store.state.user.login.name
     this.inputted.prefecture = this.$store.state.user.login.prefecture
-    this.inputted.text = this.$store.state.user.login.text
+    this.inputted.profile_text = this.$store.state.user.login.profile_text
   }
 }
 </script>

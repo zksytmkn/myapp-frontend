@@ -204,14 +204,14 @@
                     class="pb-0"
                   >
                     <span
-                      v-show="cart.product.text.length>90"
+                      v-show="cart.product.description.length>90"
                     >
-                      {{ cart.product.text.substring(0, 90)+'...' }}
+                      {{ cart.product.description.substring(0, 90)+'...' }}
                     </span>
                     <span
-                    v-show="cart.product.text.length<=90"
+                    v-show="cart.product.description.length<=90"
                     >
-                      {{ cart.product.text }}
+                      {{ cart.product.description }}
                     </span>
                   </v-card-text>
                   <v-card-subtitle

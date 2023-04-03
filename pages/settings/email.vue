@@ -13,7 +13,7 @@
           <v-form
             ref="edit"
             v-model="isValid"
-            @submit.prevent="editEmail($store.state.user.login.id)"
+            @submit.prevent="editEmail"
           >
             <v-list
               color="transparent"
@@ -36,9 +36,11 @@
                     >
                       <user-form-email
                         label="メールアドレス"
+                        :email.sync="inputted.email"
                       />
                       <user-form-password
                         label="現在のパスワード"
+                        :password.sync="inputted.password"
                       />
                     </v-col>
                     <v-col
@@ -83,14 +85,32 @@ export default {
   data () {
     return {
       isValid: false,
-      loading: false
+      loading: false,
+      inputted: { email: '', password: '' }
     }
   },
   methods: {
-    async editEmail(id) {
+    editEmail() {
       this.loading = true
       if (this.isValid) {
-        await this.$axios
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('email', this.inputted.email) 
+          formData.append('current_password', this.inputted.password) 
+          await this.$axios.$post('/api/v1/users/send_email_reset_confirmation', formData)
+          .then(response => {
+            const msg = 'メールアドレスに確認メールを送信しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = '現在のパスワードが間違っております'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+        }
+        asyncFunc().finally(response => console.log(response))
       }
       this.loading = false
     },

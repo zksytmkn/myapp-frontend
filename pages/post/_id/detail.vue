@@ -29,7 +29,7 @@
                   <v-card-title
                     class="font-weight-bold"
                   >
-                    {{ currentPost.name }}
+                    {{ currentPost.title }}
                     <v-card-subtitle>
                       <nuxt-link
                       :to="$my.userLinkToProfile(currentPost.user_id)"
@@ -122,14 +122,14 @@
                                 class="text--h3"
                               >
                                 <span
-                                  v-show="currentPost.text.length>600"
+                                  v-show="currentPost.body.length>600"
                                 >
-                                  {{ currentPost.text.substring(0, 600)+'...' }}
+                                  {{ currentPost.body.substring(0, 600)+'...' }}
                                 </span>
                                 <span
-                                  v-show="currentPost.text.length<=600"
+                                  v-show="currentPost.body.length<=600"
                                 >
-                                  {{ currentPost.text }}
+                                  {{ currentPost.body }}
                                 </span>
                               </v-card-text>
                             </v-col>

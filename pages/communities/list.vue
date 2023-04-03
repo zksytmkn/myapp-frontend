@@ -68,14 +68,14 @@
                                 class="caption grey--text text--darken-1"
                               >
                                 <span
-                                  v-show="community.text.length>23"
+                                  v-show="community.description.length>23"
                                 >
-                                  {{ community.text.substring(0, 23)+'...'}}
+                                  {{ community.description.substring(0, 23)+'...'}}
                                 </span>
                                 <span
-                                  v-show="community.text.length<=23"
+                                  v-show="community.description.length<=23"
                                 >
-                                  {{ community.text }}
+                                  {{ community.description }}
                                 </span>
                               </v-card-text>
                             </v-row>

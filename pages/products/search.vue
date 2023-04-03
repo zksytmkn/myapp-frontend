@@ -78,7 +78,7 @@
                 >
                   <v-text-field
                     label="説明文"
-                    v-model="searched.text"
+                    v-model="searched.description"
                     outlined
                     dense
                   >
@@ -92,7 +92,7 @@
                 >
                   <v-select
                     label="種類"
-                    v-model="searched.type"
+                    v-model="searched.category"
                     :items="typeItems"
                     outlined
                     multiple
@@ -123,7 +123,7 @@
                     justify="center"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateProductSearchCondition', { name: searched.name, seller: searched.seller, text: searched.text, type: searched.type, prefecture: searched.prefecture })"
+                      @click="$store.dispatch('updateProductSearchCondition', { name: searched.name, seller: searched.seller, description: searched.description, category: searched.category, prefecture: searched.prefecture })"
                       class="font-weight-bold mt-3 mb-9"
                       color="teal"
                       dark
@@ -294,14 +294,14 @@
                 >
                   <v-card-text>
                     <span
-                      v-show="product.text.length>80"
+                      v-show="product.description.length>80"
                     >
-                      {{ product.text.substring(0, 80)+'...' }}
+                      {{ product.description.substring(0, 80)+'...' }}
                     </span>
                     <span
-                      v-show="product.text.length<=80"
+                      v-show="product.description.length<=80"
                     >
-                      {{ product.text }}
+                      {{ product.description }}
                     </span>
                   </v-card-text>
                   <v-card-title
@@ -426,7 +426,7 @@ export default {
       noImg,
       page: 1,
       pageSize: 10,
-      searched: { name: '', seller: '', text: '', type: [], prefecture: [] },
+      searched: { name: '', seller: '', description: '', category: [], prefecture: [] },
       typeItems: [
         '野菜',
         '果物'
@@ -489,8 +489,8 @@ export default {
       let copySearchedProducts = Array.from(this.$store.state.product.list).
       filter((x) => x.name.includes(searchCondition.name) && x.user.name.includes(searchCondition.seller))
 
-      if (searchCondition.type.length !== 0) {
-        copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.type.some(str => x.type.includes(str)))
+      if (searchCondition.category.length !== 0) {
+        copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.category.some(str => x.category.includes(str)))
       }
       if (searchCondition.prefecture.length !== 0) {
         copySearchedProducts = copySearchedProducts.filter((x) => searchCondition.prefecture.some(str => x.prefecture.includes(str)))
@@ -673,8 +673,8 @@ export default {
   mounted() {
     this.searched.name = this.$store.state.product.searchCondition.name
     this.searched.seller = this.$store.state.product.searchCondition.seller
-    this.searched.text = this.$store.state.product.searchCondition.text
-    this.searched.type = this.$store.state.product.searchCondition.type
+    this.searched.description = this.$store.state.product.searchCondition.description
+    this.searched.category = this.$store.state.product.searchCondition.category
     this.searched.prefecture = this.$store.state.product.searchCondition.prefecture
   }
 }

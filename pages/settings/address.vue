@@ -13,6 +13,7 @@
           <v-form
             ref="edit"
             v-model="isValid"
+            @submit.prevent="editAddress"
           >
             <v-list
               color="transparent"
@@ -69,7 +70,7 @@
                         justify="center"
                       >
                         <v-btn
-                          @click="editAddress"
+                          type="submit"
                           :disabled="!isValid || loading"
                           :loading="loading"
                           color="appblue"
@@ -127,12 +128,31 @@ export default {
       })
     },
     editAddress() {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('zipcode', this.inputted.zipcode)
-        formData.append('street', this.inputted.street)
-        formData.append('building', this.inputted.building)
+      this.loading = true
+      if (this.isValid) {
+        const asyncFunc = async() => {
+          const formData = new FormData()
+          formData.append('zipcode', this.inputted.zipcode)
+          formData.append('street', this.inputted.street)
+          formData.append('building', this.inputted.building)
+          await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData)
+          .then(response => {
+            const msg = '住所を変更しました'
+            const color = 'success'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          .catch(error => {
+            console.log(error)
+            const msg = '住所を変更できませんでした'
+            const color = 'error'
+            return this.$store.dispatch('getToast', { msg, color })
+          })
+          await this.$axios.$post('/api/v1/auth_token/refresh')
+          .then(response => this.$auth.login(response))
+        }
+        asyncFunc().finally(response => console.log(response))
       }
+      this.loading = false
     },
     formReset() {
       this.sentIt = false

@@ -148,18 +148,18 @@
                     outlined
                   >
                     <v-icon
-                      v-if="currentProduct.type === '野菜'"
+                      v-if="currentProduct.category === '野菜'"
                       left
                     >
                       mdi-seed-outline
                     </v-icon>
                     <v-icon
-                      v-if="currentProduct.type === '果物'"
+                      v-if="currentProduct.category === '果物'"
                       left
                     >
                       mdi-food-apple-outline
                     </v-icon>
-                    {{ currentProduct.type }}
+                    {{ currentProduct.category }}
                   </v-chip>
 
                   <v-chip
@@ -193,14 +193,14 @@
                   </v-card-subtitle>
                   <v-card-text>
                     <span
-                      v-show="currentProduct.text.length>300"
+                      v-show="currentProduct.description.length>300"
                     >
-                      {{ currentProduct.text.substring(0, 300)+'...' }}
+                      {{ currentProduct.description.substring(0, 300)+'...' }}
                     </span>
                     <span
-                      v-show="currentProduct.text.length<=300"
+                      v-show="currentProduct.description.length<=300"
                     >
-                      {{ currentProduct.text }}
+                      {{ currentProduct.description }}
                     </span>
                   </v-card-text>
                   <v-card-title

@@ -135,14 +135,14 @@
                 >
                   <v-card-text>
                     <span
-                      v-show="product.text.length>80"
+                      v-show="product.description.length>80"
                     >
-                      {{ product.text.substring(0, 80)+'...' }}
+                      {{ product.description.substring(0, 80)+'...' }}
                     </span>
                     <span
-                      v-show="product.text.length<=80"
+                      v-show="product.description.length<=80"
                     >
-                      {{ product.text }}
+                      {{ product.description }}
                     </span>
                   </v-card-text>
                   <v-card-title

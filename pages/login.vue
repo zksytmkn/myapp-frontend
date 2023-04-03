@@ -21,7 +21,7 @@
           />
           <v-card-actions>
             <nuxt-link
-              to="/auth/forget-password"
+              to="/auth/reset_password"
               class="body-2 text-decoration-none"
             >
               パスワードを忘れた？
@@ -82,15 +82,6 @@ export default {
         return this.$store.dispatch('getToast', { msg, color })
       }
       return this.$my.apiErrorHandler(response)
-    }
-  },
-  mounted: function() {
-    console.log('aaa')
-    console.log(document.referrer)
-    if (document.referrer.match(/mail/)) {
-      const msg = 'アカウントが有効化されました'
-      const color = 'success'
-      return this.$store.dispatch('getToast', { msg, color })
     }
   }
 }
