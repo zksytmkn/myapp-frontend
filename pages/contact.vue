@@ -88,25 +88,6 @@
                   </v-container>
                 </v-form>
               </v-col>
-              <v-snackbar
-                v-model="sentIt"
-                timeout="-1"
-                color="primary"
-              >
-                お問い合わせ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。
-                <template
-                  #action="{ attrs }"
-                >
-                  <v-btn
-                    color="white"
-                    text
-                    v-bind="attrs"
-                    @click="formReset"
-                  >
-                    Close
-                  </v-btn>
-                </template>
-              </v-snackbar>
             </v-row>
           </template>
         </v-card>
@@ -141,10 +122,23 @@ export default {
   methods: {
     onSend () {
       this.loading = true
-      setTimeout(() => {
+      this.$axios.post('/api/v1/contacts', {
+        name: this.name,
+        email: this.email,
+        contents: this.contents
+      }).then(() => {
         this.loading = false
         this.sentIt = true
-      }, 1500)
+        const msg = 'お問い合わせ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。'
+        const color = 'success'
+        this.$store.dispatch('getToast', { msg, color })
+      }).catch((error) => {
+        this.loading = false
+        console.error('Error sending contact form:', error)
+        const msg = 'お問い合わせの送信中にエラーが発生しました。'
+        const color = 'error'
+        this.$store.dispatch('getToast', { msg, color })
+      })
     },
     formReset () {
       this.sentIt = false
