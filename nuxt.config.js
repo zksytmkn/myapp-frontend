@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'path';
 
-export default {
+const config = {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
@@ -110,3 +110,5 @@ export default {
     }
   }
 }
+
+export default config;
