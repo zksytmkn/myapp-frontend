@@ -160,6 +160,7 @@
                       style="width:80%;"
                     >
                       <v-select
+                        v-show="product.stock"
                         :value="product.quantity"
                         @change="quantity => $store.dispatch('getProductQuantity', { id: product.id, quantity: quantity })" 
                         class="mt-6"
@@ -170,14 +171,14 @@
                         outlined
                       >
                       </v-select>
-                      <v-card-text
-                        class="px-0 pt-0 font-weight-bold"
-                        style="color:#CC0000;"
-                        v-show="!product.stock"
-                      >
-                        ＊在庫が残っておりません。
-                      </v-card-text>
                     </v-card-actions>
+                    <v-card-text
+                      class="px-0 font-weight-bold"
+                      style="color:#CC0000;"
+                      v-show="!product.stock"
+                    >
+                      ＊在庫が残っておりません。
+                    </v-card-text>
                     <v-card-actions
                       class="pa-0"
                       style="width:80%;"
