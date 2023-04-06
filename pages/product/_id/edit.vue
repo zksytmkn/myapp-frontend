@@ -1,172 +1,122 @@
 <template>
-  <div
-    class="mb-10"
-  >
+  <div class="mb-10">
     <v-container>
-      <v-list
-        color="transparent"
-      >
+      <v-list color="transparent">
         <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title
-              class="font-weight-bold"
-            >
-              編集
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title class="font-weight-bold">
+            編集
+          </v-list-item-title>
         </v-list-item>
       </v-list>
       <v-divider/>
     </v-container>
 
     <v-container>
-      <v-row
-        justify="center"
-      >
-        <v-col
-          cols="12"
-        >
+      <v-row justify="center">
+        <v-col cols="12">
           <v-card>
             <v-form
               ref="edit"
-              v-model="isValid"
+              v-model="valid"
               @submit.prevent="editProduct($store.state.product.current.id)"
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="font-weight-bold"
-                    >
-                      農産物
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title class="font-weight-bold">
+                    農産物
+                  </v-list-item-title>
                 </v-list-item>
-  
+
                 <v-divider/>
-  
+
                 <v-list-item>
                   <v-container>
-                    <v-row
-                      justify="center"
-                    >
-                      <v-col
-                        cols="11"
-                        class="mt-9"
-                      >
-                        <v-img
-                          :src="url"
-                          height=300px
-                          width=300px
-                        >
-                        </v-img>
+                    <v-row justify="center">
+                      <v-col cols="11" class="mt-9">
+                        <v-img :src="url" height="300px" width="300px"></v-img>
                         <v-file-input
+                          v-model="inp.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
                           label="画像ファイル"
-                          v-model="inputted.image"
-                        >
-                        </v-file-input>
+                        ></v-file-input>
                       </v-col>
-                      <v-col
-                        cols="11"
-                      >
+                      <v-col cols="11">
                         <v-text-field
+                          v-model="inp.name"
                           dense
                           outlined
                           label="名前"
                           :rules="nameRules"
                           :disabled="sentIt"
-                          v-model="inputted.name"
-                        >
-                        </v-text-field>
+                        ></v-text-field>
                       </v-col>
-                      <v-col
-                        cols="11"
-                      >
+                      <v-col cols="11">
                         <v-select
+                          v-model="inp.category"
                           dense
                           outlined
                           label="種類"
                           :items="categoryItems"
                           :rules="categoryRules"
                           :disabled="sentIt"
-                          v-model="inputted.category"
-                        >
-                        </v-select>
+                        ></v-select>
                       </v-col>
-                      <v-col
-                        cols="11"
-                      >
+                      <v-col cols="11">
                         <v-select
+                          v-model="inp.prefecture"
                           dense
                           outlined
                           label="都道府県"
                           :items="prefectureItems"
                           :rules="prefectureRules"
                           :disabled="sentIt"
-                          v-model="inputted.prefecture"
-                        >
-                        </v-select>
+                        ></v-select>
                       </v-col>
-                      <v-col
-                        cols="11"
-                      >
+
+                      <v-col cols="11">
                         <v-row>
-                          <v-col
-                            cols="6"
-                          >
+                          <v-col cols="6">
                             <v-text-field
+                              v-model="inp.price"
                               dense
                               outlined
                               label="価格"
                               type="number"
                               :rules="priceRules"
                               :disabled="sentIt"
-                              v-model="inputted.price"
-                            >
-                            </v-text-field>
+                            ></v-text-field>
                           </v-col>
-                          <v-col
-                            cols="6"
-                          >
+                          <v-col cols="6">
                             <v-text-field
+                              v-model="inp.stock"
                               dense
                               outlined
                               label="数量"
                               type="number"
                               :rules="stockRules"
                               :disabled="sentIt"
-                              v-model="inputted.stock"
-                            >
-                            </v-text-field>
+                            ></v-text-field>
                           </v-col>
                         </v-row>
                       </v-col>
-                      <v-col
-                        cols="11"
-                      >
+                      <v-col cols="11">
                         <v-textarea
+                          v-model="inp.description"
                           dense
                           outlined
                           label="説明文"
-                          :rules="descriptionRules"
+                          :rules="descRules"
                           :disabled="sentIt"
-                          v-model="inputted.description"
-                        >
-                        </v-textarea>
+                        ></v-textarea>
                       </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-row
-                          justify="center"
-                        >
+                      <v-col cols="11">
+                        <v-row justify="center">
                           <v-btn
                             type="submit"
-                            :disabled="!isValid || loading"
+                            :disabled="!valid || loading"
                             :loading="loading"
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
@@ -174,10 +124,7 @@
                             農産物を編集する
                           </v-btn>
 
-                          <v-btn
-                            text
-                            @click="formReset"
-                          >
+                          <v-btn text @click="formReset">
                             キャンセル
                           </v-btn>
                         </v-row>
@@ -199,43 +146,41 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
-  data () {
-    const nameMax = 13
-    const descriptionMax = 300
+  data() {
+    const nameMax = 13;
+    const descMax = 300;
     return {
       noImg,
-      isValid: false,
+      valid: false,
       loading: false,
       imgRules: [
-        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
+        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!',
       ],
       nameRules: [
         nameMax,
         v => !!v || '',
-        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
+        v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`,
       ],
-      categoryRules: [
-        v => !!v || '種類を選択してください'
-      ],
-      prefectureRules: [
-        v => !!v || '都道府県を選択してください'
-      ],
-      priceRules: [
-        v => !!v || '価格を入力してください'
-      ],
-      stockRules: [
-        v => !!v || '数量を入力してください'
-      ],
-      descriptionRules: [
-        descriptionMax,
+      categoryRules: [v => !!v || '種類を選択してください'],
+      prefectureRules: [v => !!v || '都道府県を選択してください'],
+      priceRules: [v => !!v || '価格を入力してください'],
+      stockRules: [v => v > 0 || '数量を入力してください'],
+      descRules: [
+        descMax,
         v => !!v || '',
-        v => (!!v && descriptionMax >= v.length) || `${descriptionMax}文字以内で入力してください`
+        v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`,
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, category: '', prefecture: '', price: null, stock: null, description: '', image: null },
-      categoryItems: [
-        '野菜',
-        '果物'
-      ],
+      inp: {
+        name: '',
+        user_id: this.$auth.user.id,
+        category: '',
+        prefecture: '',
+        price: null,
+        stock: null,
+        description: '',
+        image: null,
+      },
+      categoryItems: ['野菜', '果物'],
       prefectureItems: [
         '北海道',
         '青森県',
@@ -289,65 +234,53 @@ export default {
   },
   computed: {
     url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.product.current.image_url ? this.$store.state.product.current.image_url : noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
+      if (!this.inp.image) {
+        return this.$store.state.product.current.image_url || noImg;
       }
-    }
+      return URL.createObjectURL(this.inp.image);
+    },
+  },
+
+  mounted() {
+    const product = this.$store.state.product.current;
+    Object.keys(this.inp).forEach(key => {
+      if (key in product) {
+        this.inp[key] = product[key];
+      }
+    });
   },
   methods: {
     async editProduct(id) {
-      this.loading = true
-      if (this.isValid) {
-        const formData = new FormData()
-        formData.append('name', this.inputted.name)
-        formData.append('user_id', this.inputted.user_id)
-        formData.append('category', this.inputted.category)
-        formData.append('prefecture', this.inputted.prefecture)
-        formData.append('price', this.inputted.price)
-        formData.append('stock', this.inputted.stock)
-        formData.append('description', this.inputted.description)
-        if (this.inputted.image !== null) {
-          formData.append('image', this.inputted.image)
-        }
+      this.loading = true;
+      if (this.valid) {
+        const formData = new FormData();
+        Object.keys(this.inp).forEach(key => {
+          if (key !== 'img' || (key === 'img' && this.inp[key] !== null)) {
+            formData.append(key, this.inp[key]);
+          }
+        });
+
         const config = {
           header: {
-            "Content-Type": "multipart/form-data"
-          }
+            "Content-Type": "multipart/form-data",
+          },
+        };
+
+        try {
+          await this.$axios.$patch(`/api/v1/products/${id}`, formData, config);
+          this.$router.back();
+          this.$store.dispatch('getToast', { msg: '農産物を編集しました', color: 'success' });
+        } catch (error) {
+          this.$store.dispatch('getToast', { msg: '農産物を編集できませんでした', color: 'error' });
         }
-        await this.$axios.$patch(`/api/v1/products/${id}`, formData, config)
-        .then(response => {
-          this.$router.back()
-          const msg = '農産物を編集しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = '農産物を編集できませんでした'
-          const color = 'error'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
       }
-      this.loading = false
+      this.loading = false;
     },
+
     formReset() {
-      this.sentIt = false
-      this.$refs.edit.reset()
-    }
+      this.sentIt = false;
+      this.$refs.edit.reset();
+    },
   },
-  mounted() {
-    this.inputted.name = this.$store.state.product.current.name
-    this.inputted.category = this.$store.state.product.current.category
-    this.inputted.prefecture = this.$store.state.product.current.prefecture
-    this.inputted.price = this.$store.state.product.current.price
-    this.inputted.stock = this.$store.state.product.current.stock
-    this.inputted.description = this.$store.state.product.current.description
-  }
-}
+};
 </script>
-
-
-<style lang="scss">
-</style>
