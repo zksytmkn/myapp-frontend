@@ -280,7 +280,7 @@
 </template>
 
 <script>
-import noImg from '~/assets/images/logged-in/no.png'
+import noImg from '@/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',

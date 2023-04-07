@@ -164,7 +164,7 @@ export default {
       categoryRules: [v => !!v || '種類を選択してください'],
       prefectureRules: [v => !!v || '都道府県を選択してください'],
       priceRules: [v => !!v || '価格を入力してください'],
-      stockRules: [v => v > 0 || '数量を入力してください'],
+      stockRules: [v => (v > 0 && Number.isInteger(v)) || '数量を入力してください'],
       descRules: [
         descMax,
         v => !!v || '',
