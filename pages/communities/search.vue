@@ -54,9 +54,9 @@
                   md="9"
                 >
                   <v-text-field
+                    v-model="searched.name"
                     class="mt-10"
                     label="名前"
-                    v-model="searched.name"
                     outlined
                     dense
                   >
@@ -69,8 +69,8 @@
                   md="9"
                 >
                   <v-text-field
-                    label="作成者"
                     v-model="searched.maker"
+                    label="作成者"
                     outlined
                     dense
                   >
@@ -83,8 +83,8 @@
                   md="9"
                 >
                   <v-text-field
-                    label="紹介文"
                     v-model="searched.description"
+                    label="紹介文"
                     outlined
                     dense
                   >
@@ -98,10 +98,10 @@
                     justify="center"
                   >
                     <v-btn
-                      @click="$store.dispatch('updateCommunitySearchCondition', { name: searched.name, maker: searched.maker, description: searched.description })"
                       class="font-weight-bold mt-3 mb-9"
                       color="teal"
                       dark
+                      @click="$store.dispatch('updateCommunitySearchCondition', { name: searched.name, maker: searched.maker, description: searched.description })"
                     >
                       コミュニティを検索する
                     </v-btn>
@@ -160,7 +160,7 @@
                     align="center"
                   >
                     <v-col
-                      v-for="(community, i) in searchedCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+                      v-for="(community, i) in searchedCommunities.slice(pageSize*(page-1),pageSize*(page))"
                       :key="`card-community-${i}`"
                       cols="12"
                       :sm="card.sm"
@@ -221,10 +221,10 @@
     </v-container>
 
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="searchedCommunities.length"
-      :length="Math.ceil(this.searchedCommunities.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(searchedCommunities.length/pageSize)"
       circle
     >
     </v-pagination>

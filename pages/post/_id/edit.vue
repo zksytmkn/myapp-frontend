@@ -68,12 +68,12 @@
                         >
                         </v-img>
                         <v-file-input
+                          v-model="inputted.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
                           label="画像ファイル"
-                          v-model="inputted.image"
                         >
                         </v-file-input>
                       </v-col>
@@ -81,10 +81,10 @@
                         cols="11"
                       >
                         <v-text-field
+                          v-model="inputted.name"
                           dense
                           outlined
                           label="タイトル"
-                          v-model="inputted.name"
                           :rules="titleRules"
                           :disabled="sentIt"
                         >
@@ -94,10 +94,10 @@
                         cols="11"
                       >
                         <v-textarea
+                          v-model="inputted.body"
                           dense
                           outlined
                           label="つぶやき"
-                          v-model="inputted.body"
                           :rules="bodyRules"
                           :disabled="sentIt"
                         >
@@ -176,6 +176,10 @@ export default {
       }
     }
   },
+  mounted() {
+    this.inputted.title = this.$store.state.post.current.title
+    this.inputted.body = this.$store.state.post.current.body
+  },
   methods: {
     async editPost(id) {
       this.loading = true
@@ -212,10 +216,6 @@ export default {
       this.sentIt = false
       this.$refs.edit.reset()
     }
-  },
-  mounted() {
-    this.inputted.title = this.$store.state.post.current.title
-    this.inputted.body = this.$store.state.post.current.body
   }
 }
 </script>

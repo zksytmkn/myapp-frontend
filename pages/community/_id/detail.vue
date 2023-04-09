@@ -145,16 +145,16 @@
                     <span
                       class="font-weight-bold"
                     >
-                      参加人数：{{ this.$store.state.community.current.participation.length }}人
+                      参加人数：{{ $store.state.community.current.participation.length }}人
                     </span>
                     <br/>
                     <span
-                      v-show="!this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="!$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                     >
                       ＊ご自由に参加していただけます。
                     </span>
                     <span
-                      v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                     >
                       ＊ご参加済みです。
                     </span>
@@ -164,28 +164,28 @@
                   >
                     <logged-in-app-community-member />
                     <v-btn
-                      @click="participateInCommunity(currentCommunity.id, $auth.user.id)"
-                      v-show="!this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="!$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
                       block
                       dark
+                      @click="participateInCommunity(currentCommunity.id, $auth.user.id)"
                     >
                       コミュニティに参加する
                     </v-btn>
                     <v-btn
-                      @click="withdrawCommunity(currentCommunity.id)"
-                      v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+                      v-show="$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                       class="font-weight-bold ml-2"
                       color="teal"
                       block
                       dark
+                      @click="withdrawCommunity(currentCommunity.id)"
                     >
                       コミュニティを退会する
                     </v-btn>
                   </v-card-actions>
                   <v-card-actions
-                    v-show="this.$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+                    v-show="$store.state.community.participation.some(community => community.id === currentCommunity.id)"
                     style="width:59.6%;"
                   >
                     <v-menu
@@ -195,7 +195,7 @@
                       max-width="200"
                     >
                       <template
-                        v-slot:activator="{ on }"
+                        #activator="{ on }"
                       >
                         <v-btn
                           class ="font-weight-bold"
@@ -281,7 +281,7 @@
                     max-width="200"
                   >
                     <template
-                      v-slot:activator="{ on }"
+                      #activator="{ on }"
                     >
                       <v-btn
                         icon
@@ -346,12 +346,12 @@
                         cols="11"
                       >
                         <v-textarea
+                          v-model="inputted.message"
                           dense
                           outlined
                           hide-details="auto"
                           rows="2"
                           placeholder="メッセージを追加する"
-                          v-model="inputted.message"
                           :rules="messageRules"
                           :disabled="sentIt"
                         >
@@ -368,8 +368,8 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            @click="addCommunityMessage(currentCommunity.id)"
                             :disabled="!isValid"
+                            @click="addCommunityMessage(currentCommunity.id)"
                           >
                             送信する
                           </v-btn>
@@ -408,6 +408,43 @@ export default {
         v => !!v || ''
       ],
       inputted: { message: '', communityId: this.$store.state.community.current.community.id, userId: this.$auth.user.id }
+    }
+  },
+  computed: {
+    currentCommunity() {
+      const copyCommunity = this.$store.state.community.current.community
+      return copyCommunity
+    },
+    messages() {
+      const copyMessages = Array.from(this.$store.state.community.message)
+      return copyMessages.sort((a, b) => {
+        if (a.created_at < b.created_at) { return -1 }
+        if (a.created_at > b.created_at) { return 1 }
+        return 0
+      })
+    },
+    dateFormat() {
+      return (date) => {
+        const dateTimeFormat = new Intl.DateTimeFormat(
+          'ja', { dateStyle: 'medium' }
+        )
+        return dateTimeFormat.format(new Date(date))
+      }
+    },
+    allUsers() {
+      const participatedUser = this.$store.state.community.current.participation
+      const invitedUser = this.$store.state.community.current.invited
+      const excludedUser = participatedUser.concat(invitedUser)
+      const copyAllUsers = Array.from(this.$store.state.user.list.filter(function(user, index, array) {
+        return !excludedUser.some(function(excluded) {
+          return excluded.id === user.id
+        })
+      }))
+      return copyAllUsers
+    },
+    invitingUser() {
+      const copyInvitingUser = this.$store.state.community.current.inviting
+      return copyInvitingUser
     }
   },
   methods: {
@@ -557,43 +594,6 @@ export default {
         })
       }
       asyncFunc().finally(response => console.log(response))
-    }
-  },
-  computed: {
-    currentCommunity() {
-      const copyCommunity = this.$store.state.community.current.community
-      return copyCommunity
-    },
-    messages() {
-      const copyMessages = Array.from(this.$store.state.community.message)
-      return copyMessages.sort((a, b) => {
-        if (a.created_at < b.created_at) { return -1 }
-        if (a.created_at > b.created_at) { return 1 }
-        return 0
-      })
-    },
-    dateFormat() {
-      return (date) => {
-        const dateTimeFormat = new Intl.DateTimeFormat(
-          'ja', { dateStyle: 'medium' }
-        )
-        return dateTimeFormat.format(new Date(date))
-      }
-    },
-    allUsers() {
-      const participatedUser = this.$store.state.community.current.participation
-      const invitedUser = this.$store.state.community.current.invited
-      const excludedUser = participatedUser.concat(invitedUser)
-      const copyAllUsers = Array.from(this.$store.state.user.list.filter(function(user, index, array) {
-        return !excludedUser.some(function(excluded) {
-          return excluded.id === user.id
-        })
-      }))
-      return copyAllUsers
-    },
-    invitingUser() {
-      const copyInvitingUser = this.$store.state.community.current.inviting
-      return copyInvitingUser
     }
   }
 }

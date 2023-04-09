@@ -66,12 +66,12 @@
                         >
                         </v-img>
                         <v-file-input
+                          v-model="inputted.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
                           label="画像ファイル"
-                          v-model="inputted.image"
                         >
                         </v-file-input>
                       </v-col>
@@ -79,10 +79,10 @@
                         cols="11"
                       >
                         <v-text-field
+                          v-model="inputted.title"
                           dense
                           outlined
                           label="タイトル"
-                          v-model="inputted.title"
                           :rules="titleRules"
                           :disabled="sentIt"
                         >
@@ -92,10 +92,10 @@
                         cols="11"
                       >
                         <v-textarea
+                          v-model="inputted.body"
                           dense
                           outlined
                           label="つぶやき"
-                          v-model="inputted.body"
                           :rules="bodyRules"
                           :disabled="sentIt"
                         >
@@ -178,12 +178,12 @@
           <v-data-table
             v-show="newPosts.length"
             :headers="tableHeaders"
-            :items="newPosts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+            :items="newPosts.slice(pageSize*(page-1),pageSize*(page))"
             item-key="id"
             hide-default-footer
           >
             <template
-              v-slot:[`item.title`]="{ item }"
+              #[`item.title`]="{ item }"
             >
               <nuxt-link
                 :to="$my.postLinkToDetail(item.id)"
@@ -202,7 +202,7 @@
               </nuxt-link>
             </template>
             <template
-              v-slot:[`item.text`]="{ item }"
+              #[`item.text`]="{ item }"
             >
               <span
                 v-show="item.body.length>37"
@@ -216,17 +216,17 @@
               </span>
             </template>
             <template
-              v-slot:[`item.like`] = "{ item }"
+              #[`item.like`] = "{ item }"
             >
               <v-btn
                 v-show="!$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                @click="addPostFavorite(item.id)"
                 :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
                 class="ml-0"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="addPostFavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-up
@@ -234,13 +234,13 @@
               </v-btn>
               <v-btn
                 v-show="$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                @click="deletePostFavorite(item.id)"
                 :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
                 class="ml-0"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="deletePostFavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-up
@@ -253,13 +253,13 @@
               </span>
               <v-btn
                 v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                @click="addPostUnfavorite(item.id)"
                 :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                 class="ml-2"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="addPostUnfavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-down
@@ -267,13 +267,13 @@
               </v-btn>
               <v-btn
                 v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                @click="deletePostUnfavorite(item.id)"
                 :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                 class="ml-2"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="deletePostUnfavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-down
@@ -286,7 +286,7 @@
               </span>
             </template>
             <template
-              v-slot:[`item.updatedAt`]="{ item }"
+              #[`item.updatedAt`]="{ item }"
             >
               {{ $my.dataFormat(item.updated_at) }}
             </template>
@@ -295,10 +295,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="newPosts.length"
-      :length="Math.ceil(this.newPosts.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(newPosts.length/pageSize)"
       circle
     >
     </v-pagination>

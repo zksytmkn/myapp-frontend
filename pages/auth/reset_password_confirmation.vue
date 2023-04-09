@@ -13,7 +13,7 @@
         v-model="isValid"
         @submit.prevent="resetPassword"
       >
-        <input type="hidden" v-model="params.token" />
+        <input v-model="params.token" type="hidden" />
         <user-form-password
           :password.sync="params.password"
         />
@@ -42,10 +42,10 @@ import { isPasswordValid } from "@/utils/passwordValidator.js"
 import UserFormPassword from "@/components/User/UserFormPassword.vue"
 
 export default {
-  layout: 'before-login',
   components: {
     UserFormPassword,
   },
+  layout: 'before-login',
   data() {
     return {
       isValid: false,

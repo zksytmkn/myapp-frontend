@@ -56,7 +56,7 @@
                         max-width="200"
                       >
                         <template
-                          v-slot:activator="{ on }"
+                          #activator="{ on }"
                         >
                           <v-btn
                             icon
@@ -144,13 +144,13 @@
                     <v-card-actions>
                       <v-btn
                         v-show="!$store.state.post.favorite.some(favorite => favorite.id === currentPost.id)"
-                        @click="addPostFavorite(currentPost.id)"
-                        :class="{ likeColor: this.$store.state.post.favorite.some(favorite => favorite.id === currentPost.id) }"
+                        :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === currentPost.id) }"
                         class="ml-0"
                         style="background:grey"
                         fab
                         dark
                         x-small
+                        @click="addPostFavorite(currentPost.id)"
                       >
                         <v-icon>
                           mdi-thumb-up
@@ -158,13 +158,13 @@
                       </v-btn>
                       <v-btn
                         v-show="$store.state.post.favorite.some(favorite => favorite.id === currentPost.id)"
-                        @click="deletePostFavorite(currentPost.id)"
-                        :class="{ likeColor: this.$store.state.post.favorite.some(favorite => favorite.id === currentPost.id) }"
+                        :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === currentPost.id) }"
                         class="ml-0"
                         style="background:grey"
                         fab
                         dark
                         x-small
+                        @click="deletePostFavorite(currentPost.id)"
                       >
                         <v-icon>
                           mdi-thumb-up
@@ -177,13 +177,13 @@
                       </span>
                       <v-btn
                         v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id)"
-                        @click="addPostUnfavorite(currentPost.id)"
-                        :class="{ dislikeColor: this.$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id) }"
+                        :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id) }"
                         class="ml-2"
                         style="background:grey"
                         fab
                         dark
                         x-small
+                        @click="addPostUnfavorite(currentPost.id)"
                       >
                         <v-icon>
                           mdi-thumb-down
@@ -191,13 +191,13 @@
                       </v-btn>
                       <v-btn
                         v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id)"
-                        @click="deletePostUnfavorite(currentPost.id)"
-                        :class="{ dislikeColor: this.$store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id) }"
+                        :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === currentPost.id) }"
                         class="ml-2"
                         style="background:grey"
                         fab
                         dark
                         x-small
+                        @click="deletePostUnfavorite(currentPost.id)"
                       >
                         <v-icon>
                           mdi-thumb-down
@@ -209,10 +209,10 @@
                         {{ $store.state.post.unfavorites.filter(unfavorites => unfavorites.post_id === currentPost.id).length }}
                       </span>
                       <v-btn
-                        @click="comment = !comment"
                         class="ml-2"
                         text
                         x-small
+                        @click="comment = !comment"
                       >
                         <v-icon>
                           mdi-comment-outline
@@ -277,7 +277,7 @@
                     max-width="200"
                   >
                     <template
-                      v-slot:activator="{ on }"
+                      #activator="{ on }"
                     >
                       <v-btn
                         icon
@@ -342,12 +342,12 @@
                         cols="11"
                       >
                         <v-textarea
+                          v-model="inputted.comment"
                           dense
                           outlined
                           hide-details="auto"
                           rows="2"
                           placeholder="コメントを追加する"
-                          v-model="inputted.comment"
                           :rules="commentRules"
                           :disabled="sentIt"
                         >
@@ -364,8 +364,8 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            @click="addPostComment(currentPost.id)"
                             :disabled="!isValid"
+                            @click="addPostComment(currentPost.id)"
                           >
                             コメントする
                           </v-btn>
@@ -404,6 +404,28 @@ export default {
         v => !!v || ''
       ],
       inputted: { comment: '', postId: this.$store.state.post.current.id, userId: this.$auth.user.id }
+    }
+  },
+  computed: {
+    currentPost() {
+      const copyPost = this.$store.state.post.current
+      return copyPost
+    },
+    comments() {
+      const copyComments = Array.from(this.$store.state.post.comment)
+      return copyComments.sort((a, b) => {
+        if (a.created_at < b.created_at) { return -1 }
+        if (a.created_at > b.created_at) { return 1 }
+        return 0
+      })
+    },
+    dateFormat() {
+      return (date) => {
+        const dateTimeFormat = new Intl.DateTimeFormat(
+          'ja', { dateStyle: 'medium' }
+        )
+        return dateTimeFormat.format(new Date(date))
+      }
     }
   },
   methods: {
@@ -554,28 +576,6 @@ export default {
         })
       }
       asyncFunc().finally(response => console.log(response))
-    }
-  },
-  computed: {
-    currentPost() {
-      const copyPost = this.$store.state.post.current
-      return copyPost
-    },
-    comments() {
-      const copyComments = Array.from(this.$store.state.post.comment)
-      return copyComments.sort((a, b) => {
-        if (a.created_at < b.created_at) { return -1 }
-        if (a.created_at > b.created_at) { return 1 }
-        return 0
-      })
-    },
-    dateFormat() {
-      return (date) => {
-        const dateTimeFormat = new Intl.DateTimeFormat(
-          'ja', { dateStyle: 'medium' }
-        )
-        return dateTimeFormat.format(new Date(date))
-      }
     }
   }
 }

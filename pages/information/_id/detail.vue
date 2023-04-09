@@ -85,9 +85,9 @@
                                     お届け先：〒{{ currentOrder.order.zipcode }}
                                     {{ currentOrder.order.street }} {{ currentOrder.order.building }}
                                     <span
+                                      v-show="currentOrder.status==='confirm_payment'"
                                       class="black--text"
                                       style="white-space:normal;"
-                                      v-show="currentOrder.status==='confirm_payment'"
                                     >
                                       入金済み（出荷待ち）
                                       <v-icon
@@ -97,9 +97,9 @@
                                       </v-icon>
                                     </span>
                                     <span
+                                      v-show="currentOrder.status==='shipped'"
                                       class="black--text"
                                       style="white-space:normal;"
-                                      v-show="currentOrder.status==='shipped'"
                                     >
                                       出荷済み（配送待ち）
                                       <v-icon
@@ -109,9 +109,9 @@
                                       </v-icon>
                                     </span>
                                     <span
+                                      v-show="currentOrder.status==='out_for_delivery'"
                                       class="black--text"
                                       style="white-space:normal;"
-                                      v-show="currentOrder.status==='out_for_delivery'"
                                     >
                                       配送中（配達待ち）
                                       <v-icon
@@ -121,9 +121,9 @@
                                       </v-icon>
                                     </span>
                                     <span
+                                      v-show="currentOrder.status==='delivered'"
                                       class="black--text"
                                       style="white-space:normal;"
-                                      v-show="currentOrder.status==='delivered'"
                                     >
                                       配達済み
                                       <v-icon
@@ -135,28 +135,28 @@
                                     <br/>
                                     <v-btn
                                       v-show="currentOrder.status==='confirm_payment' && currentOrder.product.user_id === $auth.user.id"
-                                      @click="ship(currentOrder.id)"
                                       class="font-weight-bold mt-3"
                                       color="teal"
                                       dark
+                                      @click="ship(currentOrder.id)"
                                     >
                                       出荷しました
                                     </v-btn>
                                     <v-btn
                                       v-show="currentOrder.status==='shipped' && currentOrder.product.user_id === $auth.user.id"
-                                      @click="deliver(currentOrder.id)"
                                       class="font-weight-bold mt-3"
                                       color="teal"
                                       dark
+                                      @click="deliver(currentOrder.id)"
                                     >
                                       配送しました
                                     </v-btn>
                                     <v-btn
                                       v-show="currentOrder.status==='out_for_delivery' && currentOrder.order.user_id === $auth.user.id"
-                                      @click="delivered(currentOrder.id)"
                                       class="font-weight-bold mt-3"
                                       color="teal"
                                       dark
+                                      @click="delivered(currentOrder.id)"
                                     >
                                       配達されました
                                     </v-btn>
@@ -208,14 +208,32 @@ import InfoMenu from '~/components/Information/InfoMenu'
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout:"logged-in",
-  middleware: 'get-order-current',
   components: {
     InfoMenu
   },
+  layout:"logged-in",
+  middleware: 'get-order-current',
   data () {
     return {
       noImg
+    }
+  },
+  computed: {
+    currentOrder() {
+      const copyCurrentOrder = this.$store.state.order.current
+      return copyCurrentOrder
+    },
+    currentOrderProduct() {
+      const copyCurrentOrderProduct = Array.from(this.$store.state.product.list.filter(product => product.id === this.$store.state.order.current.product_id))
+      return copyCurrentOrderProduct
+    },
+    dateFormat() {
+      return (date) => {
+        const dateTimeFormat = new Intl.DateTimeFormat(
+          'ja', { dateStyle: 'medium' }
+        )
+        return dateTimeFormat.format(new Date(date))
+      }
     }
   },
   methods: {
@@ -254,24 +272,6 @@ export default {
         .then(order => this.$store.dispatch('getCurrentOrder', order))
       }
       asyncFunc().finally(response => console.log(response))
-    }
-  },
-  computed: {
-    currentOrder() {
-      const copyCurrentOrder = this.$store.state.order.current
-      return copyCurrentOrder
-    },
-    currentOrderProduct() {
-      const copyCurrentOrderProduct = Array.from(this.$store.state.product.list.filter(product => product.id === this.$store.state.order.current.product_id))
-      return copyCurrentOrderProduct
-    },
-    dateFormat() {
-      return (date) => {
-        const dateTimeFormat = new Intl.DateTimeFormat(
-          'ja', { dateStyle: 'medium' }
-        )
-        return dateTimeFormat.format(new Date(date))
-      }
     }
   }
 }

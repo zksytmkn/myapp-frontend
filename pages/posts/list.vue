@@ -30,12 +30,12 @@
         >
           <v-data-table
             :headers="tableHeaders"
-            :items="posts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+            :items="posts.slice(pageSize*(page-1),pageSize*(page))"
             item-key="id"
             hide-default-footer
           >
             <template
-              v-slot:[`item.title`]="{ item }"
+              #[`item.title`]="{ item }"
             >
               <nuxt-link
                 :to="$my.postLinkToDetail(item.id)"
@@ -54,7 +54,7 @@
               </nuxt-link>
             </template>
             <template
-              v-slot:[`item.text`]="{ item }"
+              #[`item.text`]="{ item }"
             >
               <span
                 v-show="item.body.length>37"
@@ -68,17 +68,17 @@
               </span>
             </template>
             <template
-              v-slot:[`item.like`] = "{ item }"
+              #[`item.like`] = "{ item }"
             >
               <v-btn
                 v-show="!$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                @click="addPostFavorite(item.id)"
                 :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
                 class="ml-0"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="addPostFavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-up
@@ -86,13 +86,13 @@
               </v-btn>
               <v-btn
                 v-show="$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                @click="deletePostFavorite(item.id)"
                 :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
                 class="ml-0"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="deletePostFavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-up
@@ -105,13 +105,13 @@
               </span>
               <v-btn
                 v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                @click="addPostUnfavorite(item.id)"
                 :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                 class="ml-2"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="addPostUnfavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-down
@@ -119,13 +119,13 @@
               </v-btn>
               <v-btn
                 v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                @click="deletePostUnfavorite(item.id)"
                 :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                 class="ml-2"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="deletePostUnfavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-down
@@ -138,7 +138,7 @@
               </span>
             </template>
             <template
-              v-slot:[`item.updatedAt`]="{ item }"
+              #[`item.updatedAt`]="{ item }"
             >
               {{ $my.dataFormat(item.updated_at) }}
             </template>
@@ -147,10 +147,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="posts.length"
-      :length="Math.ceil(this.posts.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(posts.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -195,6 +195,16 @@ export default {
           value: 'updatedAt'
         }
       ]
+    }
+  },
+  computed: {
+    posts () {
+      const copyPosts = Array.from(this.$store.state.post.list)
+      return copyPosts.sort((a, b) => {
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
+        return 0
+      })
     }
   },
   methods: {
@@ -281,16 +291,6 @@ export default {
         })
       }
       asyncFunc().finally(response => console.log(response))
-    }
-  },
-  computed: {
-    posts () {
-      const copyPosts = Array.from(this.$store.state.post.list)
-      return copyPosts.sort((a, b) => {
-        if (a.created_at > b.created_at) { return -1 }
-        if (a.created_at < b.created_at) { return 1 }
-        return 0
-      })
     }
   }
 }

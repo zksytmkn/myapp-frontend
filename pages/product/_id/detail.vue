@@ -1,13 +1,11 @@
 <template>
   <div class="mb-10">
     <v-container>
-      <v-list color="transparent">
-        <v-list-item>
-          <v-list-item-title class="font-weight-bold">
-            詳細
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
+      <v-list-item>
+        <v-list-item-title class="font-weight-bold">
+          詳細
+        </v-list-item-title>
+      </v-list-item>
       <v-divider/>
     </v-container>
     <v-container>
@@ -43,40 +41,40 @@
                   </v-card-title>
                   <v-card-actions class="pa-1">
                     <div v-for="actionType in ['favorites', 'unfavorites']" :key="actionType + 'Wrapper'">
-      <div>
-        <v-btn
-          v-if="isNotRegistered(actionType)"
-          :key="actionType + 'Btn'"
-          :class="buttonClass(actionType)"
-          class="ml-0"
-          fab
-          dark
-          x-small
-          @click="() => handleFavorites(currentProduct.id, actionType, 'post')"
-        >
-          <v-icon>
-            {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-          </v-icon>
-        </v-btn>
-        <v-btn
-          v-else
-          :key="actionType + 'BtnElse'"
-          :class="buttonClass(actionType)"
-          class="ml-0"
-          fab
-          dark
-          x-small
-          @click="() => handleFavorites(currentProduct.id, actionType, 'delete')"
-        >
-          <v-icon>
-            {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-          </v-icon>
-        </v-btn>
-        <span :key="actionType + 'Count'" class="font-weight-bold ml-1 mr-3">
-          {{ $store.state.product[actionType].filter(item => item.product_id === currentProduct.id).length }}
-        </span>
-      </div>
-    </div>
+                      <div>
+                        <v-btn
+                          v-if="isNotRegistered(actionType)"
+                          :key="actionType + 'Btn'"
+                          :class="buttonClass(actionType)"
+                          class="ml-0"
+                          fab
+                          dark
+                          x-small
+                          @click="() => handleFavorites(currentProduct.id, actionType, 'post')"
+                        >
+                          <v-icon>
+                            {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                          </v-icon>
+                        </v-btn>
+                        <v-btn
+                          v-else
+                          :key="actionType + 'BtnElse'"
+                          :class="buttonClass(actionType)"
+                          class="ml-0"
+                          fab
+                          dark
+                          x-small
+                          @click="() => handleFavorites(currentProduct.id, actionType, 'delete')"
+                        >
+                          <v-icon>
+                            {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                          </v-icon>
+                        </v-btn>
+                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1 mr-3">
+                          {{ $store.state.product[actionType].filter(item => item.product_id === currentProduct.id).length }}
+                        </span>
+                      </div>
+                    </div>
 
                     <v-btn
                       class="ml-2"

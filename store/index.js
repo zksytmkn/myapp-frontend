@@ -1,5 +1,21 @@
 const homePath = 'products-list'
 
+const createSearchCondition = (fields) => {
+  const condition = {}
+  fields.forEach(field => {
+    condition[field] = ''
+  })
+  return condition
+}
+
+const createRelatedData = (items) => {
+  const data = {}
+  items.forEach(item => {
+    data[item] = []
+  })
+  return data
+}
+
 export const state = () => ({
   styles: {
     homeAppBarHeight: 56
@@ -12,7 +28,6 @@ export const state = () => ({
       name: homePath,
       params: {}
     },
-    // ログイン後アクセス不可ルート一覧
     redirectPaths: [
       'index',
       'signup',
@@ -21,45 +36,18 @@ export const state = () => ({
   },
   product: {
     current: null,
-    list: [],
-    comment: [],
-    favorite: [],
-    favorites: [],
-    unfavorite: [],
-    unfavorites: [],
-    searchCondition: {
-      name: '',
-      seller: '',
-      text: '',
-      type: [],
-      prefecture: []
-    }
+    ...createRelatedData(['list', 'comment', 'favorite', 'favorites', 'unfavorite', 'unfavorites']),
+    searchCondition: createSearchCondition(['name', 'seller', 'text', 'type', 'prefecture'])
   },
   post: {
     current: null,
-    list: [],
-    comment: [],
-    favorite: [],
-    favorites: [],
-    unfavorite: [],
-    unfavorites: [],
-    searchCondition: {
-      name: '',
-      poster: '',
-      text: ''
-    }
+    ...createRelatedData(['list', 'comment', 'favorite', 'favorites', 'unfavorite', 'unfavorites']),
+    searchCondition: createSearchCondition(['name', 'poster', 'text'])
   },
   community: {
     current: null,
-    list: [],
-    message: [],
-    participation: [],
-    invitation: [],
-    searchCondition: {
-      name: '',
-      maker: '',
-      text: ''
-    }
+    ...createRelatedData(['list', 'message', 'participation', 'invitation']),
+    searchCondition: createSearchCondition(['name', 'maker', 'text'])
   },
   user: {
     login: null,
@@ -85,25 +73,13 @@ export const state = () => ({
 })
 
 export const getters = {
-  cartProducts: (state) => {
-    return state.carts.map((cart) => {
-      return {
-        price: cart.product.price,
-        quantity: cart.quantity,
-      }
-    })
-  },
-  cartTotalPrice: (state, getters) => {
-    return getters.cartProducts.reduce((total, cart) => {
-      return total + cart.price * cart.quantity * 1.1
-    }, 0)
-  },
-  cartTotalQuantity: (state, getters) => {
-    return getters.cartProducts.reduce((total, cart) => {
-      return total + cart.quantity
-    }, 0)
-  }
-}
+  cartProducts: state => state.carts.map(cart => ({
+    price: cart.product.price,
+    quantity: cart.quantity,
+  })),
+  cartTotalPrice: (state, getters) => getters.cartProducts.reduce((total, cart) => total + cart.price * cart.quantity * 1.1, 0),
+  cartTotalQuantity: (state, getters) => getters.cartProducts.reduce((total, cart) => total + cart.quantity, 0),
+};
 
 export const mutations = {
   setProductList (state, payload) {
@@ -349,9 +325,7 @@ export const actions = {
     timeout = timeout || 4000
     commit('setToast', { msg, color, timeout })
   },
-  // ログイン前ユーザーがアクセスしたルートを記録する
   getRememberPath ({ state, commit }, { name, params }) {
-    // ログイン前パスが渡された場合はloggedIn.homePathに書き換える
     if (state.loggedIn.redirectPaths.includes(name)) {
       name = state.loggedIn.homePath.name
     }

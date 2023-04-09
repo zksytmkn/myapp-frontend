@@ -54,9 +54,9 @@
                   md="9"
                 >
                   <v-text-field
+                    v-model="searched.title"
                     class="mt-10"
                     label="タイトル"
-                    v-model="searched.title"
                     outlined
                     dense
                   >
@@ -68,8 +68,8 @@
                   md="9"
                 >
                   <v-text-field
-                    label="投稿者"
                     v-model="searched.poster"
+                    label="投稿者"
                     outlined
                     dense
                   >
@@ -81,8 +81,8 @@
                   md="9"
                 >
                   <v-text-field
-                    label="つぶやき"
                     v-model="searched.body"
+                    label="つぶやき"
                     outlined
                     dense
                   >
@@ -95,10 +95,10 @@
                     justify="center"
                   >
                     <v-btn
-                      @click="$store.dispatch('updatePostSearchCondition', { title: searched.title, poster: searched.poster, body: searched.body })"
                       class="font-weight-bold mt-3 mb-9"
                       color="teal"
                       dark
+                      @click="$store.dispatch('updatePostSearchCondition', { title: searched.title, poster: searched.poster, body: searched.body })"
                     >
                       つぶやきを検索する
                     </v-btn>
@@ -156,12 +156,12 @@
         >
           <v-data-table
             :headers="tableHeaders"
-            :items="searchedPosts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+            :items="searchedPosts.slice(pageSize*(page-1),pageSize*(page))"
             item-key="id"
             hide-default-footer
           >
             <template
-              v-slot:[`item.title`]="{ item }"
+              #[`item.title`]="{ item }"
             >
               <nuxt-link
                 :to="$my.postLinkToDetail(item.id)"
@@ -180,7 +180,7 @@
               </nuxt-link>
             </template>
             <template
-              v-slot:[`item.text`]="{ item }"
+              #[`item.text`]="{ item }"
             >
               <span
                 v-show="item.body.length>37"
@@ -194,17 +194,17 @@
               </span>
             </template>
             <template
-              v-slot:[`item.like`] = "{ item }"
+              #[`item.like`] = "{ item }"
             >
               <v-btn
                 v-show="!$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                @click="addPostFavorite(item.id)"
                 :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
                 class="ml-0"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="addPostFavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-up
@@ -212,13 +212,13 @@
               </v-btn>
               <v-btn
                 v-show="$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                @click="deletePostFavorite(item.id)"
                 :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
                 class="ml-0"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="deletePostFavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-up
@@ -231,13 +231,13 @@
               </span>
               <v-btn
                 v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                @click="addPostUnfavorite(item.id)"
                 :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                 class="ml-2"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="addPostUnfavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-down
@@ -245,13 +245,13 @@
               </v-btn>
               <v-btn
                 v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                @click="deletePostUnfavorite(item.id)"
                 :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
                 class="ml-2"
                 style="background:grey"
                 fab
                 dark
                 x-small
+                @click="deletePostUnfavorite(item.id)"
               >
                 <v-icon>
                   mdi-thumb-down
@@ -264,7 +264,7 @@
               </span>
             </template>
             <template
-              v-slot:[`item.updatedAt`]="{ item }"
+              #[`item.updatedAt`]="{ item }"
             >
               {{ $my.dataFormat(item.updated_at) }}
             </template>
@@ -273,10 +273,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="searchedPosts.length"
-      :length="Math.ceil(this.searchedPosts.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(searchedPosts.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -313,6 +313,25 @@ export default {
       ],
       searched: {title: '', poster: '', body: ''}
     }
+  },
+  computed: {
+    searchedPosts () {
+      const searchCondition = this.$store.state.post.searchCondition
+
+      const copySearchedPosts = Array.from(this.$store.state.post.list).
+      filter((x) => x.title.includes(searchCondition.title) && x.user.name.includes(searchCondition.poster))
+
+      return copySearchedPosts.sort((a, b) => {
+        if (a.created_at > b.created_at) { return -1 }
+        if (a.created_at < b.created_at) { return 1 }
+        return 0
+      })
+    }
+  },
+  mounted() {
+    this.searched.title = this.$store.state.post.searchCondition.title
+    this.searched.poster = this.$store.state.post.searchCondition.poster
+    this.searched.body = this.$store.state.post.searchCondition.body
   },
   methods: {
     addPostFavorite(id) {
@@ -399,25 +418,6 @@ export default {
       }
       asyncFunc().finally(response => console.log(response))
     }
-  },
-  computed: {
-    searchedPosts () {
-      const searchCondition = this.$store.state.post.searchCondition
-
-      const copySearchedPosts = Array.from(this.$store.state.post.list).
-      filter((x) => x.title.includes(searchCondition.title) && x.user.name.includes(searchCondition.poster))
-
-      return copySearchedPosts.sort((a, b) => {
-        if (a.created_at > b.created_at) { return -1 }
-        if (a.created_at < b.created_at) { return 1 }
-        return 0
-      })
-    }
-  },
-  mounted() {
-    this.searched.title = this.$store.state.post.searchCondition.title
-    this.searched.poster = this.$store.state.post.searchCondition.poster
-    this.searched.body = this.$store.state.post.searchCondition.body
   }
 }
 </script>

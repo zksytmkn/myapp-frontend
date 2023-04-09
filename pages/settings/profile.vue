@@ -45,12 +45,12 @@
                         </v-img>
                       </v-avatar>
                       <v-file-input
+                        v-model="inputted.image"
                         :rules="imgRules"
                         accept="image/png, image/jpeg, image/bmp"
                         placeholder="画像を選択して下さい"
                         prepend-icon="mdi-camera"
                         label="画像ファイル"
-                        v-model="inputted.image"
                       >
                       </v-file-input>
                     </v-col>
@@ -58,10 +58,10 @@
                       cols="11"
                     >
                       <v-text-field
+                        v-model="inputted.name"
                         dense
                         outlined
                         label="ユーザー名"
-                        v-model="inputted.name"
                         :rules="nameRules"
                         :disabled="sentIt"
                       >
@@ -71,10 +71,10 @@
                       cols="11"
                     >
                       <v-select
+                        v-model="inputted.prefecture"
                         dense
                         outlined
                         label="都道府県"
-                        v-model="inputted.prefecture"
                         :rules="prefectureRules"
                         :disabled="sentIt"
                         :items="prefectureItems"
@@ -85,10 +85,10 @@
                       cols="11"
                     >
                       <v-textarea
+                        v-model="inputted.profile_text"
                         dense
                         outlined
                         label="プロフィール文"
-                        v-model="inputted.profile_text"
                         :rules="textRules"
                         :disabled="sentIt"
                       >
@@ -209,6 +209,20 @@ export default {
       ]
     }
   },
+  computed: {
+    url() {
+      if(this.inputted.image===null) {
+        return this.$store.state.user.login.image_url ? this.$store.state.user.login.image_url : noPersonImg
+      } else {
+        return URL.createObjectURL(this.inputted.image)
+      }
+    }
+  },
+  mounted() {
+    this.inputted.name = this.$store.state.user.login.name
+    this.inputted.prefecture = this.$store.state.user.login.prefecture
+    this.inputted.profile_text = this.$store.state.user.login.profile_text
+  },
   methods: {
     editProfile() {
       this.loading = true
@@ -249,20 +263,6 @@ export default {
       this.sentIt = false
       this.$refs.edit.reset()
     }
-  },
-  computed: {
-    url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.user.login.image_url ? this.$store.state.user.login.image_url : noPersonImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
-      }
-    }
-  },
-  mounted() {
-    this.inputted.name = this.$store.state.user.login.name
-    this.inputted.prefecture = this.$store.state.user.login.prefecture
-    this.inputted.profile_text = this.$store.state.user.login.profile_text
   }
 }
 </script>

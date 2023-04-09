@@ -31,7 +31,7 @@
                 </v-list-item-content>
               </v-list-item>
               <v-list-item
-                v-for="(order, i) in orderMenus.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+                v-for="(order, i) in orderMenus.slice(pageSize*(page-1),pageSize*(page))"
                 :key="`order-${i}`"
                 :to="$my.informationLinkToDetail(order.id)"
               >
@@ -53,10 +53,10 @@
     </v-container>
 
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="orderMenus.length"
-      :length="Math.ceil(this.orderMenus.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(orderMenus.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -67,10 +67,10 @@
 import InfoMenu from '~/components/Information/InfoMenu'
 
 export default {
-  layout:"logged-in",
   components: {
     InfoMenu
   },
+  layout:"logged-in",
   data () {
     return {
       page: 1,

@@ -9,13 +9,11 @@
             color="transparent"
           >
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  あなたのカート
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title
+                class="font-weight-bold"
+              >
+                あなたのカート
+              </v-list-item-title>
             </v-list-item>
           </v-list>
           <v-divider/>
@@ -24,11 +22,9 @@
             color="transparent"
           >
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  カートには何も入っておりません。
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title>
+                カートには何も入っておりません。
+              </v-list-item-title>
             </v-list-item>
             <v-list-item>
               <v-list-item-action>
@@ -49,13 +45,11 @@
             color="transparent"
           >
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  合計（税込）：¥{{ Math.floor(cartTotalPrice).toLocaleString() }}
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title
+                class="font-weight-bold"
+              >
+                合計（税込）：¥{{ Math.floor(cartTotalPrice).toLocaleString() }}
+              </v-list-item-title>
             </v-list-item>
             <v-list-item>
               <v-btn
@@ -104,15 +98,8 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    <span
-                      v-show="cart.product.name.length>7"
-                    >
-                      {{ cart.product.name.substring(0, 7)+'...' }}
-                    </span>
-                    <span
-                      v-show="cart.product.name.length<=7"
-                    >
-                      {{ cart.product.name }}
+                    <span>
+                      {{ cart.product.name.length > 7 ? cart.product.name.substring(0, 7) + '...' : cart.product.name }}
                     </span>
                     <v-spacer />
                     <v-btn
@@ -125,75 +112,31 @@
                       詳細
                     </v-btn>
                   </v-card-title>
-                  <v-card-actions
-                    class="pa-1"
-                  >
-                    <v-btn
-                      v-show="!$store.state.product.favorite.some(favorite => favorite.id === cart.product_id)"
-                      @click="addProductFavorite(cart.product_id)"
-                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === cart.product_id) }"
-                      class="ml-0"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-up
-                      </v-icon>
-                    </v-btn>
-                    <v-btn
-                      v-show="$store.state.product.favorite.some(favorite => favorite.id === cart.product_id)"
-                      @click="deleteProductFavorite(cart.product_id)"
-                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === cart.product_id) }"
-                      class="ml-0"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-up
-                      </v-icon>
-                    </v-btn>
-                    <span
-                      class="font-weight-bold ml-1"
-                    >
-                      {{ $store.state.product.favorites.filter(favorites => favorites.product_id === cart.product_id).length }}
-                    </span>
-                    <v-btn
-                      v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id)"
-                      @click="addProductUnfavorite(cart.product_id)"
-                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id) }"
-                      class="ml-2"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-down
-                      </v-icon>
-                    </v-btn>
-                    <v-btn
-                      v-show="$store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id)"
-                      @click="deleteProductUnfavorite(cart.product_id)"
-                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === cart.product_id) }"
-                      class="ml-2"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-down
-                      </v-icon>
-                    </v-btn>
-                    <span
-                      class="font-weight-bold ml-1"
-                    >
-                      {{ $store.state.product.unfavorites.filter(unfavorites => unfavorites.product_id === cart.product_id).length }}
-                    </span>
+                  <v-card-actions class="pa-1">
+                    <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
+                      <div>
+                        <v-btn
+                          :key="actionType + 'Btn'"
+                          :class="buttonClass(actionType, cart.product_id)"
+                          class="ml-0"
+                          fab
+                          dark
+                          x-small
+                          @click="handleFavorites(cart.product_id, actionType, $store.state.product[actionType].some(item => item.id === cart.product_id) ? 'delete' : 'post')"
+                        >
+                          <v-icon>
+                            {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                          </v-icon>
+                        </v-btn>
+                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
+                          {{
+                            $store.state.product[actionType + 's'].filter(
+                              item => item.product_id === cart.product_id
+                            ).length
+                          }}
+                        </span>
+                      </div>
+                    </div>
                   </v-card-actions>
                 </v-col>
 
@@ -203,16 +146,9 @@
                   <v-card-text
                     class="pb-0"
                   >
-                    <span
-                      v-show="cart.product.description.length>90"
-                    >
-                      {{ cart.product.description.substring(0, 90)+'...' }}
-                    </span>
-                    <span
-                    v-show="cart.product.description.length<=90"
-                    >
-                      {{ cart.product.description }}
-                    </span>
+                  <span>
+                    {{ cart.product.description.length > 90 ? cart.product.description.substring(0, 90) + '...' : cart.product.description }}
+                  </span>
                   </v-card-text>
                   <v-card-subtitle
                     class="pt-0 font-weight-bold"
@@ -227,11 +163,11 @@
                   >
                     <v-container>
                       <v-btn
-                        @click="removeProductFromCart(cart.product_id, cart.quantity, cart.id)"
                         class="font-weight-bold"
                         color="teal"
                         block
                         dark
+                        @click="removeProductFromCart(cart.product_id, cart.quantity, cart.id)"
                       >
                         削除する
                       </v-btn>
@@ -245,10 +181,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="cartProducts.length"
-      :length="Math.ceil(this.cartProducts.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(cartProducts.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -268,129 +204,72 @@ export default {
       pageSize: 10
     }
   },
+  computed: {
+    cartProducts() {
+      return [...this.$store.state.carts].sort((a, b) => {
+        return a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0;
+      });
+    },
+    ...mapGetters(['cartTotalPrice']),
+  },
   methods: {
-    addProductFavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('product_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$post('/api/v1/product_favorites', formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_favorites'),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_unfavorites')
-        ])
-        .then(response => {
-          this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductFavorites', response[1])
-          this.$store.dispatch('getProductUnfavorite', response[2])
-          this.$store.dispatch('getProductUnfavorites', response[3])
-        })
+    async handleFavorites(id, type, method) {
+      try {
+        if (method === 'delete') {
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user/${this.$auth.user.id}`);
+        } else {
+          const formData = new FormData()
+          formData.append('product_id', id)
+          formData.append('user_id', this.$auth.user.id)
+          await this.$axios[method](`/api/v1/product_${type}s`, formData)
+        }
+  
+        await this.updateFavoritesAndUnfavorites();
+      } catch (error) {
       }
-      asyncFunc().finally(response => console.log(response))
     },
-    deleteProductFavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('product_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$delete('/api/v1/product_favorites', {data: formData})
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_favorites')
-        ])
-        .then(response => {
-          this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductFavorites', response[1])
-        })
+    async updateFavoritesAndUnfavorites() {
+      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
+        this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/product_favorites'),
+        this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/product_unfavorites')
+      ]);
+
+      this.$store.dispatch('getProductFavorite', userFavorites);
+      this.$store.dispatch('getProductFavorites', allFavorites);
+      this.$store.dispatch('getProductUnfavorite', userUnfavorites);
+      this.$store.dispatch('getProductUnfavorites', allUnfavorites);
+    },
+    buttonClass(actionType, id) {
+      if (actionType === 'favorite' && this.$store.state.product.favorite.some(item => item.id === id)) {
+        return 'likeColor';
+      } else if (actionType === 'unfavorite' && this.$store.state.product.unfavorite.some(item => item.id === id)) {
+        return 'dislikeColor';
+      } else {
+        return 'grey';
       }
-      asyncFunc().finally(response => console.log(response))
     },
-    addProductUnfavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('product_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$post('/api/v1/product_unfavorites', formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_favorites'),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_unfavorites'),
-        ])
-        .then(response => {
-          this.$store.dispatch('getProductFavorite', response[0])
-          this.$store.dispatch('getProductFavorites', response[1])
-          this.$store.dispatch('getProductUnfavorite', response[2])
-          this.$store.dispatch('getProductUnfavorites', response[3])
-        })
-      }
-      asyncFunc().finally(response => console.log(response))
-    },
-    deleteProductUnfavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('product_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$delete('/api/v1/product_unfavorites', {data: formData})
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_unfavorites'),
-        ])
-        .then(response => {
-          this.$store.dispatch('getProductUnfavorite', response[0])
-          this.$store.dispatch('getProductUnfavorites', response[1])
-        })
-      }
-      asyncFunc().finally(response => console.log(response))
-    },
-    removeProductFromCart(productId, quantity, cartId) {
-      const asyncFunc = async() => {
-        const productQuantity = Number(this.$store.state.product.list.find(product => product.id === productId).stock) + Number(quantity)
-        const formDataProducts = new FormData()
-        formDataProducts.append('stock', productQuantity)
+    async removeProductFromCart(productId, quantity, cartId) {
+      try {
+        const productQuantity = Number(this.$store.state.product.list.find(product => product.id === productId).stock) + Number(quantity);
+        const formDataProducts = new FormData();
+        formDataProducts.append('stock', productQuantity);
+
         await Promise.all([
           this.$axios.$delete(`/api/v1/carts/${cartId}`),
           this.$axios.$patch(`/api/v1/products/${productId}`, formDataProducts)
-        ])
-        .then(response => {
-          console.log(response[0])
-          console.log(response[1])
-        })
-        .catch(error => {
-          console.log(error[0])
-          console.log(error[1])
-        })
-        await Promise.all([
+        ]);
+
+        const [response] = await Promise.all([
           this.$axios.$get('/api/v1/carts')
-        ])
-        .then(response => {
-          this.$store.dispatch('getCarts', response[0])
-        })
+        ]);
+
+        this.$store.dispatch('getCarts', response);
+      } catch (error) {
       }
-      asyncFunc().finally(response => console.log(response))
     }
   },
-  computed: {
-    cartProducts() {
-      const copyCartProducts = Array.from(this.$store.state.carts)
-      return copyCartProducts.sort((a, b) => {
-        if (a.created_at > b.created_at) { return -1 }
-        if (a.created_at < b.created_at) { return 1 }
-        return 0
-      })
-    },
-    ...mapGetters(['cartTotalPrice'])
-  }
 }
 </script>
 

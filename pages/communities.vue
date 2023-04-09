@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  middleware: ['get-participation-community', 'get-invitation-community'],
   layout: 'community',
+  middleware: ['get-participation-community', 'get-invitation-community'],
   validate ({ route }) {
     return route.name !== 'communities'
   }

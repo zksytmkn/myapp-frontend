@@ -59,7 +59,7 @@
                     align="center"
                   >
                     <v-col
-                      v-for="(community, i) in invitedCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+                      v-for="(community, i) in invitedCommunities.slice(pageSize*(page-1),pageSize*(page))"
                       :key="`card-community-${i}`"
                       cols="12"
                       :sm="card.sm"
@@ -120,10 +120,10 @@
     </v-container>
 
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="invitedCommunities.length"
-      :length="Math.ceil(this.invitedCommunities.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(invitedCommunities.length/pageSize)"
       circle
     >
     </v-pagination>

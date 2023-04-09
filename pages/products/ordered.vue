@@ -2,33 +2,18 @@
   <div>
     <v-container>
       <v-row>
-        <v-col
-          cols="12"
-        >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  購入済み（{{ orderedProducts.length }}件）
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+        <v-col cols="12">
+          <v-list-item>
+            <v-list-item-title class="font-weight-bold">
+              購入済み（{{ orderedProducts.length }}件）
+            </v-list-item-title>
+          </v-list-item>
           <v-divider/>
-          <v-list
-            v-show="!orderedProducts.length"
-            color="transparent"
-          >
+          <v-list v-show="!orderedProducts.length" color="transparent">
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  購入しておりません。
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title>
+                購入しておりません。
+              </v-list-item-title>
             </v-list-item>
             <v-list-item>
               <v-list-item-action>
@@ -51,225 +36,125 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="product in orderedProducts.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
-          :key="product.id"
+          v-for="(product, i) in orderedProducts.slice(pageSize * (page - 1), pageSize * page)"
+          :key="`product-${i}`"
           cols="6"
         >
           <v-card>
             <v-container>
               <v-row>
-                <v-col
-                  cols="6"
-                >
+                <v-col cols="6">
                   <v-img
-                    :src="product.image_url ? product.image_url : noImg"
+                    :src="product.image_url || noImg"
                     max-height="360px"
                     max-width="360px"
                     aspect-ratio="1"
-                  >
-                  </v-img>
-                  <v-card-title
-                    class="font-weight-bold pa-1"
-                    style="max-width:360px;"
-                  >
-                    <span
-                      v-show="product.name.length>7"
-                    >
-                      {{ product.name.substring(0, 7)+'...' }}
-                    </span>
-                    <span
-                      v-show="product.name.length<=7"
-                    >
-                      {{ product.name }}
-                    </span>
+                  ></v-img>
+                  <v-card-title class="font-weight-bold pa-1" style="max-width: 360px;">
+                    <span>{{ product.name.length > 7 ? product.name.substring(0, 7) + "..." : product.name }}</span>
                     <v-spacer />
-                    <v-btn
-                      text
-                      outlined
-                      :to="$my.productLinkToDetail(product.id)"
-                      class="font-weight-bold"
-                    >
-                      詳細
-                    </v-btn>
+                    <v-btn text outlined :to="$my.productLinkToDetail(product.id)" class="font-weight-bold">詳細</v-btn>
                   </v-card-title>
-                  <v-card-actions
-                    class="pa-1"
-                  >
-                    <v-btn
-                      v-show="!$store.state.product.favorite.some(favorite => favorite.id === product.id)"
-                      @click="addProductFavorite(product.id)"
-                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === product.id) }"
-                      class="ml-0"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-up
-                      </v-icon>
-                    </v-btn>
-                    <v-btn
-                      v-show="$store.state.product.favorite.some(favorite => favorite.id === product.id)"
-                      @click="deleteProductFavorite(product.id)"
-                      :class="{ likeColor: $store.state.product.favorite.some(favorite => favorite.id === product.id) }"
-                      class="ml-0"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-up
-                      </v-icon>
-                    </v-btn>
-                    <span
-                      class="font-weight-bold ml-1"
-                    >
-                      {{ $store.state.product.favorites.filter(favorites => favorites.product_id === product.id).length }}
-                    </span>
-                    <v-btn
-                      v-show="!$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
-                      @click="addProductUnfavorite(product.id)"
-                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id) }"
-                      class="ml-2"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-down
-                      </v-icon>
-                    </v-btn>
-                    <v-btn
-                      v-show="$store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id)"
-                      @click="deleteProductUnfavorite(product.id)"
-                      :class="{ dislikeColor: $store.state.product.unfavorite.some(unfavorite => unfavorite.id === product.id) }"
-                      class="ml-2"
-                      style="background:grey"
-                      fab
-                      dark
-                      x-small
-                    >
-                      <v-icon>
-                        mdi-thumb-down
-                      </v-icon>
-                    </v-btn>
-                    <span
-                      class="font-weight-bold ml-1"
-                    >
-                      {{ $store.state.product.unfavorites.filter(unfavorites => unfavorites.product_id === product.id).length }}
-                    </span>
+                  <v-card-actions class="pa-1">
+                    <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
+                      <div>
+                        <v-btn
+                          :key="actionType + 'Btn'"
+                          :class="buttonClass(actionType, product.id)"
+                          class="ml-0"
+                          fab
+                          dark
+                          x-small
+                          @click="handleFavorites(product.id, actionType, $store.state.product[actionType].some(item => item.id === product.id) ? 'delete' : 'post')"
+                        >
+                          <v-icon>
+                            {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                          </v-icon>
+                        </v-btn>
+                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
+                          {{
+                            $store.state.product[actionType + 's'].filter(
+                              item => item.product_id === product.id
+                            ).length
+                          }}
+                        </span>
+                      </div>
+                    </div>
                   </v-card-actions>
                 </v-col>
-                <v-col
-                  cols="6"
-                >
+
+                <v-col cols="6">
                   <v-card-text>
-                    <span
-                      v-show="product.description.length>80"
-                    >
-                      {{ product.description.substring(0, 80)+'...' }}
-                    </span>
-                    <span
-                      v-show="product.description.length<=80"
-                    >
-                      {{ product.description }}
-                    </span>
+                    {{
+                      product.description.length > 80
+                        ? product.description.substring(0, 80) + '...'
+                        : product.description
+                    }}
                   </v-card-text>
-                  <v-card-title
-                    class="pt-0 font-weight-bold"
-                  >
+                  <v-card-title class="pt-0 font-weight-bold">
                     ¥{{ product.price.toLocaleString() }}
                   </v-card-title>
-                  <v-divider/>
-                  <v-container
-                    class="pt-0"
-                    v-if="product.user_id!==$auth.user.id"
-                  >
-                    <v-row>
-                      <v-col
-                        cols="12"
-                      >
-                        <v-card-actions
-                          class="pa-0"
-                          style="width:80%;"
+                  <v-divider />
+                  <v-container :class="{'pt-0': product.user_id !== $auth.user.id}">
+                    <template v-if="product.user_id !== $auth.user.id">
+                      <v-card-actions class="pa-0" style="width: 80%;">
+                        <v-select
                           v-show="product.stock"
-                        >
-                          <v-select
-                            :value="product.quantity"
-                            @change="quantity => $store.dispatch('getProductFavoriteQuantity', { id: product.id, quantity: quantity })" 
-                            class="mt-6"
-                            :items="[...Array(product.stock).keys()].map(i => ++i)"
-                            solo
-                            dense
-                            rounded
-                            outlined
-                          >
-                          </v-select>
-                        </v-card-actions>
-                        <v-card-text
-                          class="px-0 font-weight-bold"
-                          style="color:#CC0000;"
-                          v-show="!product.stock"
-                        >
-                          ＊在庫が残っておりません。
-                        </v-card-text>
-                        <v-card-actions
-                          class="pa-0"
-                          style="width:80%;"
-                        >
-                          <v-btn
-                            @click="addProductToCart(product.id, product.quantity)"
-                            :disabled="!product.stock"
-                            class="font-weight-bold"
-                            color="teal"
-                            block
-                            dark
-                          >
-                            カートに入れる
-                          </v-btn>
-                        </v-card-actions>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                  <v-container
-                    v-if="product.user_id===$auth.user.id"
-                  >
-                    <v-row>
-                      <v-col
-                        cols="12"
+                          :value="product.quantity"
+                          class="mt-6"
+                          :items="[...Array(product.stock).keys()].map(i => ++i)"
+                          solo
+                          dense
+                          rounded
+                          outlined
+                          @change="quantity => $store.dispatch('getProductQuantity', { id: product.id, quantity: quantity })"
+                        ></v-select>
+                      </v-card-actions>
+                      <v-card-text
+                        v-show="!product.stock"
+                        class="px-0 font-weight-bold"
+                        style="color: #CC0000;"
                       >
-                        <v-card-actions
-                          style="width:86%;"
+                        ＊在庫が残っておりません。
+                      </v-card-text>
+                      <v-card-actions class="pa-0" style="width: 80%;">
+                        <v-btn
+                          :disabled="!product.stock"
+                          class="font-weight-bold"
+                          color="teal"
+                          block
+                          dark
+                          @click="addProductToCart(product.id, product.quantity)"
                         >
-                          <v-btn
-                            :to="$my.productLinkToEdit(product.id)"
-                            class="font-weight-bold mt-2"
-                            color="teal"
-                            block
-                            dark
-                            outlined
-                          >
-                            編集する
-                          </v-btn>
-                        </v-card-actions>
-                        <v-card-actions
-                          style="width:86%;"
+                          カートに入れる
+                        </v-btn>
+                      </v-card-actions>
+                    </template>
+                    <template v-else>
+                      <v-card-actions style="width: 86%;">
+                        <v-btn
+                          :to="$my.productLinkToEdit(product.id)"
+                          class="font-weight-bold mt-2"
+                          color="teal"
+                          block
+                          dark
+                          outlined
                         >
-                          <v-btn
-                            @click="deleteProduct(product.id)"
-                            class="font-weight-bold mt-2"
-                            color="teal"
-                            block
-                            dark
-                          >
-                            削除する
-                          </v-btn>
-                        </v-card-actions>
-                      </v-col>
-                    </v-row>
+                          編集する
+                        </v-btn>
+                      </v-card-actions>
+                      <v-card-actions style="width: 86%;">
+                        <v-btn
+                          class="font-weight-bold mt-2"
+                          color="teal"
+                          block
+                          dark
+                          @click="deleteProduct(product.id)"
+                        >
+                          削除する
+                        </v-btn>
+                      </v-card-actions>
+                    </template>
                   </v-container>
                 </v-col>
               </v-row>
@@ -278,12 +163,11 @@
         </v-col>
       </v-row>
     </v-container>
-    
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="orderedProducts.length"
-      :length="Math.ceil(this.orderedProducts.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(orderedProducts.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -292,7 +176,6 @@
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
-
 export default {
   layout: 'logged-in',
   middleware: ['get-order-list'],
@@ -304,18 +187,116 @@ export default {
     }
   },
   computed: {
-    orderedProducts () {
-      const copyOrderedProducts = Array.from(this.$store.state.product.list.filter(product => 
-      this.$store.state.order.list.buyer.concat(this.$store.state.order.list.close).some(order => order.product_id === product.id)))
-      return copyOrderedProducts.sort((a, b) => {
-        if (a.created_at > b.created_at) { return -1 }
-        if (a.created_at < b.created_at) { return 1 }
-        return 0
-      })
-    }
+    orderedProducts() {
+      const orderList = this.$store.state.order.list;
+      const allOrders = orderList.buyer.concat(orderList.close);
+
+      return this.$store.state.product.list
+        .filter(product => allOrders.some(order => order.product_id === product.id))
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    },
+  },
+  methods: {
+    async handleFavorites(id, type, method) {
+      try {
+        if (method === 'delete') {
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user/${this.$auth.user.id}`);
+        } else {
+          const formData = new FormData()
+          formData.append('product_id', id)
+          formData.append('user_id', this.$auth.user.id)
+          await this.$axios[method](`/api/v1/product_${type}s`, formData)
+        }
+  
+        await this.updateFavoritesAndUnfavorites();
+      } catch (error) {
+      }
+    },
+    async updateFavoritesAndUnfavorites() {
+      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
+        this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/product_favorites'),
+        this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/product_unfavorites')
+      ]);
+
+      this.$store.dispatch('getProductFavorite', userFavorites);
+      this.$store.dispatch('getProductFavorites', allFavorites);
+      this.$store.dispatch('getProductUnfavorite', userUnfavorites);
+      this.$store.dispatch('getProductUnfavorites', allUnfavorites);
+    },
+    async deleteProduct(id) {
+      try {
+        await this.$axios.$delete(`/api/v1/products/${id}`);
+        this.showNotification("農産物を削除しました", "success");
+
+        await this.$axios.$get("api/v1/products").then((products) =>
+          this.$store.dispatch("getProductList", products)
+        );
+      } catch (error) {
+        this.showNotification("農産物を削除できませんでした", "error");
+      }
+    },
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
+    },
+    async addProductToCart(id, quantity) {
+      try {
+        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
+        const product = this.$store.state.product.list.find(product => product.id === id);
+        const productQuantity = Number(product.stock) - Number(quantity);
+        const formDataProducts = new FormData();
+        formDataProducts.append('stock', productQuantity);
+
+        if (!cart) {
+          const formDataCarts = new FormData();
+          formDataCarts.append('user_id', this.$auth.user.id);
+          formDataCarts.append('product_id', id);
+          formDataCarts.append('quantity', quantity);
+
+          await Promise.all([
+            this.$axios.$post('/api/v1/carts', formDataCarts),
+            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+          ]);
+        } else {
+          const cartQuantity = Number(cart.quantity) + Number(quantity);
+          const formDataCarts = new FormData();
+          formDataCarts.append('quantity', cartQuantity);
+        
+          await Promise.all([
+            this.$axios.$patch(`/api/v1/carts/${cart.id}`, formDataCarts),
+            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+          ]);
+        }
+
+        const [cartsResponse, productsResponse] = await Promise.all([
+          this.$axios.$get('/api/v1/carts'),
+          this.$axios.$get('/api/v1/products')
+        ]);
+
+        this.$store.dispatch('getCarts', cartsResponse);
+        this.$store.dispatch('getProductList', productsResponse);
+      } catch (error) {
+      }
+    },
+    buttonClass(actionType, id) {
+      if (actionType === 'favorite' && this.$store.state.product.favorite.some(item => item.id === id)) {
+        return 'likeColor';
+      } else if (actionType === 'unfavorite' && this.$store.state.product.unfavorite.some(item => item.id === id)) {
+        return 'dislikeColor';
+      } else {
+        return 'grey';
+      }
+    },
   }
 }
 </script>
 
 <style lang="scss">
+.likeColor {
+  background: #CC0000 !important;
+}
+.dislikeColor {
+  background: #336791 !important;
+}
 </style>

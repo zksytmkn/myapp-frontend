@@ -43,10 +43,10 @@
                       <v-list-item>
                         <v-list-item-content>
                           <v-list-item-title>
-                            住所：{{ this.$store.state.user.login.zipcode }}
+                            住所：{{ $store.state.user.login.zipcode }}
                             <br/><br/>
-                            {{ this.$store.state.user.login.street }}
-                            {{ this.$store.state.user.login.building }}
+                            {{ $store.state.user.login.street }}
+                            {{ $store.state.user.login.building }}
                           </v-list-item-title>
                         </v-list-item-content>
                       </v-list-item>

@@ -34,28 +34,28 @@
                       class="mt-6"
                     >
                     <v-text-field
+                        v-model="inputted.zipcode"
                         dense
                         outlined
-                        v-model="inputted.zipcode"
                         :rules="zipcodeRules"
                         :disabled="sentIt"
-                        @input="searchAddressInfo"
                         label="郵便番号"
+                        @input="searchAddressInfo"
                       >
                       </v-text-field>
                       <v-text-field
+                        v-model="inputted.street"
                         dense
                         outlined
-                        v-model="inputted.street"
                         :rules="streetRules"
                         :disabled="sentIt"
                         label="住所"
                       >
                       </v-text-field>
                       <v-text-field
+                        v-model="inputted.building"
                         dense
                         outlined
-                        v-model="inputted.building"
                         :rules="buildingRules"
                         :disabled="sentIt"
                         hide-details="auto"
@@ -121,6 +121,11 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.inputted.zipcode = this.$store.state.user.login.zipcode
+    this.inputted.street = this.$store.state.user.login.street
+    this.inputted.building = this.$store.state.user.login.building
+  },
   methods: {
     searchAddressInfo() {
       axios.get(url + this.inputted.zipcode).then((res) => {
@@ -158,11 +163,6 @@ export default {
       this.sentIt = false
       this.$refs.edit.reset()
     }
-  },
-  mounted() {
-    this.inputted.zipcode = this.$store.state.user.login.zipcode
-    this.inputted.street = this.$store.state.user.login.street
-    this.inputted.building = this.$store.state.user.login.building
   }
 }
 </script>

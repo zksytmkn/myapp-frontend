@@ -1,13 +1,11 @@
 <template>
   <div class="mb-10">
     <v-container>
-      <v-list color="transparent">
-        <v-list-item>
-          <v-list-item-title class="font-weight-bold">
-            編集
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
+      <v-list-item>
+        <v-list-item-title class="font-weight-bold">
+          編集
+        </v-list-item-title>
+      </v-list-item>
       <v-divider/>
     </v-container>
 
@@ -61,17 +59,6 @@
                           label="種類"
                           :items="categoryItems"
                           :rules="categoryRules"
-                          :disabled="sentIt"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="11">
-                        <v-select
-                          v-model="inp.prefecture"
-                          dense
-                          outlined
-                          label="都道府県"
-                          :items="prefectureItems"
-                          :rules="prefectureRules"
                           :disabled="sentIt"
                         ></v-select>
                       </v-col>
@@ -162,9 +149,8 @@ export default {
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`,
       ],
       categoryRules: [v => !!v || '種類を選択してください'],
-      prefectureRules: [v => !!v || '都道府県を選択してください'],
       priceRules: [v => !!v || '価格を入力してください'],
-      stockRules: [v => (v > 0 && Number.isInteger(v)) || '数量を入力してください'],
+      stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '数量を入力してください'],
       descRules: [
         descMax,
         v => !!v || '',
@@ -174,62 +160,12 @@ export default {
         name: '',
         user_id: this.$auth.user.id,
         category: '',
-        prefecture: '',
         price: null,
         stock: null,
         description: '',
         image: null,
       },
       categoryItems: ['野菜', '果物'],
-      prefectureItems: [
-        '北海道',
-        '青森県',
-        '岩手県',
-        '宮城県',
-        '秋田県',
-        '山形県',
-        '福島県',
-        '茨城県',
-        '栃木県',
-        '群馬県',
-        '埼玉県',
-        '千葉県',
-        '東京都',
-        '神奈川県',
-        '新潟県',
-        '富山県',
-        '石川県',
-        '福井県',
-        '山梨県',
-        '長野県',
-        '岐阜県',
-        '静岡県',
-        '愛知県',
-        '三重県',
-        '滋賀県',
-        '京都府',
-        '大阪府',
-        '兵庫県',
-        '奈良県',
-        '和歌山県',
-        '鳥取県',
-        '島根県',
-        '岡山県',
-        '広島県',
-        '山口県',
-        '徳島県',
-        '香川県',
-        '愛媛県',
-        '高知県',
-        '福岡県',
-        '佐賀県',
-        '長崎県',
-        '熊本県',
-        '大分県',
-        '宮崎県',
-        '鹿児島県',
-        '沖縄県'
-      ]
     }
   },
   computed: {
@@ -240,7 +176,6 @@ export default {
       return URL.createObjectURL(this.inp.image);
     },
   },
-
   mounted() {
     const product = this.$store.state.product.current;
     Object.keys(this.inp).forEach(key => {
@@ -255,17 +190,17 @@ export default {
       if (this.valid) {
         const formData = new FormData();
         Object.keys(this.inp).forEach(key => {
-          if (key !== 'img' || (key === 'img' && this.inp[key] !== null)) {
+          if (key !== 'image' || (key === 'image' && this.inp[key] !== null)) {
             formData.append(key, this.inp[key]);
           }
         });
-
+      
         const config = {
-          header: {
+          headers: {
             "Content-Type": "multipart/form-data",
           },
         };
-
+      
         try {
           await this.$axios.$patch(`/api/v1/products/${id}`, formData, config);
           this.$router.back();
@@ -276,7 +211,6 @@ export default {
       }
       this.loading = false;
     },
-
     formReset() {
       this.sentIt = false;
       this.$refs.edit.reset();

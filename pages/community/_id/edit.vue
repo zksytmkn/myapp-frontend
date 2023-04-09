@@ -68,12 +68,12 @@
                         >
                         </v-img>
                         <v-file-input
+                          v-model="inputted.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
                           prepend-icon="mdi-camera"
                           label="画像ファイル"
-                          v-model="inputted.image"
                         >
                         </v-file-input>
                       </v-col>
@@ -81,10 +81,10 @@
                         cols="11"
                       >
                         <v-text-field
+                          v-model="inputted.name"
                           dense
                           outlined
                           label="名前"
-                          v-model="inputted.name"
                           :rules="nameRules"
                           :disabled="sentIt"
                         >
@@ -94,10 +94,10 @@
                         cols="11"
                       >
                         <v-textarea
+                          v-model="inputted.description"
                           dense
                           outlined
                           label="紹介文"
-                          v-model="inputted.description"
                           :rules="descriptionRules"
                           :disabled="sentIt"
                         >
@@ -176,6 +176,10 @@ export default {
       }
     }
   },
+  mounted() {
+    this.inputted.name = this.$store.state.community.current.community.name
+    this.inputted.description = this.$store.state.community.current.community.description
+  },
   methods: {
     async editCommunity(id) {
       this.loading = true
@@ -212,10 +216,6 @@ export default {
       this.sentIt = false
       this.$refs.edit.reset()
     }
-  },
-  mounted() {
-    this.inputted.name = this.$store.state.community.current.community.name
-    this.inputted.description = this.$store.state.community.current.community.description
   }
 }
 </script>

@@ -64,12 +64,12 @@
                     >
                     </v-img>
                     <v-file-input
+                      v-model="inputted.image"
                       :rules="imgRules"
                       accept="image/png, image/jpeg, image/bmp"
                       placeholder="画像を選択して下さい"
                       prepend-icon="mdi-camera"
                       label="画像ファイル"
-                      v-model="inputted.image"
                       :disabled="sentIt"
                     >
                     </v-file-input>
@@ -78,10 +78,10 @@
                     cols="11"
                   >
                     <v-text-field
+                      v-model="inputted.name"
                       dense
                       outlined
                       label="名前"
-                      v-model="inputted.name"
                       :rules="nameRules"
                       :disabled="sentIt"
                     >
@@ -91,10 +91,10 @@
                     cols="11"
                   >
                     <v-textarea
+                      v-model="inputted.description"
                       dense
                       outlined
                       label="紹介文"
-                      v-model="inputted.description"
                       :rules="descriptionRules"
                       :disabled="sentIt"
                     >
@@ -178,7 +178,7 @@
                     align="center"
                   >
                     <v-col
-                      v-for="(community, i) in newCommunities.slice(this.pageSize*(this.page-1),this.pageSize*(this.page))"
+                      v-for="(community, i) in newCommunities.slice(pageSize*(page-1),pageSize*(page))"
                       :key="`card-community-${i}`"
                       cols="12"
                       :sm="card.sm"
@@ -239,10 +239,10 @@
     </v-container>
 
     <v-pagination
-      class="my-6"
-      v-model="page"
       v-show="newCommunities.length"
-      :length="Math.ceil(this.newCommunities.length/this.pageSize)"
+      v-model="page"
+      class="my-6"
+      :length="Math.ceil(newCommunities.length/pageSize)"
       circle
     >
     </v-pagination>
