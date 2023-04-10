@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="posts"
-  >
+  <div>
     <v-container>
       <v-row>
         <v-col

@@ -1,6 +1,5 @@
 <template>
   <div
-    id="post"
     class="mb-10"
   >
     <v-container>

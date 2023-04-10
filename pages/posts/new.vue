@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="posts"
-  >
+  <div>
     <v-container>
       <v-row>
         <v-col
@@ -514,15 +512,10 @@ export default {
 </script>
 
 <style lang="scss">
-#posts {
-  .v-parallax__content {
-    padding: 0;
-  }
 .likeColor {
   background: #CC0000 !important;
 }
 .dislikeColor {
   background: #336791 !important;
-}
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div
-    id="post"
     class="mb-10"
   >
     <v-container>
@@ -335,11 +334,6 @@ export default {
 </script>
 
 <style lang="scss">
-#post {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
 .likeColor {
   background: #CC0000 !important;
 }
