@@ -58,7 +58,14 @@ const config = {
   },
 
   router: {
-    middleware: ['silent-refresh-token']
+    middleware: 'silent-refresh-token',
+    scrollBehavior(to, from, savedPosition) {
+      if (savedPosition) {
+        return savedPosition;
+      }
+
+      return { x: 0, y: 0 };
+    },
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

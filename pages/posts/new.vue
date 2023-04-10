@@ -313,7 +313,7 @@ export default {
   middleware: ['get-post-list'],
   data () {
     const titleMax = 30
-    const bodyMax = 600
+    const bodyMax = 400
     return {
       noImg,
       page: 1,
