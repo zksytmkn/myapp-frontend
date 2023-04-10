@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="mb-3"
-  >
+  <div>
     <v-container>
       <v-row>
         <v-col

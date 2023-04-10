@@ -5,17 +5,13 @@
         <v-col
           cols="12"
         >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-title
-                class="font-weight-bold"
-              >
-                あなたのカート
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
+          <v-list-item>
+            <v-list-item-title
+              class="font-weight-bold"
+            >
+              あなたのカート
+            </v-list-item-title>
+          </v-list-item>
           <v-divider/>
           <v-list
             v-show="!cartProducts.length"

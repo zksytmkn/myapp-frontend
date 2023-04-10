@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-10">
+  <div class="mb-12">
     <v-container>
       <v-list-item>
         <v-list-item-title class="font-weight-bold">

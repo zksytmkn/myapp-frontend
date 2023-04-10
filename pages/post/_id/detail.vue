@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mb-10"
+    class="mb-12"
   >
     <v-container>
       <v-list-item>
