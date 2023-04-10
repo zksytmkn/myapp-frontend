@@ -50,7 +50,7 @@
                     <v-col cols="12">
                       <v-row>
                         <v-col cols="5"><v-img :src="currentPost.image_url || noImg" max-height="430px" max-width="430px" aspect-ratio="1"></v-img></v-col>
-                        <v-col cols="7">
+                        <v-col cols="7" align-self="center">
                           <v-card-text class="text-subtitle-1">
                             {{ currentPost.body.length > 400 ? currentPost.body.substring(0, 400) + '...' : currentPost.body }}
                           </v-card-text>

@@ -94,9 +94,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                    <span>
-                      {{ cart.product.name.length > 7 ? cart.product.name.substring(0, 7) + '...' : cart.product.name }}
-                    </span>
+                    {{ cart.product.name.length > 7 ? cart.product.name.substring(0, 7) + '...' : cart.product.name }}
                     <v-spacer />
                     <v-btn
                       text
@@ -142,9 +140,7 @@
                   <v-card-text
                     class="pb-0"
                   >
-                  <span>
                     {{ cart.product.description.length > 90 ? cart.product.description.substring(0, 90) + '...' : cart.product.description }}
-                  </span>
                   </v-card-text>
                   <v-card-subtitle
                     class="pt-0 font-weight-bold"

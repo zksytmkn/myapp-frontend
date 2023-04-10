@@ -53,9 +53,7 @@
                     class="font-weight-bold pa-1"
                     style="max-width:360px;"
                   >
-                  <span>
                     {{ product.name.length > 7 ? product.name.substring(0, 7) + '...' : product.name }}
-                  </span>
                     <v-spacer />
                     <v-btn
                       text
