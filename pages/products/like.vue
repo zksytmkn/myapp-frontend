@@ -14,15 +14,17 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item>
-              <v-btn
-                class="font-weight-bold"
-                color="orange"
-                outlined
-                dark
-                to="/products/list"
-              >
-                農産物を見る
-              </v-btn>
+              <v-list-item-action>
+                <v-btn
+                  class="font-weight-bold"
+                  color="orange"
+                  outlined
+                  dark
+                  to="/products/list"
+                >
+                  農産物を見る
+                </v-btn>
+              </v-list-item-action>
             </v-list-item>
           </v-list>
         </v-col>

@@ -15,15 +15,17 @@
       </v-row>
     </v-container>
 
-    <v-container>
+    <v-container
+      v-if="posts.length !== 0"
+    >
       <v-row
         justify="center"
       >
         <v-col
           cols="12"
         >
-<v-data-table
-  :headers="tableHeaders"
+          <v-data-table
+            :headers="tableHeaders"
             :items="posts.slice(pageSize*(page-1),pageSize*(page))"
             item-key="id"
             hide-default-footer

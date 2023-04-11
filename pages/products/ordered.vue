@@ -51,7 +51,9 @@
                     aspect-ratio="1"
                   ></v-img>
                   <v-card-title class="font-weight-bold pa-1" style="max-width: 360px;">
+                    <span>
                     {{ product.name.length > 7 ? product.name.substring(0, 7) + "..." : product.name }}
+                    </span>
                     <v-spacer />
                     <v-btn text outlined :to="$my.productLinkToDetail(product.id)" class="font-weight-bold">詳細</v-btn>
                   </v-card-title>

@@ -5,17 +5,13 @@
         <v-col
           cols="12"
         >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-title
-                class="font-weight-bold"
-              >
-                検索
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
+          <v-list-item>
+            <v-list-item-title
+              class="font-weight-bold"
+            >
+              検索
+            </v-list-item-title>
+          </v-list-item>
           <v-divider/>
         </v-col>
       </v-row>
@@ -31,13 +27,11 @@
           <v-card>
             <v-list>
               <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="font-weight-bold"
-                  >
-                    検索条件
-                  </v-list-item-title>
-                </v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold"
+                >
+                  検索条件
+                </v-list-item-title>
               </v-list-item>
             </v-list>
             <v-divider/>
@@ -96,7 +90,7 @@
                       class="font-weight-bold mt-3 mb-9"
                       color="teal"
                       dark
-                      @click="$store.dispatch('updatePostSearchCondition', { title: searched.title, poster: searched.poster, body: searched.body })"
+                      @click="updateSearchCondition"
                     >
                       つぶやきを検索する
                     </v-btn>
@@ -114,32 +108,21 @@
         <v-col
           cols="12"
         >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  検索結果（{{ searchedPosts.length }}件）
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+          <v-list-item>
+            <v-list-item-title
+              class="font-weight-bold"
+            >
+              検索結果（{{ searchedPosts.length }}件）
+            </v-list-item-title>
+          </v-list-item>
           <v-divider/>
-          <v-list
+          <v-list-item
             v-show="!searchedPosts.length"
-            color="transparent"
           >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  該当するつぶやきはありませんでした。
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+            <v-list-item-title>
+              該当するつぶやきはありませんでした。
+            </v-list-item-title>
+          </v-list-item>
         </v-col>
       </v-row>
     </v-container>
@@ -163,103 +146,41 @@
             >
               <nuxt-link
                 :to="$my.postLinkToDetail(item.id)"
-                class="text-decoration-none"
+                class="text-decoration-none teal--text"
               >
-                <span
-                  v-show="item.title.length>13"
-                >
-                  {{ item.title.substring(0, 13)+'...' }}
-                </span>
-                <span
-                  v-show="item.title.length<=13"
-                >
-                  {{ item.title }}
-                </span>
+                {{ item.title.length > 13 ? item.title.substring(0, 13) + '...' : item.title }}
               </nuxt-link>
             </template>
-            <template
-              #[`item.text`]="{ item }"
-            >
-              <span
-                v-show="item.body.length>37"
-              >
-                {{ item.body.substring(0, 37)+'...' }}
-              </span>
-              <span
-                v-show="item.body.length<=37"
-              >
-                {{ item.body }}
-              </span>
+            <template #[`item.body`]="{ item }">
+              {{ item.body.length > 37 ? item.body.substring(0, 37) + '...' : item.body }}
             </template>
             <template
               #[`item.like`] = "{ item }"
             >
-              <v-btn
-                v-show="!$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
-                class="ml-0"
-                style="background:grey"
-                fab
-                dark
-                x-small
-                @click="addPostFavorite(item.id)"
-              >
-                <v-icon>
-                  mdi-thumb-up
-                </v-icon>
-              </v-btn>
-              <v-btn
-                v-show="$store.state.post.favorite.some(favorite => favorite.id === item.id)"
-                :class="{ likeColor: $store.state.post.favorite.some(favorite => favorite.id === item.id) }"
-                class="ml-0"
-                style="background:grey"
-                fab
-                dark
-                x-small
-                @click="deletePostFavorite(item.id)"
-              >
-                <v-icon>
-                  mdi-thumb-up
-                </v-icon>
-              </v-btn>
-              <span
-                class="font-weight-bold ml-1"
-              >
-                {{ $store.state.post.favorites.filter(favorites => favorites.post_id === item.id).length }}
-              </span>
-              <v-btn
-                v-show="!$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
-                class="ml-2"
-                style="background:grey"
-                fab
-                dark
-                x-small
-                @click="addPostUnfavorite(item.id)"
-              >
-                <v-icon>
-                  mdi-thumb-down
-                </v-icon>
-              </v-btn>
-              <v-btn
-                v-show="$store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id)"
-                :class="{ dislikeColor: $store.state.post.unfavorite.some(unfavorite => unfavorite.id === item.id) }"
-                class="ml-2"
-                style="background:grey"
-                fab
-                dark
-                x-small
-                @click="deletePostUnfavorite(item.id)"
-              >
-                <v-icon>
-                  mdi-thumb-down
-                </v-icon>
-              </v-btn>
-              <span
-                class="font-weight-bold ml-1"
-              >
-                {{ $store.state.post.unfavorites.filter(unfavorites => unfavorites.post_id === item.id).length }}
-              </span>
+              <div style="display: flex;">
+                <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
+                  <v-btn
+                    :key="actionType + 'Btn'"
+                    :class="buttonClass(actionType, item.id)"
+                    class="ml-0"
+                    fab
+                    dark
+                    x-small
+                    @click="handleFavorites(item.id, actionType, $store.state.post[actionType].some(x => x.id === item.id) ? 'delete' : 'post')"
+                  >
+                    <v-icon>
+                      {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                    </v-icon>
+                  </v-btn>
+                  <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
+                    {{
+                      $store.state.post[actionType + 's'].filter(
+                        x => x.post_id === item.id
+                      ).length
+                    }}
+                  </span>
+                </div>
+              </div>
             </template>
             <template
               #[`item.updatedAt`]="{ item }"
@@ -309,113 +230,96 @@ export default {
           value: 'updatedAt'
         }
       ],
-      searched: {title: '', poster: '', body: ''}
-    }
-  },
-  computed: {
-    searchedPosts () {
-      const searchCondition = this.$store.state.post.searchCondition
-
-      const copySearchedPosts = Array.from(this.$store.state.post.list).
-      filter((x) => x.title.includes(searchCondition.title) && x.user.name.includes(searchCondition.poster))
-
-      return copySearchedPosts.sort((a, b) => {
-        if (a.created_at > b.created_at) { return -1 }
-        if (a.created_at < b.created_at) { return 1 }
-        return 0
-      })
+      searched: {title: '', poster: '', body: ''},
+      searchedPosts: [],
     }
   },
   mounted() {
     this.searched.title = this.$store.state.post.searchCondition.title
     this.searched.poster = this.$store.state.post.searchCondition.poster
     this.searched.body = this.$store.state.post.searchCondition.body
+
+    this.calculateSearchedPosts();
   },
   methods: {
-    addPostFavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('post_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$post('/api/v1/post_favorites', formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_favorites'),
-          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_unfavorites')
-        ])
-        .then(response => {
-          this.$store.dispatch('getPostFavorite', response[0])
-          this.$store.dispatch('getPostFavorites', response[1])
-          this.$store.dispatch('getPostUnfavorite', response[2])
-          this.$store.dispatch('getPostUnfavorites', response[3])
-        })
+    async handleFavorites(id, type, method) {
+      try {
+        if (method === 'delete') {
+          await this.$axios[method](`/api/v1/post_${type}s/${id}/user/${this.$auth.user.id}`);
+        } else {
+          const formData = new FormData()
+          formData.append('post_id', id)
+          formData.append('user_id', this.$auth.user.id)
+          await this.$axios[method](`/api/v1/post_${type}s`, formData)
+        }
+  
+        await this.updateFavoritesAndUnfavorites();
+      } catch (error) {
       }
-      asyncFunc().finally(response => console.log(response))
     },
-    deletePostFavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('post_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$delete('/api/v1/post_favorites', {data: formData})
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_favorites')
-        ])
-        .then(response => {
-          this.$store.dispatch('getPostFavorite', response[0])
-          this.$store.dispatch('getPostFavorites', response[1])
-        })
-      }
-      asyncFunc().finally(response => console.log(response))
+    async updateFavoritesAndUnfavorites() {
+      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
+        this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/post_favorites'),
+        this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/post_unfavorites')
+      ]);
+
+      this.$store.dispatch('getPostFavorite', userFavorites);
+      this.$store.dispatch('getPostFavorites', allFavorites);
+      this.$store.dispatch('getPostUnfavorite', userUnfavorites);
+      this.$store.dispatch('getPostUnfavorites', allUnfavorites);
     },
-    addPostUnfavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('post_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$post('/api/v1/post_unfavorites', formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_favorites'),
-          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_unfavorites'),
-        ])
-        .then(response => {
-          this.$store.dispatch('getPostFavorite', response[0])
-          this.$store.dispatch('getPostFavorites', response[1])
-          this.$store.dispatch('getPostUnfavorite', response[2])
-          this.$store.dispatch('getPostUnfavorites', response[3])
-        })
+    buttonClass(actionType, id) {
+      if (actionType === 'favorite' && this.$store.state.post.favorite.some(item => item.id === id)) {
+        return 'likeColor';
+      } else if (actionType === 'unfavorite' && this.$store.state.post.unfavorite.some(item => item.id === id)) {
+        return 'dislikeColor';
+      } else {
+        return 'grey';
       }
-      asyncFunc().finally(response => console.log(response))
     },
-    deletePostUnfavorite(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('post_id', id)
-        formData.append('user_id', this.$auth.user.id)
-        await this.$axios.$delete('/api/v1/post_unfavorites', {data: formData})
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await Promise.all([
-          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_unfavorites'),
-        ])
-        .then(response => {
-          this.$store.dispatch('getPostUnfavorite', response[0])
-          this.$store.dispatch('getPostUnfavorites', response[1])
-        })
+    updateSearchCondition() {
+      this.$store.dispatch('updatePostSearchCondition', {
+        title: this.searched.title,
+        poster: this.searched.poster,
+        body: this.searched.body,
+      });
+
+      this.calculateSearchedPosts();
+    },
+    calculateSearchedPosts() {
+      const { title, poster, body } = this.searched;
+    
+      let copySearchedPosts = Array.from(this.$store.state.post.list)
+    
+      if (title && title.length) {
+        const titleArray = Array.isArray(title) ? title : [title];
+        copySearchedPosts = copySearchedPosts.filter((x) =>
+          titleArray.some((str) => x.title.includes(str))
+        );
       }
-      asyncFunc().finally(response => console.log(response))
-    }
+    
+      if (poster && poster.length) {
+        const posterArray = Array.isArray(poster) ? poster : [poster];
+        copySearchedPosts = copySearchedPosts.filter((x) =>
+          posterArray.some((str) => x.user.name.includes(str))
+        );
+      }
+    
+      if (body && body.length) {
+        const bodyArray = Array.isArray(body) ? body : [body];
+        copySearchedPosts = copySearchedPosts.filter((x) =>
+          bodyArray.some((str) => x.body.includes(str))
+        );
+      }
+    
+      this.searchedPosts = copySearchedPosts.sort((a, b) => {
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
+      });
+    },
   }
 }
 </script>

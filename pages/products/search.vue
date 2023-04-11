@@ -478,9 +478,19 @@ export default {
     calculateSearchedProducts() {
       const { name, seller, category, prefecture, description } = this.searched;
 
-      let copySearchedProducts = Array.from(this.$store.state.product.list).filter(
-        (x) => x.name.includes(name) && x.user.name.includes(seller)
-      );
+      let copySearchedProducts = Array.from(this.$store.state.product.list)
+
+      if (name && name.length) {
+        copySearchedProducts = copySearchedProducts.filter((x) =>
+          x.name.includes(name)
+        );
+      }
+
+      if (seller && seller.length) {
+        copySearchedProducts = copySearchedProducts.filter((x) =>
+          x.user.name.includes(seller)
+        );
+      }
 
       if (category && category.length) {
         copySearchedProducts = copySearchedProducts.filter((x) =>
