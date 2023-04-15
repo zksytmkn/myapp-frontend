@@ -17,138 +17,137 @@
                 </v-list-item>
                 <v-divider />
 
-                <v-list-item>
-                  <v-container>
-                    <v-row
-                      justify="center"
+                <v-container>
+                  <v-row
+                    justify="center"
+                  >
+                    <v-col
+                      cols="11"
+                      class="mt-9"
                     >
-                      <v-col
-                        cols="11"
-                        class="mt-9"
+                      <v-img
+                        :src="url"
+                        height="300px"
+                        width="300px"
                       >
-                        <v-img
-                          :src="url"
-                          height="300px"
-                          width="300px"
-                        >
-                        </v-img>
-                        <v-file-input
-                          v-model="inp.image"
-                          :rules="imgRules"
-                          accept="image/png, image/jpeg, image/bmp"
-                          placeholder="画像を選択して下さい"
-                          prepend-icon="mdi-camera"
-                          label="画像ファイル"
-                        >
-                        </v-file-input>
-                      </v-col>
-                      <v-col
-                        cols="11"
+                      </v-img>
+                      <v-file-input
+                        v-model="inp.image"
+                        :rules="imgRules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="画像を選択して下さい"
+                        prepend-icon="mdi-camera"
+                        label="画像ファイル"
                       >
-                        <v-text-field
-                          v-model="inp.name"
-                          dense
-                          outlined
-                          label="名前"
-                          :rules="nameRules"
-                          :disabled="sentIt"
-                        >
-                        </v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="11"
+                      </v-file-input>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-text-field
+                        v-model="inp.name"
+                        dense
+                        outlined
+                        label="名前"
+                        :rules="nameRules"
+                        :disabled="sentIt"
                       >
-                        <v-select
-                          v-model="inp.category"
-                          dense
-                          outlined
-                          label="種類"
-                          :items="typeItems"
-                          :rules="typeRules"
-                          :disabled="sentIt"
-                        >
-                        </v-select>
-                      </v-col>
-                      <v-col
-                        cols="11"
+                      </v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-select
+                        v-model="inp.category"
+                        dense
+                        outlined
+                        label="種類"
+                        :items="typeItems"
+                        :rules="typeRules"
+                        :disabled="sentIt"
                       >
-                        <v-row>
-                          <v-col
-                            cols="6"
+                      </v-select>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-row>
+                        <v-col
+                          cols="6"
+                        >
+                          <v-text-field
+                            v-model="inp.price"
+                            dense
+                            outlined
+                            label="価格"
+                            type="number"
+                            :rules="priceRules"
+                            :disabled="sentIt"
                           >
-                            <v-text-field
-                              v-model="inp.price"
-                              dense
-                              outlined
-                              label="価格"
-                              type="number"
-                              :rules="priceRules"
-                              :disabled="sentIt"
-                            >
-                            </v-text-field>
-                          </v-col>
-                          <v-col
-                            cols="6"
-                          >
-                            <v-text-field
-                              v-model="inp.stock"
-                              dense
-                              outlined
-                              label="数量"
-                              type="number"
-                              :rules="stockRules"
-                              :disabled="sentIt"
-                            >
-                            </v-text-field>
-                          </v-col>
-                        </v-row>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-textarea
-                          v-model="inp.description"
-                          dense
-                          outlined
-                          label="説明文"
-                          :rules="descRules"
-                          :disabled="sentIt"
+                          </v-text-field>
+                        </v-col>
+                        <v-col
+                          cols="6"
                         >
-                        </v-textarea>
-                      </v-col>
-                      <v-col
-                        cols="11"
-                      >
-                        <v-row
-                          justify="center"
-                        >
-                          <v-btn
-                            type="submit"
-                            :disabled="!valid || loading"
-                            :loading="loading"
-                            class="mb-6 mr-2 font-weight-bold white--text"
-                            color="teal"
+                          <v-text-field
+                            v-model="inp.stock"
+                            dense
+                            outlined
+                            label="数量"
+                            type="number"
+                            :rules="stockRules"
+                            :disabled="sentIt"
                           >
-                            農産物を出品する
-                          </v-btn>
+                          </v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-textarea
+                        v-model="inp.description"
+                        dense
+                        outlined
+                        label="説明文"
+                        :rules="descRules"
+                        :disabled="sentIt"
+                      >
+                      </v-textarea>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-row
+                        justify="center"
+                      >
+                        <v-btn
+                          type="submit"
+                          :disabled="!valid || loading"
+                          :loading="loading"
+                          class="mb-6 mr-2 font-weight-bold white--text"
+                          color="teal"
+                        >
+                          農産物を出品する
+                        </v-btn>
 
-                          <v-btn
-                            text
-                            @click="formReset"
-                          >
-                            キャンセル
-                          </v-btn>
-                        </v-row>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-list-item>
+                        <v-btn
+                          text
+                          @click="formReset"
+                        >
+                          キャンセル
+                        </v-btn>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-list>
             </v-form>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+
     <v-container>
       <v-list-item>
         <v-list-item-title class="font-weight-bold">

@@ -28,21 +28,11 @@
               >
                 <v-container>
                   <v-row>
-                    <v-card-title class="pb-1 d-block text-truncate font-weight-bold">
-                      <span v-show="community.name.length > 13">
-                        {{ community.name.substring(0, 13) + '...' }}
-                      </span>
-                      <span v-show="community.name.length <= 13">
-                        {{ community.name }}
-                      </span>
+                    <v-card-title class="pb-1 d-block text-truncate text-none font-weight-bold">
+                      {{ community.name.length > 13 ? community.name.substring(0, 13) + '...' : community.name }}
                     </v-card-title>
                     <v-card-text class="caption grey--text text--darken-1">
-                      <span v-show="community.description.length > 23">
-                        {{ community.description.substring(0, 23) + '...' }}
-                      </span>
-                      <span v-show="community.description.length <= 23">
-                        {{ community.description }}
-                      </span>
+                      {{ community.description.length > 23 ? community.description.substring(0, 23) + '...' : community.description }}
                     </v-card-text>
                   </v-row>
                 </v-container>

@@ -34,84 +34,82 @@
   
                 <v-divider/>
   
-                <v-list-item>
-                  <v-container>
-                    <v-row
-                      justify="center"
+                <v-container>
+                  <v-row
+                    justify="center"
+                  >
+                    <v-col
+                      cols="11"
+                      class="mt-9"
                     >
-                      <v-col
-                        cols="11"
-                        class="mt-9"
+                      <v-img
+                        :src="url"
+                        height="300px"
+                        width="300px"
                       >
-                        <v-img
-                          :src="url"
-                          height="300px"
-                          width="300px"
-                        >
-                        </v-img>
-                        <v-file-input
-                          v-model="inp.image"
-                          :rules="imgRules"
-                          accept="image/png, image/jpeg, image/bmp"
-                          placeholder="画像を選択して下さい"
-                          prepend-icon="mdi-camera"
-                          label="画像ファイル"
-                        >
-                        </v-file-input>
-                      </v-col>
-                      <v-col
-                        cols="11"
+                      </v-img>
+                      <v-file-input
+                        v-model="inp.image"
+                        :rules="imgRules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="画像を選択して下さい"
+                        prepend-icon="mdi-camera"
+                        label="画像ファイル"
                       >
-                        <v-text-field
-                          v-model="inp.title"
-                          dense
-                          outlined
-                          label="タイトル"
-                          :rules="titleRules"
-                          :disabled="sentIt"
-                        >
-                        </v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="11"
+                      </v-file-input>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-text-field
+                        v-model="inp.title"
+                        dense
+                        outlined
+                        label="タイトル"
+                        :rules="titleRules"
+                        :disabled="sentIt"
                       >
-                        <v-textarea
-                          v-model="inp.body"
-                          dense
-                          outlined
-                          label="つぶやき"
-                          :rules="bodyRules"
-                          :disabled="sentIt"
-                        >
-                        </v-textarea>
-                      </v-col>
-                      <v-col
-                        cols="11"
+                      </v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-textarea
+                        v-model="inp.body"
+                        dense
+                        outlined
+                        label="つぶやき"
+                        :rules="bodyRules"
+                        :disabled="sentIt"
                       >
-                        <v-row
-                          justify="center"
+                      </v-textarea>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-row
+                        justify="center"
+                      >
+                        <v-btn
+                          type="submit"
+                          :disabled="!valid || loading"
+                          :loading="loading"
+                          class="mb-6 mr-2 font-weight-bold white--text"
+                          color="teal"
                         >
-                          <v-btn
-                            type="submit"
-                            :disabled="!valid || loading"
-                            :loading="loading"
-                            class="mb-6 mr-2 font-weight-bold white--text"
-                            color="teal"
-                          >
-                            つぶやきを投稿する
-                          </v-btn>
+                          つぶやきを投稿する
+                        </v-btn>
 
-                          <v-btn
-                            text
-                            @click="formReset"
-                          >
-                            キャンセル
-                          </v-btn>
-                        </v-row>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-list-item>
+                        <v-btn
+                          text
+                          @click="formReset"
+                        >
+                          キャンセル
+                        </v-btn>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-list>
             </v-form>
           </v-card>

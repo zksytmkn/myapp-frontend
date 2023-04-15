@@ -25,13 +25,11 @@
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="font-weight-bold"
-                    >
-                      コミュニティ
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title
+                    class="font-weight-bold"
+                  >
+                    コミュニティ
+                  </v-list-item-title>
                 </v-list-item>
               </v-list>
   
@@ -121,102 +119,65 @@
     </v-container>
 
     <v-container>
-      <v-row>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          作成済み（{{ newCommunities.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list-item
+        v-show="!newCommunities.length"
+      >
+        <v-list-item-title>
+          作成しておりません。
+        </v-list-item-title>
+      </v-list-item>
+    </v-container>
+    <v-container
+      v-show="newCommunities.length"
+    >
+      <v-row
+        justify="center"
+        align="center"
+      >
         <v-col
           cols="12"
         >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-title
-                class="font-weight-bold"
-              >
-                作成済み（{{ newCommunities.length }}件）
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-          <v-divider/>
-          <v-list
-            v-show="!newCommunities.length"
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  作成しておりません。
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <v-container
-            v-show="newCommunities.length"
-          >
+          <v-container>
             <v-row
-              justify="center"
               align="center"
             >
               <v-col
+                v-for="(community, i) in newCommunities.slice(pageSize*(page-1),pageSize*(page))"
+                :key="`card-community-${i}`"
                 cols="12"
+                :sm="card.sm"
+                :md="card.md"
               >
-                <v-container>
-                  <v-row
-                    align="center"
-                  >
+                <v-card
+                  block
+                  :height="card.height"
+                  :elevation="card.elevation"
+                  :to="$my.communityLinkToDetail(community.id)"
+                  class="v-btn text-capitalize align-center"
+                >
+                  <v-container>
                     <v-col
-                      v-for="(community, i) in newCommunities.slice(pageSize*(page-1),pageSize*(page))"
-                      :key="`card-community-${i}`"
                       cols="12"
-                      :sm="card.sm"
-                      :md="card.md"
                     >
-                      <v-card
-                        block
-                        :height="card.height"
-                        :elevation="card.elevation"
-                        :to="$my.communityLinkToDetail(community.id)"
-                        class="v-btn text-capitalize align-center"
-                      >
-                        <v-container>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-row>
-                              <v-card-title
-                                class="pb-1 d-block text-truncate font-weight-bold"
-                              >
-                                <span
-                                  v-show="community.name.length>13"
-                                >
-                                  {{ community.name.substring(0, 13)+'...' }}
-                                </span>
-                                <span
-                                  v-show="community.name.length<=13"
-                                >
-                                  {{ community.name }}
-                                </span>
-                              </v-card-title>
-                              <v-card-text
-                                class="caption grey--text text--darken-1"
-                              >
-                                <span
-                                  v-show="community.description.length>23"
-                                >
-                                  {{ community.description.substring(0, 23)+'...'}}
-                                </span>
-                                <span
-                                  v-show="community.description.length<=23"
-                                >
-                                  {{ community.description }}
-                                </span>
-                              </v-card-text>
-                            </v-row>
-                          </v-col>
-                        </v-container>
-                      </v-card>
+                      <v-row>
+                        <v-card-title class="pb-1 d-block text-truncate text-none font-weight-bold">
+                          {{ community.name.length > 13 ? community.name.substring(0, 13) + '...' : community.name }}
+                        </v-card-title>
+                        <v-card-text class="caption grey--text text-none text--darken-1">
+                          {{ community.description.length > 23 ? community.description.substring(0, 23) + '...' : community.description }}
+                        </v-card-text>
+                      </v-row>
                     </v-col>
-                  </v-row>
-                </v-container>
+                  </v-container>
+                </v-card>
               </v-col>
             </v-row>
           </v-container>
@@ -278,57 +239,49 @@ export default {
   },
   computed: {
     url() {
-      if(this.inp.image===null) {
-        return noImg
-      } else {
-        return URL.createObjectURL(this.inp.image)
-      }
+      return this.inp.image ? URL.createObjectURL(this.inp.image) : noImg;
     },
-    newCommunities () {
-      const copyNewCommunities = Array.from(this.$store.state.community.list.filter((x) => x.user.id === this.$auth.user.id))
-      return copyNewCommunities.sort((a, b) => {
-        if (a.created_at > b.created_at) { return -1 }
-        if (a.created_at < b.created_at) { return 1 }
-        return 0
-      })
+    newCommunities() {
+      const userCommunities = this.$store.state.community.list.filter(x => x.user_id === this.$auth.user.id);
+      return userCommunities.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
   },
   methods: {
-    addCommunity() {
-      this.loading = true
-      if (this.valid) {
-        const asyncFunc = async() => {
-          const formData = new FormData()
-          formData.append('name', this.inp.name)
-          formData.append('user_id', this.inp.user_id)
-          formData.append('description', this.inp.description)
-          if (this.inp.image !== null) {
-            formData.append('image', this.inp.image)
-          }
-          const config = {
-            header: {
-              "Content-Type": "multipart/form-data"
-            }
-          }
-          this.formReset()
-          await this.$axios.$post('api/v1/communities', formData, config)
-          .then(response => {
-            const msg = 'コミュニティを作成しました'
-            const color = 'success'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          .catch(error => {
-            console.log(error)
-            const msg = 'コミュニティを作成できませんでした'
-            const color = 'error'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          await this.$axios.$get('api/v1/communities')
-          .then(communities => this.$store.dispatch('getCommunityList', communities))
-        }
-        asyncFunc().finally(response => console.log(response))
+    async addCommunity() {
+      if (!this.valid) {
+        this.loading = false
+        return
       }
-      this.loading = false
+
+      this.loading = true
+      try {
+        const formData = new FormData()
+        formData.append('name', this.inp.name)
+        formData.append('user_id', this.inp.user_id)
+        formData.append('description', this.inp.description)
+
+        if (this.inp.image !== null) {
+          formData.append('image', this.inp.image)
+        }
+
+        const config = {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+
+        this.formReset()
+
+        await this.$axios.$post('api/v1/communities', formData, config)
+        this.$store.dispatch('getToast', { msg: 'コミュニティを作成しました', color: 'success' })
+
+        const communities = await this.$axios.$get('api/v1/communities')
+        this.$store.dispatch('getCommunityList', communities)
+      } catch (error) {
+        this.$store.dispatch('getToast', { msg: 'コミュニティを作成できませんでした', color: 'error' })
+      } finally {
+        this.loading = false
+      }
     },
     formReset () {
       this.sentIt = false

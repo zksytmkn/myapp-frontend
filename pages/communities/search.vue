@@ -156,7 +156,7 @@
                       cols="12"
                     >
                       <v-row>
-                        <v-card-title class="pb-1 d-block text-truncate font-weight-bold">
+                        <v-card-title class="pb-1 d-block text-truncate text-none font-weight-bold">
                           {{ community.name.length > 13 ? community.name.substring(0, 13) + '...' : community.name }}
                         </v-card-title>
                         <v-card-text class="caption grey--text text--darken-1">
