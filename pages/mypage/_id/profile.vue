@@ -48,8 +48,8 @@
                           cols="5"
                         >
                           <v-avatar
-                            height=260px
-                            width=260px
+                            height="260px"
+                            width="260px"
                           >
                             <v-img
                               :src="CurrentUser.image_url ? CurrentUser.image_url : noPersonImg"

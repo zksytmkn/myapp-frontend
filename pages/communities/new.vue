@@ -1,26 +1,14 @@
 <template>
   <div>
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  作成
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <v-divider/>
-        </v-col>
-      </v-row>
+          作成
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
     </v-container>
     <v-container>
       <v-row
@@ -32,7 +20,7 @@
           <v-card>
             <v-form
               ref="new"
-              v-model="isValid"
+              v-model="valid"
               @submit.prevent="addCommunity"
             >
               <v-list>
@@ -64,7 +52,7 @@
                     >
                     </v-img>
                     <v-file-input
-                      v-model="inputted.image"
+                      v-model="inp.image"
                       :rules="imgRules"
                       accept="image/png, image/jpeg, image/bmp"
                       placeholder="画像を選択して下さい"
@@ -78,7 +66,7 @@
                     cols="11"
                   >
                     <v-text-field
-                      v-model="inputted.name"
+                      v-model="inp.name"
                       dense
                       outlined
                       label="名前"
@@ -91,11 +79,11 @@
                     cols="11"
                   >
                     <v-textarea
-                      v-model="inputted.description"
+                      v-model="inp.description"
                       dense
                       outlined
                       label="紹介文"
-                      :rules="descriptionRules"
+                      :rules="descRules"
                       :disabled="sentIt"
                     >
                     </v-textarea>
@@ -108,7 +96,7 @@
                     >
                       <v-btn
                         type="submit"
-                        :disabled="!isValid || loading"
+                        :disabled="!valid || loading"
                         :loading="loading"
                         class="mb-6 mr-2 font-weight-bold white--text"
                         color="teal"
@@ -141,13 +129,11 @@
             color="transparent"
           >
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  作成済み（{{ newCommunities.length }}件）
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title
+                class="font-weight-bold"
+              >
+                作成済み（{{ newCommunities.length }}件）
+              </v-list-item-title>
             </v-list-item>
           </v-list>
           <v-divider/>
@@ -257,12 +243,12 @@ export default {
   middleware: ['get-community-list'],
   data () {
     const nameMax = 13
-    const descriptionMax = 300
+    const descMax = 300
     return {
       noImg,
       page: 1,
       pageSize: 10,
-      isValid: false,
+      valid: false,
       loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
@@ -272,12 +258,12 @@ export default {
         v => !!v || '',
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
-      descriptionRules: [
-        descriptionMax,
+      descRules: [
+        descMax,
         v => !!v || '',
-        v => (!!v && descriptionMax >= v.length) || `${descriptionMax}文字以内で入力してください`
+        v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null },
+      inp: { name: '', user_id: this.$auth.user.id, description: '', image: null },
       container: {
         sm: 10,
         md: 8
@@ -292,10 +278,10 @@ export default {
   },
   computed: {
     url() {
-      if(this.inputted.image===null) {
+      if(this.inp.image===null) {
         return noImg
       } else {
-        return URL.createObjectURL(this.inputted.image)
+        return URL.createObjectURL(this.inp.image)
       }
     },
     newCommunities () {
@@ -310,14 +296,14 @@ export default {
   methods: {
     addCommunity() {
       this.loading = true
-      if (this.isValid) {
+      if (this.valid) {
         const asyncFunc = async() => {
           const formData = new FormData()
-          formData.append('name', this.inputted.name)
-          formData.append('user_id', this.inputted.user_id)
-          formData.append('description', this.inputted.description)
-          if (this.inputted.image !== null) {
-            formData.append('image', this.inputted.image)
+          formData.append('name', this.inp.name)
+          formData.append('user_id', this.inp.user_id)
+          formData.append('description', this.inp.description)
+          if (this.inp.image !== null) {
+            formData.append('image', this.inp.image)
           }
           const config = {
             header: {

@@ -48,8 +48,8 @@
                       >
                         <v-img
                           :src="url"
-                          height=300px
-                          width=300px
+                          height="300px"
+                          width="300px"
                         >
                         </v-img>
                         <v-file-input

@@ -36,8 +36,8 @@
                       class="mt-9"
                     >
                       <v-avatar
-                        height=260px
-                        width=260px
+                        height="260px"
+                        width="260px"
                       >
                         <v-img
                           :src="url"
