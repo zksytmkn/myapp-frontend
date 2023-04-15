@@ -1,29 +1,16 @@
 <template>
   <div
-    id="community"
-    class="mb-10"
+    class="mb-12"
   >
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  class="font-weight-bold"
-                >
-                  編集
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <v-divider/>
-        </v-col>
-      </v-row>
+          編集
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
     </v-container>
 
     <v-container>
@@ -36,18 +23,16 @@
           <v-card>
             <v-form
               ref="edit"
-              v-model="isValid"
+              v-model="valid"
               @submit.prevent="editCommunity($store.state.community.current.community.id)"
             >
               <v-list>
                 <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="font-weight-bold"
-                    >
-                      コミュニティ
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title
+                    class="font-weight-bold"
+                  >
+                    コミュニティ
+                  </v-list-item-title>
                 </v-list-item>
   
                 <v-divider/>
@@ -68,7 +53,7 @@
                         >
                         </v-img>
                         <v-file-input
-                          v-model="inputted.image"
+                          v-model="inp.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
@@ -81,7 +66,7 @@
                         cols="11"
                       >
                         <v-text-field
-                          v-model="inputted.name"
+                          v-model="inp.name"
                           dense
                           outlined
                           label="名前"
@@ -94,11 +79,11 @@
                         cols="11"
                       >
                         <v-textarea
-                          v-model="inputted.description"
+                          v-model="inp.description"
                           dense
                           outlined
                           label="紹介文"
-                          :rules="descriptionRules"
+                          :rules="descRules"
                           :disabled="sentIt"
                         >
                         </v-textarea>
@@ -111,7 +96,7 @@
                         >
                           <v-btn
                             type="submit"
-                            :disabled="!isValid || loading"
+                            :disabled="!valid || loading"
                             :loading="loading"
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
@@ -146,10 +131,10 @@ export default {
   layout: 'logged-in',
   data () {
     const nameMax = 13
-    const descriptionMax = 300
+    const descMax = 300
     return {
       noImg,
-      isValid: false,
+      valid: false,
       loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
@@ -159,58 +144,56 @@ export default {
         v => !!v || '',
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
-      descriptionRules: [
-        descriptionMax,
+      descRules: [
+        descMax,
         v => !!v || '',
-        v => (!!v && descriptionMax >= v.length) || `${descriptionMax}文字以内で入力してください`
+        v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null }
+      inp: { name: '', user_id: this.$auth.user.id, description: '', image: null }
     }
   },
   computed: {
     url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.community.current.community.image_url ? this.$store.state.community.current.community.image_url : noImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
+      if (!this.inp.image) {
+        return this.$store.state.community.current.community.image_url || noImg;
       }
-    }
+      return URL.createObjectURL(this.inp.image);
+    },
   },
   mounted() {
-    this.inputted.name = this.$store.state.community.current.community.name
-    this.inputted.description = this.$store.state.community.current.community.description
+    const community = this.$store.state.community.current.community;
+    Object.keys(this.inp).forEach(key => {
+      if (key in community) {
+        this.inp[key] = community[key];
+      }
+    });
   },
   methods: {
     async editCommunity(id) {
-      this.loading = true
-      if (this.isValid) {
-        const formData = new FormData()
-        formData.append('name', this.inputted.name)
-        formData.append('user_id', this.inputted.user_id)
-        formData.append('description', this.inputted.description)
-        if (this.inputted.image !== null) {
-          formData.append('image', this.inputted.image)
-        }
-        const config = {
-          header: {
-            "Content-Type": "multipart/form-data"
+      this.loading = true;
+      if (this.valid) {
+        const formData = new FormData();
+        Object.keys(this.inp).forEach(key => {
+          if (key !== 'image' || (key === 'image' && this.inp[key] !== null)) {
+            formData.append(key, this.inp[key]);
           }
+        });
+  
+        const config = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+  
+        try {
+          await this.$axios.$patch(`/api/v1/communities/${id}`, formData, config);
+          this.$router.back();
+          this.$store.dispatch('getToast', { msg: 'コミュニティを編集しました', color: 'success' });
+        } catch (error) {
+          this.$store.dispatch('getToast', { msg: 'コミュニティを編集できませんでした', color: 'error' });
         }
-        await this.$axios.$patch(`api/v1/communities/${id}`, formData, config)
-        .then(response => {
-          this.$router.back()
-          const msg = 'コミュニティを編集しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'コミュニティを編集できませんでした'
-          const color = 'error'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
       }
-      this.loading = false
+      this.loading = false;
     },
     formReset() {
       this.sentIt = false
@@ -219,11 +202,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-#community {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
-</style>
