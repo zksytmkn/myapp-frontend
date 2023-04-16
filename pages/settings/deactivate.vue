@@ -91,11 +91,9 @@ export default {
       const successMsg = 'アカウントを削除しました';
       const errorMsg = 'アカウントを削除できませんでした';
       const successCallback = () => {
-        setTimeout(() => {
-          this.$router.push('/logout');
-        }, 3000);
+        this.$router.push('/logout');
       };
-
+    
       this.processResponse(action, successMsg, errorMsg, successCallback);
     }
   }
