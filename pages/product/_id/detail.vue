@@ -239,7 +239,7 @@
                     <v-row justify="center">
                       <v-col cols="11">
                         <v-textarea
-                          v-model="inp.cmt"
+                          v-model="inputted.comment"
                           dense
                           outlined
                           rows="2"
@@ -288,10 +288,10 @@ export default {
       Valid: false,
       cmt: false,
       cmtRules: [v => !!v || ''],
-      inp: { 
-        cmt: '', 
-        pid: this.$store.state.product.current.id, 
-        uid: this.$auth.user.id 
+      inputted: { 
+        comment: '', 
+        productId: this.$store.state.product.current.id, 
+        userId: this.$auth.user.id 
       },
     }
   },
@@ -347,9 +347,9 @@ export default {
     async addProductComment() {
       if (!this.Valid) return
       const formData = new FormData()
-      formData.append('productComment_content', this.inp.cmt)
-      formData.append('product_id', this.inp.pid)
-      formData.append('user_id', this.inp.uid)
+      formData.append('productComment_content', this.inputted.comment)
+      formData.append('product_id', this.inputted.productId)
+      formData.append('user_id', this.inputted.userId)
       this.formReset()
 
       await this.processResponse(
@@ -437,7 +437,7 @@ export default {
       } catch (error) {}
     },
     async refreshComments() {
-      const comments = await this.$axios.$get(`api/v1/product_comments/${this.inp.pid}`);
+      const comments = await this.$axios.$get(`api/v1/product_comments/${this.inputted.productId}`);
       this.$store.dispatch('getProductComment', comments);
     },
     truncate(text, maxLength) {

@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="mt-3"
+    class="mt-12"
   >
     <v-row>
       <setting-menu />
@@ -15,9 +15,7 @@
             v-model="isValid"
             @submit.prevent="editPassword"
           >
-            <v-list
-              color="transparent"
-            >
+            <v-list>
               <v-list-item>
                 <v-list-item-title>
                   パスワード変更
@@ -104,34 +102,38 @@ export default {
   methods: {
     async editPassword() {
       this.loading = true;
-      if (this.isValid) {
-        if (this.inputted.password === this.inputted.password_confirmation) {
-          const formData = new FormData();
-          formData.append("password", this.inputted.password);
-          formData.append("current_password", this.inputted.current_password);
-          await this.$axios.$patch("/api/v1/users/send_password_reset_confirmation", formData)
-            .then(response => {
-              const msg = 'パスワードを変更しました';
-              const color = 'success';
-              this.$store.dispatch('getToast', { msg, color });
-              return this.$axios.$post('/api/v1/auth_token/refresh')
-                .then(response => this.$auth.login(response));
-            })
-            .catch(error => {
-              const msg = error.response.data.message || '現在のパスワードが間違っております';
-              const color = 'error';
-              this.$store.dispatch('getToast', { msg, color });
-            })
-            .finally(() => {
-              this.loading = false;
-            });
-        } else {
-          const msg = '新しいパスワードと確認用パスワードが一致しません';
-          const color = 'error';
-          this.$store.dispatch('getToast', { msg, color });
-          this.loading = false;
-        }
-      } else {
+
+      if (!this.isValid) {
+        this.loading = false;
+        return;
+      }
+
+      if (this.inputted.password !== this.inputted.password_confirmation) {
+        const msg = '新しいパスワードと確認用パスワードが一致しません';
+        const color = 'error';
+        this.$store.dispatch('getToast', { msg, color });
+        this.loading = false;
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append("password", this.inputted.password);
+        formData.append("current_password", this.inputted.current_password);
+
+        await this.$axios.$patch("/api/v1/users/update_password", formData)
+
+        const msg = 'パスワードを変更しました';
+        const color = 'success';
+        this.$store.dispatch('getToast', { msg, color });
+
+        const response = await this.$axios.$post('/api/v1/auth_token/refresh');
+        this.$auth.login(response);
+      } catch (error) {
+        const msg = error.response.data.message || '現在のパスワードが間違っております';
+        const color = 'error';
+        this.$store.dispatch('getToast', { msg, color });
+      } finally {
         this.loading = false;
       }
     },

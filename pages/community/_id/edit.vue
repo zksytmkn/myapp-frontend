@@ -53,7 +53,7 @@
                         >
                         </v-img>
                         <v-file-input
-                          v-model="inp.image"
+                          v-model="inputted.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
@@ -66,7 +66,7 @@
                         cols="11"
                       >
                         <v-text-field
-                          v-model="inp.name"
+                          v-model="inputted.name"
                           dense
                           outlined
                           label="名前"
@@ -79,7 +79,7 @@
                         cols="11"
                       >
                         <v-textarea
-                          v-model="inp.description"
+                          v-model="inputted.description"
                           dense
                           outlined
                           label="紹介文"
@@ -149,22 +149,22 @@ export default {
         v => !!v || '',
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inp: { name: '', user_id: this.$auth.user.id, description: '', image: null }
+      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null }
     }
   },
   computed: {
     url() {
-      if (!this.inp.image) {
+      if (!this.inputted.image) {
         return this.$store.state.community.current.community.image_url || noImg;
       }
-      return URL.createObjectURL(this.inp.image);
+      return URL.createObjectURL(this.inputted.image);
     },
   },
   mounted() {
     const community = this.$store.state.community.current.community;
-    Object.keys(this.inp).forEach(key => {
+    Object.keys(this.inputted).forEach(key => {
       if (key in community) {
-        this.inp[key] = community[key];
+        this.inputted[key] = community[key];
       }
     });
   },
@@ -173,9 +173,9 @@ export default {
       this.loading = true;
       if (this.valid) {
         const formData = new FormData();
-        Object.keys(this.inp).forEach(key => {
-          if (key !== 'image' || (key === 'image' && this.inp[key] !== null)) {
-            formData.append(key, this.inp[key]);
+        Object.keys(this.inputted).forEach(key => {
+          if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
+            formData.append(key, this.inputted[key]);
           }
         });
   

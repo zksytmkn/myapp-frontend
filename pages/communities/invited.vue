@@ -11,10 +11,10 @@
       <v-divider/>
     </v-container>
 
-    <v-container>
-      <v-list-item
-        v-show="!invitedCommunities.length"
-      >
+    <v-container
+      v-show="!invitedCommunities.length"
+    >
+      <v-list-item>
         <v-list-item-title>
           招待されておりません。
         </v-list-item-title>

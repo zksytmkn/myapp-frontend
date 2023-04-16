@@ -168,7 +168,7 @@
                     <v-row justify="center">
                       <v-col cols="11">
                         <v-textarea
-                          v-model="inp.cmt"
+                          v-model="inputted.comment"
                           dense
                           outlined
                           rows="2"
@@ -219,7 +219,7 @@ export default {
       cmtRules: [
         v => !!v || ''
       ],
-      inp: { cmt: '', pid: this.$store.state.post.current.id, uid: this.$auth.user.id }
+      inputted: { comment: '', postId: this.$store.state.post.current.id, userId: this.$auth.user.id }
     }
   },
   computed: {
@@ -274,9 +274,9 @@ export default {
     async addPostComment() {
       if (!this.Valid) return
       const formData = new FormData()
-      formData.append('postComment_content', this.inp.cmt)
-      formData.append('post_id', this.inp.pid)
-      formData.append('user_id', this.inp.uid)
+      formData.append('postComment_content', this.inputted.comment)
+      formData.append('post_id', this.inputted.postId)
+      formData.append('user_id', this.inputted.userId)
       this.formReset()
 
       await this.processResponse(
@@ -326,7 +326,7 @@ export default {
       } catch (error) {}
     },
     async refreshComments() {
-      const comments = await this.$axios.$get(`api/v1/post_comments/${this.inp.pid}`);
+      const comments = await this.$axios.$get(`api/v1/post_comments/${this.inputted.postId}`);
       this.$store.dispatch('getPostComment', comments);
     },
   }

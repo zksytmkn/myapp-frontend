@@ -263,7 +263,7 @@
             <v-sheet class="pa-4" height="110">
               <v-form ref="new" v-model="valid" @submit.prevent="addCommunityMessage">
                 <v-text-field
-                  v-model="inp.msg"
+                  v-model="inputted.msg"
                   :rules="msgRules"
                   label="メッセージを入力する"
                   counter="200"
@@ -294,7 +294,7 @@ export default {
       noImg,
       valid: false,
       msgRules: [v => !!v || ''],
-      inp: { msg: '', cid: this.$store.state.community.current.community.id, uid: this.$auth.user.id }
+      inputted: { msg: '', communityId: this.$store.state.community.current.community.id, userId: this.$auth.user.id }
     }
   },
   computed: {
@@ -348,9 +348,9 @@ export default {
     async addCommunityMessage() {
       if (!this.valid) return;
       const formData = new FormData();
-      formData.append("communityMessage_content", this.inp.msg);
-      formData.append("community_id", this.inp.cid);
-      formData.append("user_id", this.inp.uid);
+      formData.append("communityMessage_content", this.inputted.msg);
+      formData.append("community_id", this.inputted.communityId);
+      formData.append("user_id", this.inputted.userId);
       this.formReset();
 
       await this.processResponse(
@@ -376,53 +376,53 @@ export default {
       )
     },
     async refreshMessages() {
-      const messages = await this.$axios.$get(`api/v1/community_messages/${this.inp.cid}`);
+      const messages = await this.$axios.$get(`api/v1/community_messages/${this.inputted.communityId}`);
       this.$store.dispatch('getCommunityMessage', messages);
     },
-    async participateInCommunity(cid) {
+    async participateInCommunity(communityId) {
       await this.processResponse(
         () => this.$axios.$post('/api/v1/participations', {
           user_id: this.$auth.user.id,
-          community_id: cid
+          community_id: communityId
         }),
         'コミュニティに参加しました',
         'コミュニティに参加できませんでした',
         async () => {
           const [participations, community] = await Promise.all([
             this.$axios.$get('/api/v1/participations'),
-            this.$axios.$get(`/api/v1/communities/${cid}`),
+            this.$axios.$get(`/api/v1/communities/${communityId}`),
           ]);
           this.$store.dispatch('getParticipationCommunity', participations);
           this.$store.dispatch('getCurrentCommunity', community);
         }
       );
     },
-    async withdrawCommunity(cid) {
+    async withdrawCommunity(communityId) {
       await this.processResponse(
-        () => this.$axios.$delete(`/api/v1/participations/${cid}/user/${this.$auth.user.id}`),
+        () => this.$axios.$delete(`/api/v1/participations/${communityId}/user/${this.$auth.user.id}`),
         'コミュニティを退会しました',
         'コミュニティを退会できませんでした',
         async () => {
           const [participations, community] = await Promise.all([
             this.$axios.$get('/api/v1/participations'),
-            this.$axios.$get(`/api/v1/communities/${cid}`),
+            this.$axios.$get(`/api/v1/communities/${communityId}`),
           ]);
           this.$store.dispatch('getParticipationCommunity', participations);
           this.$store.dispatch('getCurrentCommunity', community);
         }
       );
     },
-    async inviteUser(uid, cid) {
+    async inviteUser(userId, communityId) {
       await this.processResponse(
         () => this.$axios.$post('/api/v1/invitations', {
           inviting_id: this.$auth.user.id,
-          invited_id: uid,
-          community_id: cid
+          invited_id: userId,
+          community_id: communityId
         }),
         'コミュニティに招待しました',
         'コミュニティに招待できませんでした',
         async () => {
-          const community = await this.$axios.$get(`/api/v1/communities/${cid}`);
+          const community = await this.$axios.$get(`/api/v1/communities/${communityId}`);
           this.$store.dispatch('getCurrentCommunity', community);
         }
       );

@@ -53,7 +53,7 @@
                         >
                         </v-img>
                         <v-file-input
-                          v-model="inp.image"
+                          v-model="inputted.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
@@ -66,7 +66,7 @@
                         cols="11"
                       >
                         <v-text-field
-                          v-model="inp.title"
+                          v-model="inputted.title"
                           dense
                           outlined
                           label="タイトル"
@@ -79,7 +79,7 @@
                         cols="11"
                       >
                         <v-textarea
-                          v-model="inp.body"
+                          v-model="inputted.body"
                           dense
                           outlined
                           label="つぶやき"
@@ -149,29 +149,29 @@ export default {
         v => !!v || '',
         v => (!!v && bodyMax >= v.length) || `${bodyMax}文字以内で入力してください`
       ],
-      inp: { title: '', uid: this.$auth.user.id, body: '', image: null }
+      inputted: { title: '', userId: this.$auth.user.id, body: '', image: null }
     }
   },
   computed: {
     url() {
-      if (!this.inp.image) {
+      if (!this.inputted.image) {
         return this.$store.state.post.current.image_url || noImg;
       }
-      return URL.createObjectURL(this.inp.image);
+      return URL.createObjectURL(this.inputted.image);
     },
   },
   mounted() {
-    this.inp.title = this.$store.state.post.current.title
-    this.inp.body = this.$store.state.post.current.body
+    this.inputted.title = this.$store.state.post.current.title
+    this.inputted.body = this.$store.state.post.current.body
   },
   methods: {
     async editPost(id) {
       this.loading = true;
       if (this.valid) {
         const formData = new FormData();
-        Object.keys(this.inp).forEach(key => {
-          if (key !== 'image' || (key === 'image' && this.inp[key] !== null)) {
-            formData.append(key, this.inp[key]);
+        Object.keys(this.inputted).forEach(key => {
+          if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
+            formData.append(key, this.inputted[key]);
           }
         });
       
@@ -184,9 +184,9 @@ export default {
         try {
           await this.$axios.$patch(`/api/v1/posts/${id}`, formData, config);
           this.$router.back();
-          this.$store.dispatch('getToast', { msg: '農産物を編集しました', color: 'success' });
+          this.$store.dispatch('getToast', { msg: 'つぶやきを編集しました', color: 'success' });
         } catch (error) {
-          this.$store.dispatch('getToast', { msg: '農産物を編集できませんでした', color: 'error' });
+          this.$store.dispatch('getToast', { msg: 'つぶやきを編集できませんでした', color: 'error' });
         }
       }
       this.loading = false;

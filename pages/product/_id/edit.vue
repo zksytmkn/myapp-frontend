@@ -33,7 +33,7 @@
                       <v-col cols="11" class="mt-9">
                         <v-img :src="url" height="300px" width="300px"></v-img>
                         <v-file-input
-                          v-model="inp.image"
+                          v-model="inputted.image"
                           :rules="imgRules"
                           accept="image/png, image/jpeg, image/bmp"
                           placeholder="画像を選択して下さい"
@@ -43,7 +43,7 @@
                       </v-col>
                       <v-col cols="11">
                         <v-text-field
-                          v-model="inp.name"
+                          v-model="inputted.name"
                           dense
                           outlined
                           label="名前"
@@ -53,7 +53,7 @@
                       </v-col>
                       <v-col cols="11">
                         <v-select
-                          v-model="inp.category"
+                          v-model="inputted.category"
                           dense
                           outlined
                           label="種類"
@@ -67,7 +67,7 @@
                         <v-row>
                           <v-col cols="6">
                             <v-text-field
-                              v-model="inp.price"
+                              v-model="inputted.price"
                               dense
                               outlined
                               label="価格"
@@ -78,7 +78,7 @@
                           </v-col>
                           <v-col cols="6">
                             <v-text-field
-                              v-model="inp.stock"
+                              v-model="inputted.stock"
                               dense
                               outlined
                               label="数量"
@@ -91,7 +91,7 @@
                       </v-col>
                       <v-col cols="11">
                         <v-textarea
-                          v-model="inp.description"
+                          v-model="inputted.description"
                           dense
                           outlined
                           label="説明文"
@@ -156,7 +156,7 @@ export default {
         v => !!v || '',
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`,
       ],
-      inp: {
+      inputted: {
         name: '',
         user_id: this.$auth.user.id,
         category: '',
@@ -170,17 +170,17 @@ export default {
   },
   computed: {
     url() {
-      if (!this.inp.image) {
+      if (!this.inputted.image) {
         return this.$store.state.product.current.image_url || noImg;
       }
-      return URL.createObjectURL(this.inp.image);
+      return URL.createObjectURL(this.inputted.image);
     },
   },
   mounted() {
     const product = this.$store.state.product.current;
-    Object.keys(this.inp).forEach(key => {
+    Object.keys(this.inputted).forEach(key => {
       if (key in product) {
-        this.inp[key] = product[key];
+        this.inputted[key] = product[key];
       }
     });
   },
@@ -189,9 +189,9 @@ export default {
       this.loading = true;
       if (this.valid) {
         const formData = new FormData();
-        Object.keys(this.inp).forEach(key => {
-          if (key !== 'image' || (key === 'image' && this.inp[key] !== null)) {
-            formData.append(key, this.inp[key]);
+        Object.keys(this.inputted).forEach(key => {
+          if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
+            formData.append(key, this.inputted[key]);
           }
         });
       

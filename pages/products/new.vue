@@ -32,7 +32,7 @@
                       >
                       </v-img>
                       <v-file-input
-                        v-model="inp.image"
+                        v-model="inputted.image"
                         :rules="imgRules"
                         accept="image/png, image/jpeg, image/bmp"
                         placeholder="画像を選択して下さい"
@@ -45,7 +45,7 @@
                       cols="11"
                     >
                       <v-text-field
-                        v-model="inp.name"
+                        v-model="inputted.name"
                         dense
                         outlined
                         label="名前"
@@ -58,7 +58,7 @@
                       cols="11"
                     >
                       <v-select
-                        v-model="inp.category"
+                        v-model="inputted.category"
                         dense
                         outlined
                         label="種類"
@@ -76,7 +76,7 @@
                           cols="6"
                         >
                           <v-text-field
-                            v-model="inp.price"
+                            v-model="inputted.price"
                             dense
                             outlined
                             label="価格"
@@ -90,7 +90,7 @@
                           cols="6"
                         >
                           <v-text-field
-                            v-model="inp.stock"
+                            v-model="inputted.stock"
                             dense
                             outlined
                             label="数量"
@@ -106,7 +106,7 @@
                       cols="11"
                     >
                       <v-textarea
-                        v-model="inp.description"
+                        v-model="inputted.description"
                         dense
                         outlined
                         label="説明文"
@@ -331,7 +331,7 @@ export default {
         v => !!v || '',
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inp: { name: '', user_id: this.$auth.user.id, category: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, stock: null, description: '', image: null },
+      inputted: { name: '', user_id: this.$auth.user.id, category: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, stock: null, description: '', image: null },
       typeItems: [
         '野菜',
         '果物'
@@ -389,7 +389,7 @@ export default {
   },
   computed: {
     url() {
-      return this.inp.image ? URL.createObjectURL(this.inp.image) : noImg;
+      return this.inputted.image ? URL.createObjectURL(this.inputted.image) : noImg;
     },
     newProducts() {
       const userProducts = this.$store.state.product.list.filter(x => x.user_id === this.$auth.user.id);
@@ -406,7 +406,7 @@ export default {
       this.loading = true;
     
       const formData = new FormData();
-      Object.entries(this.inp).forEach(([key, value]) => {
+      Object.entries(this.inputted).forEach(([key, value]) => {
         if (value !== null) formData.append(key, value);
       });
     

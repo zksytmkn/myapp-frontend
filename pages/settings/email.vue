@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="mt-3"
+    class="mt-12"
   >
     <v-row>
       <setting-menu />
@@ -15,9 +15,7 @@
             v-model="isValid"
             @submit.prevent="editEmail"
           >
-            <v-list
-              color="transparent"
-            >
+            <v-list>
               <v-list-item>
                 <v-list-item-title>
                   メールアドレス変更
@@ -90,33 +88,32 @@ export default {
     }
   },
   methods: {
-    editEmail() {
-      this.loading = true
+    async editEmail() {
+      this.loading = true;
+
       if (this.isValid) {
-        const asyncFunc = async() => {
-          const formData = new FormData()
-          formData.append('email', this.inputted.email) 
-          formData.append('current_password', this.inputted.password) 
-          await this.$axios.$post('/api/v1/users/send_email_reset_confirmation', formData)
-          .then(response => {
-            const msg = 'メールアドレスに確認メールを送信しました'
-            const color = 'success'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          .catch(error => {
-            console.log(error)
-            const msg = '現在のパスワードが間違っております'
-            const color = 'error'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
+        try {
+          const formData = new FormData();
+          formData.append('email', this.inputted.email);
+          formData.append('current_password', this.inputted.password);
+
+          await this.$axios.$post('/api/v1/users/send_email_reset_confirmation', formData);
+
+          const msg = 'メールアドレスに確認メールを送信しました';
+          const color = 'success';
+          this.$store.dispatch('getToast', { msg, color });
+        } catch (error) {
+          const msg = error.response.data.message || '現在のパスワードが間違っております';
+          const color = 'error';
+          this.$store.dispatch('getToast', { msg, color });
+        } finally {
+          this.loading = false;
         }
-        asyncFunc().finally(response => console.log(response))
       }
-      this.loading = false
     },
     formReset() {
-      this.sentIt = false
-      this.$refs.edit.reset()
+      this.sentIt = false;
+      this.$refs.edit.reset();
     }
   }
 }

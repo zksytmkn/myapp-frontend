@@ -49,7 +49,7 @@
                       >
                       </v-img>
                       <v-file-input
-                        v-model="inp.image"
+                        v-model="inputted.image"
                         :rules="imgRules"
                         accept="image/png, image/jpeg, image/bmp"
                         placeholder="画像を選択して下さい"
@@ -62,7 +62,7 @@
                       cols="11"
                     >
                       <v-text-field
-                        v-model="inp.title"
+                        v-model="inputted.title"
                         dense
                         outlined
                         label="タイトル"
@@ -75,7 +75,7 @@
                       cols="11"
                     >
                       <v-textarea
-                        v-model="inp.body"
+                        v-model="inputted.body"
                         dense
                         outlined
                         label="つぶやき"
@@ -266,12 +266,12 @@ export default {
         v => !!v || '',
         v => (!!v && bodyMax >= v.length) || `${bodyMax}文字以内で入力してください`
       ],
-      inp: { title: '', user_id: this.$auth.user.id, body: '', image: null }
+      inputted: { title: '', user_id: this.$auth.user.id, body: '', image: null }
     }
   },
   computed: {
     url() {
-      return this.inp.image ? URL.createObjectURL(this.inp.image) : noImg;
+      return this.inputted.image ? URL.createObjectURL(this.inputted.image) : noImg;
     },
     newPosts () {
       const userPosts = this.$store.state.post.list.filter(x => x.user_id === this.$auth.user.id);
@@ -288,7 +288,7 @@ export default {
       this.loading = true;
     
       const formData = new FormData();
-      Object.entries(this.inp).forEach(([key, value]) => {
+      Object.entries(this.inputted).forEach(([key, value]) => {
         if (value !== null) formData.append(key, value);
       });
     

@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="mt-3 mb-6"
+    class="my-12"
   >
     <v-row>
       <setting-menu />
@@ -211,11 +211,9 @@ export default {
   },
   computed: {
     url() {
-      if(this.inputted.image===null) {
-        return this.$store.state.user.login.image_url ? this.$store.state.user.login.image_url : noPersonImg
-      } else {
-        return URL.createObjectURL(this.inputted.image)
-      }
+      return this.inputted.image
+        ? URL.createObjectURL(this.inputted.image)
+        : this.$store.state.user.login.image_url || noPersonImg;
     }
   },
   mounted() {

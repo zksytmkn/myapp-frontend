@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="mt-3"
+    class="mt-12"
   >
     <v-row>
       <setting-menu />
@@ -12,12 +12,10 @@
         >
           <v-form
             ref="edit"
-            v-model="isValid"
+            v-model="valid"
             @submit.prevent="editAddress"
           >
-            <v-list
-              color="transparent"
-            >
+            <v-list>
               <v-list-item>
                 <v-list-item-title>
                   住所変更
@@ -71,7 +69,7 @@
                       >
                         <v-btn
                           type="submit"
-                          :disabled="!isValid || loading"
+                          :disabled="!valid || loading"
                           :loading="loading"
                           color="appblue"
                           class="white--text mt-3 mb-3 mr-2"
@@ -100,69 +98,59 @@
 </template>
 
 <script>
-const axios = require('axios')
-const url = 'http://zipcloud.ibsnet.co.jp/api/search?zipcode='
+const url = '/api/search?zipcode='
 export default {
   layout: 'logged-in',
-  data () {
+  data() {
     return {
-      isValid: false,
+      valid: false,
       loading: false,
       inputted: { zipcode: '', street: '', building: '' },
       zipcodeRules: [
         v => !!v || '',
-        v => /^[0-9]{3}-?[0-9]{4}$/.test(v) || '○○○-○○○○と入力してください'
+        v => /^[0-9]{3}-?[0-9]{4}$/.test(v) || '○○○-○○○○と入力してください',
       ],
-      streetRules: [
-        v => !!v || '住所を入力してください'
-      ],
-      buildingRules: [
-        v => !!v || '建物名を入力してください'
-      ]
-    }
+      streetRules: [v => !!v || '住所を入力してください'],
+      buildingRules: [v => !!v || '建物名を入力してください'],
+    };
   },
   mounted() {
-    this.inputted.zipcode = this.$store.state.user.login.zipcode
-    this.inputted.street = this.$store.state.user.login.street
-    this.inputted.building = this.$store.state.user.login.building
+    const user = this.$store.state.user.login;
+    this.inputted = { ...user };
   },
   methods: {
-    searchAddressInfo() {
-      axios.get(url + this.inputted.zipcode).then((res) => {
-      this.inputted.street = res.data.results[0].address1 + res.data.results[0].address2 + res.data.results[0].address3
-      })
+    async searchAddressInfo() {
+      if (!this.inputted.zipcode) return;
+    
+      const res = await this.$axios.get(url + this.inputted.zipcode);
+      const { address1, address2, address3 } = res.data.results[0];
+      this.inputted.street = address1 + address2 + address3;
     },
-    editAddress() {
-      this.loading = true
-      if (this.isValid) {
-        const asyncFunc = async() => {
-          const formData = new FormData()
-          formData.append('zipcode', this.inputted.zipcode)
-          formData.append('street', this.inputted.street)
-          formData.append('building', this.inputted.building)
-          await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData)
-          .then(response => {
-            const msg = '住所を変更しました'
-            const color = 'success'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          .catch(error => {
-            console.log(error)
-            const msg = '住所を変更できませんでした'
-            const color = 'error'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          await this.$axios.$post('/api/v1/auth_token/refresh')
-          .then(response => this.$auth.login(response))
-        }
-        asyncFunc().finally(response => console.log(response))
+    async editAddress() {
+      if (!this.valid) return;
+      this.loading = true;
+
+      try {
+        const formData = new FormData();
+        Object.entries(this.inputted).forEach(([key, value]) => formData.append(key, value));
+        await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData);
+        this.$store.dispatch('getToast', { msg: '住所を変更しました', color: 'success' });
+      } catch (error) {
+        this.$store.dispatch('getToast', { msg: '住所を変更できませんでした', color: 'error' });
       }
-      this.loading = false
+
+      try {
+        const response = await this.$axios.$post('/api/v1/auth_token/refresh');
+        this.$auth.login(response);
+      } catch (error) {
+      }
+
+      this.loading = false;
     },
     formReset() {
-      this.sentIt = false
-      this.$refs.edit.reset()
-    }
-  }
-}
+      this.sentIt = false;
+      this.$refs.edit.reset();
+    },
+  },
+};
 </script>

@@ -11,10 +11,10 @@
       <v-divider/>
     </v-container>
 
-    <v-container>
-      <v-list-item
-        v-show="!participatedCommunities.length"
-      >
+    <v-container
+      v-show="!participatedCommunities.length"
+    >
+      <v-list-item>
         <v-list-item-title>
           参加しておりません。
         </v-list-item-title>
