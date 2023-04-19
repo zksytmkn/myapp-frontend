@@ -1,8 +1,9 @@
 <template>
   <v-text-field
+    v-model="setPassword"
     dense
     :label="setLabel"
-    v-model="setPassword"
+    :disabled="sentIt"
     :rules="form.rules"
     :hint="form.hint"
     :hide-details="!setValidation"
@@ -12,7 +13,6 @@
     outlined
     autocomplete="on"
     @click:append="show = !show"
-    :disabled="sentIt"
   />
 </template>
 

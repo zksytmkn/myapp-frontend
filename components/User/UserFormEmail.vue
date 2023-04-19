@@ -1,8 +1,8 @@
 <template>
   <v-text-field
+    v-model="setEmail"
     dense
     :label="setLabel"
-    v-model="setEmail"
     :rules="rules"
     :disabled="sentIt"
     outlined

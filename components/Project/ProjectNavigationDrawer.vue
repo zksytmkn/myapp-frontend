@@ -27,7 +27,7 @@
         no-action
       >
         <template
-          v-slot:activator
+          #activator
         >
           <v-list-item-avatar
             left
@@ -43,8 +43,8 @@
           </v-list-item-content>
         </template>
         <v-list-item
-          v-for="(list, i) in nav.lists"
-          :key="`list-${i}`"
+          v-for="(list, j) in nav.lists"
+          :key="`list-${j}`"
           :to="list.link"
         >
           <v-list-item-avatar
@@ -70,8 +70,8 @@
       </v-list-item>
       <v-divider/>
       <v-list-item
-        v-for="(other, i) in otherMenus"
-        :key="`other-${i}`"
+        v-for="(other, k) in otherMenus"
+        :key="`other-${k}`"
         :to="other.link"
       >
         <v-list-item-avatar

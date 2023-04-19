@@ -6,7 +6,7 @@
     max-width="200"
   >
     <template
-      v-slot:activator="{ on }"
+      #activator="{ on }"
     >
       <v-btn
         v-show="users.length"
@@ -23,17 +23,15 @@
     <v-list
       dense
     >
-      <template>
-        <v-list-item
-          v-for="(user, i) in users"
-          :key="`user-${i}`"
-          :to="$my.userLinkToProfile(user.id)"
-        >
-          <v-list-item-title>
-            {{ user.name }}
-          </v-list-item-title>
-        </v-list-item>
-      </template>
+      <v-list-item
+        v-for="(user, i) in users"
+        :key="`user-${i}`"
+        :to="$my.userLinkToProfile(user.id)"
+      >
+        <v-list-item-title>
+          {{ user.name }}
+        </v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>

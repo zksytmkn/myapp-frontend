@@ -175,7 +175,7 @@
           >
             <v-spacer />
             <v-radio-group
-              v-model="answerer"
+              v-model="selectedAnswerer"
               row
             >
               <v-radio
@@ -286,7 +286,7 @@ export default {
       postsImg,
       communitiesImg,
       answerers,
-      answerer: answerers[0].label,
+      selectedAnswerer: answerers[0].label,
       questions: [
         {
           name: {

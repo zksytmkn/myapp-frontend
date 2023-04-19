@@ -6,7 +6,7 @@
     max-width="200"
   >
     <template
-      v-slot:activator="{ on }"
+      #activator="{ on }"
     >
       <v-btn
         icon
@@ -36,59 +36,54 @@
         アカウント
       </v-subheader>
 
-      <template>
-        <v-list-item
-          :to="$my.userLinkToProfile(this.$auth.user.id)"
+      <v-list-item
+        :to="$my.userLinkToProfile($auth.user.id)"
+      >
+        <v-list-item-icon
+          class="mr-2"
         >
-          <v-list-item-icon
-            class="mr-2"
+          <v-icon
+            size="22"
           >
-            <v-icon
-              size="22"
-            >
-              mdi-home
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            プロフィール
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/settings/profile"
+            mdi-home
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          プロフィール
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        to="/settings/profile"
+      >
+        <v-list-item-icon
+          class="mr-2"
         >
-          <v-list-item-icon
-            class="mr-2"
+          <v-icon
+            size="22"
           >
-            <v-icon
-              size="22"
-            >
-              mdi-account-cog
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            プロフィール編集
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/logout"
+            mdi-account-cog
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          プロフィール編集
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        to="/logout"
+      >
+        <v-list-item-icon
+          class="mr-2"
         >
-          <v-list-item-icon
-            class="mr-2"
+          <v-icon
+            size="22"
           >
-            <v-icon
-              size="22"
-            >
-              mdi-logout-variant
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            ログアウト
-          </v-list-item-title>
-        </v-list-item>
-      </template>
+            mdi-logout-variant
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          ログアウト
+        </v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
-
-<script>
-</script>

@@ -1,12 +1,12 @@
 <template>
   <v-menu>
     <template
-      v-slot:activator="{ on }"
+      #activator="{ on }"
     >
       <v-btn
         icon
-        v-on="on"
         to="/products/cart"
+        v-on="on"
       >
         <v-icon>
           mdi-cart

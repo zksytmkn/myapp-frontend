@@ -4,7 +4,7 @@
     class="d-block text-truncate"
   >
     <template
-      v-slot:item="{ item }"
+      #item="{ item }"
     >
       <v-breadcrumbs-item>
         <div

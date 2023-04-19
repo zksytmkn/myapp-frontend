@@ -1,7 +1,7 @@
 <template>
   <v-text-field
-    dense
     v-model="setName"
+    dense
     :rules="rules"
     :counter="max"
     label="ユーザー名を入力"
