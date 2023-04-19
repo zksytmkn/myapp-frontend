@@ -107,7 +107,7 @@
                           class="mb-6 mr-2 font-weight-bold white--text"
                           color="appblue"
                         >
-                          プロフィールを編集する
+                          編集する
                         </v-btn>
 
                         <v-btn
@@ -222,44 +222,41 @@ export default {
     this.inputted.profile_text = this.$store.state.user.login.profile_text
   },
   methods: {
-    editProfile() {
-      this.loading = true
-      if (this.isValid) {
-        const asyncFunc = async() => {
-          const formData = new FormData()
-          formData.append('name', this.inputted.name)
-          formData.append('prefecture', this.inputted.prefecture)
-          formData.append('profile_text', this.inputted.profile_text)
-          if (this.inputted.image !== null) {
-            formData.append('image', this.inputted.image)
-          }
-          const config = {
-            header: {
-              "Content-Type": "multipart/form-data"
-            }
-          }
-          await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData, config)
-          .then(response => {
-            const msg = 'プロフィールを編集しました'
-            const color = 'success'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          .catch(error => {
-            console.log(error)
-            const msg = 'プロフィールを編集できませんでした'
-            const color = 'error'
-            return this.$store.dispatch('getToast', { msg, color })
-          })
-          await this.$axios.$post('/api/v1/auth_token/refresh')
-          .then(response => this.$auth.login(response))
-        }
-        asyncFunc().finally(response => console.log(response))
+    async editProfile() {
+      if (!this.isValid) {
+        return;
       }
-      this.loading = false
+      this.loading = true;
+
+      const formData = new FormData();
+      formData.append('name', this.inputted.name);
+      formData.append('prefecture', this.inputted.prefecture);
+      formData.append('profile_text', this.inputted.profile_text);
+      if (this.inputted.image !== null) {
+        formData.append('image', this.inputted.image);
+      }
+
+      const config = {
+        header: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+
+      try {
+        await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData, config);
+        this.$store.dispatch('getToast', { msg: 'プロフィールを編集しました', color: 'success' });
+
+        const response = await this.$axios.$post('/api/v1/auth_token/refresh');
+        this.$auth.login(response);
+      } catch (error) {
+        this.$store.dispatch('getToast', { msg: 'プロフィールを編集できませんでした', color: 'error' });
+      } finally {
+        this.loading = false;
+      }
     },
     formReset() {
-      this.sentIt = false
-      this.$refs.edit.reset()
+      this.sentIt = false;
+      this.$refs.edit.reset();
     }
   }
 }

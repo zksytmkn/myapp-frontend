@@ -1,42 +1,24 @@
 <template>
-  <v-container
-    class="mt-3"
-  >
+  <v-container class="mt-12">
     <v-row>
-      <mypage-menu/>
-      <v-col
-        cols="9"
-      >
-        <v-card
-          flat
-          rounded="lg"
-        >
+      <mypage-menu />
+      <v-col cols="9">
+        <v-card flat rounded="lg">
           <v-list>
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  v-show="CurrentUser.id===$auth.user.id"
-                >
-                  あなたのフォロワー
-                </v-list-item-title>
-                <v-list-item-title
-                  v-show="CurrentUser.id!==$auth.user.id"
-                >
-                  {{ CurrentUser.name }}さんのフォロワー
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title>
+                {{
+                  CurrentUser.id === $auth.user.id
+                    ? "あなたのフォロワー"
+                    : CurrentUser.name + "さんのフォロワー"
+                }}
+              </v-list-item-title>
             </v-list-item>
 
-            <v-divider/>
+            <v-divider />
 
-            <v-list-item
-              v-show="!followedUsers.length"
-            >
-              <v-list-item-content>
-                <v-list-item-title>
-                  フォローされておりません。
-                </v-list-item-title>
-              </v-list-item-content>
+            <v-list-item v-show="!followedUsers.length">
+              <v-list-item-title>フォローされておりません。</v-list-item-title>
             </v-list-item>
 
             <v-list-item
@@ -44,17 +26,12 @@
               :key="`followed-${i}`"
               :to="$my.userLinkToProfile(followed.id)"
             >
-              <v-list-item-avatar
-                left
-              >
+              <v-list-item-avatar left>
                 <v-img
                   :src="followed.image_url ? followed.image_url : noImg"
-                >
-                </v-img>
+                ></v-img>
               </v-list-item-avatar>
-              <v-list-item-title>
-                {{ followed.name }}
-              </v-list-item-title>
+              <v-list-item-title>{{ followed.name }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
@@ -64,25 +41,21 @@
 </template>
 
 <script>
-  import noImg from '~/assets/images/logged-in/no.png'
-  
-  export default {
-    layout: 'mypage',
-    middleware: ['get-user-current', 'get-user-relationship'],
-    data () {
-      return {
-        noImg
-      }
+import noImg from '~/assets/images/logged-in/no.png'
+
+export default {
+  layout: 'mypage',
+  middleware: ['get-user-current', 'get-user-relationship'],
+  data() {
+    return { noImg };
+  },
+  computed: {
+    CurrentUser() {
+      return this.$store.state.user.current;
     },
-    computed: {
-      CurrentUser() {
-        const copyCurrentUser = this.$store.state.user.current
-        return copyCurrentUser
-      },
-      followedUsers() {
-        const copyFollowedUsers = this.$store.state.user.relationship.followed
-        return copyFollowedUsers
-      }
-    }
-  }
+    followedUsers() {
+      return this.$store.state.user.relationship.followed;
+    },
+  },
+};
 </script>

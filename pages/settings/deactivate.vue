@@ -69,7 +69,7 @@ export default {
         { name: 'プロフィール編集', icon: 'mdi-account-edit', link: '/settings/profile' },
         { name: 'パスワード変更', icon: 'mdi-lock', link: '/settings/password' },
         { name: 'メールアドレス変更', icon: 'mdi-email', link: '/settings/email' },
-        { name: '住所変更', icon: 'mdi-map-marker', link: '/settings/address' }
+        { name: '住所編集', icon: 'mdi-map-marker', link: '/settings/address' }
       ]
     }
   },

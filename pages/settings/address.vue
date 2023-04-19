@@ -18,7 +18,7 @@
             <v-list>
               <v-list-item>
                 <v-list-item-title>
-                  住所変更
+                  住所編集
                 </v-list-item-title>
               </v-list-item>
               <v-divider/>
@@ -74,7 +74,7 @@
                           color="appblue"
                           class="white--text mt-3 mb-3 mr-2"
                         >
-                          変更する
+                          編集する
                         </v-btn>
 
                         <v-btn
@@ -134,9 +134,9 @@ export default {
         const formData = new FormData();
         Object.entries(this.inputted).forEach(([key, value]) => formData.append(key, value));
         await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData);
-        this.$store.dispatch('getToast', { msg: '住所を変更しました', color: 'success' });
+        this.$store.dispatch('getToast', { msg: '住所を編集しました', color: 'success' });
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '住所を変更できませんでした', color: 'error' });
+        this.$store.dispatch('getToast', { msg: '住所を編集できませんでした', color: 'error' });
       }
 
       try {

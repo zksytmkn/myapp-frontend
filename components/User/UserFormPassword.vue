@@ -43,7 +43,7 @@ export default {
         return this.password
       },
       set (newValue) {
-        return this.$emit('update:password',newValue)
+        return this.$emit('update:password', newValue)
       }
     },
     setLabel () {
@@ -51,9 +51,9 @@ export default {
     },
     form () {
       const min = '8文字以上'
-      const msg = `${min}。`
+      const msg = `${min}。英数字と記号を含む必要があります。`
       const required = v => !!v || ''
-      const format = v => /^[\w-]{8,72}$/.test(v) || msg
+      const format = v => /^[\w!@#$%^&*+\-_]{8,72}$/.test(v) && /(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*+\-_])/.test(v) || msg
 
       const rules = this.setValidation ? [format] : [required]
       const hint = this.setValidation ? msg : undefined

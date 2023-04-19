@@ -5,9 +5,7 @@
     <v-sheet
       rounded="lg"
     >
-      <v-list
-        color="transparent"
-      >
+      <v-list>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title>
@@ -17,7 +15,7 @@
         </v-list-item>
         <v-divider/>
         <v-list-item
-          :to="$my.userLinkToProfile(CurrentUser.id)"
+          :to="CurrentUser ? $my.userLinkToProfile(CurrentUser.id) : $my.userLinkToProfile($auth.user.id)"
         >
           <v-list-item-avatar
             left
@@ -31,7 +29,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item
-          :to="$my.userLinkToFollowing(CurrentUser.id)"
+          :to="CurrentUser ? $my.userLinkToFollowing(CurrentUser.id) : $my.userLinkToFollowing($auth.user.id)"
         >
           <v-list-item-avatar
             left
@@ -45,7 +43,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item
-          :to="$my.userLinkToFollowed(CurrentUser.id)"
+          :to="CurrentUser ? $my.userLinkToFollowed(CurrentUser.id) : $my.userLinkToFollowed($auth.user.id)"
         >
           <v-list-item-avatar
             left
@@ -59,8 +57,8 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item
-          v-show="CurrentUser.id===$auth.user.id"
-          to="/mypage/address_payment"
+          v-show="!CurrentUser || CurrentUser.id === $auth.user.id"
+          to="/mypage/PersonalInfo"
         >
           <v-list-item-avatar
             left
@@ -70,7 +68,7 @@
             </v-icon>
           </v-list-item-avatar>
           <v-list-item-title>
-            住所＆お支払い
+            個人情報
           </v-list-item-title>
         </v-list-item>
       </v-list>

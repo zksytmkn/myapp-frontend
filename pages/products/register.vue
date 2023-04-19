@@ -89,7 +89,10 @@
               <v-list-item>
                 <v-list-item-text>
                   お支払い方法：クレジットカード
-                  <br /><br />
+                </v-list-item-text>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-text>
                   ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
                 </v-list-item-text>
               </v-list-item>
@@ -152,12 +155,3 @@ export default {
   },
 }
 </script>
-
-
-<style lang="scss">
-#products {
-  .v-parallax__content {
-    padding: 0;
-  }
-}
-</style>

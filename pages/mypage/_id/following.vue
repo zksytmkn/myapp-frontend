@@ -1,42 +1,24 @@
 <template>
-  <v-container
-    class="mt-3"
-  >
+  <v-container class="mt-12">
     <v-row>
-      <mypage-menu/>
-      <v-col
-        cols="9"
-      >
-        <v-card
-          flat
-          rounded="lg"
-        >
+      <mypage-menu />
+      <v-col cols="9">
+        <v-card flat rounded="lg">
           <v-list>
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  v-show="CurrentUser.id===$auth.user.id"
-                >
-                  あなたのフォロー
-                </v-list-item-title>
-                <v-list-item-title
-                  v-show="CurrentUser.id!==$auth.user.id"
-                >
-                  {{ CurrentUser.name }}さんのフォロー
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title>
+                {{
+                  CurrentUser.id === $auth.user.id
+                    ? 'あなたのフォロー'
+                    : CurrentUser.name + 'さんのフォロー'
+                }}
+              </v-list-item-title>
             </v-list-item>
 
-            <v-divider/>
+            <v-divider />
 
-            <v-list-item
-              v-show="!followingUsers.length"
-            >
-              <v-list-item-content>
-                <v-list-item-title>
-                  フォローしておりません。
-                </v-list-item-title>
-              </v-list-item-content>
+            <v-list-item v-show="!followingUsers.length">
+              <v-list-item-title>フォローしておりません。</v-list-item-title>
             </v-list-item>
 
             <v-list-item
@@ -44,17 +26,10 @@
               :key="`following-${i}`"
               :to="$my.userLinkToProfile(following.id)"
             >
-              <v-list-item-avatar
-                left
-              >
-                <v-img
-                  :src="following.image_url ? following.image_url : noImg"
-                >
-                </v-img>
+              <v-list-item-avatar left>
+                <v-img :src="following.image_url ? following.image_url : noImg"></v-img>
               </v-list-item-avatar>
-              <v-list-item-title>
-                {{ following.name }}
-              </v-list-item-title>
+              <v-list-item-title>{{ following.name }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
@@ -76,12 +51,10 @@ export default {
   },
   computed: {
     CurrentUser() {
-      const copyCurrentUser = this.$store.state.user.current
-      return copyCurrentUser
+      return this.$store.state.user.current
     },
     followingUsers() {
-      const copyFollowingUsers = this.$store.state.user.relationship.following
-      return copyFollowingUsers
+      return this.$store.state.user.relationship.following
     }
   }
 }

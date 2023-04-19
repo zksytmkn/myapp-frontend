@@ -229,23 +229,20 @@ export default {
       let copySearchedCommunities = Array.from(this.$store.state.community.list)
     
       if (name && name.length) {
-        const nameArray = Array.isArray(name) ? name : [name];
         copySearchedCommunities = copySearchedCommunities.filter((x) =>
-          nameArray.some((str) => x.name.includes(str))
+          x.name.includes(name)
         );
       }
     
-    if (maker && maker.length) {
-      const makerArray = Array.isArray(maker) ? maker : [maker];
-      copySearchedCommunities = copySearchedCommunities.filter((x) =>
-        x.user && makerArray.some((str) => x.user.name.includes(str))
-      );
-    }
+      if (maker && maker.length) {
+        copySearchedCommunities = copySearchedCommunities.filter((x) =>
+          x.user && x.user.name.includes(maker)
+        );
+      }
     
       if (description && description.length) {
-        const descriptionArray = Array.isArray(description) ? description : [description];
         copySearchedCommunities = copySearchedCommunities.filter((x) =>
-          descriptionArray.some((str) => x.description.includes(str))
+          x.description.includes(description)
         );
       }
     

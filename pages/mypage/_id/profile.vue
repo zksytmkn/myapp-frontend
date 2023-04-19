@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="mt-3 mb-3"
+    class="my-12"
   >
     <v-row>
       <mypage-menu/>
@@ -15,18 +15,9 @@
             color="transparent"
           >
             <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title
-                  v-show="CurrentUser.id===$auth.user.id"
-                >
-                  あなたのプロフィール
-                </v-list-item-title>
-                <v-list-item-title
-                  v-show="CurrentUser.id!==$auth.user.id"
-                >
-                  {{ CurrentUser.name }}さんのプロフィール
-                </v-list-item-title>
-              </v-list-item-content>
+              <v-list-item-title>
+                {{ CurrentUser.id === $auth.user.id ? 'あなたのプロフィール' : CurrentUser.name + 'さんのプロフィール' }}
+              </v-list-item-title>
             </v-list-item>
 
             <v-divider/>
@@ -60,35 +51,21 @@
                         <v-col
                           cols="7"
                         >
-                          <v-list-item-title
-                            class="font-weight-bold text-h6"
-                          >
-                            <span
-                              v-show="CurrentUser.name.length>13"
-                            >
-                              {{ CurrentUser.name.substring(0, 13)+'...' }}
-                            </span>
-                            <span
-                              v-show="CurrentUser.name.length<=13"
-                            >
-                              {{ CurrentUser.name }}
-                            </span>
+                          <v-list-item-title>
+                            {{ CurrentUser.name }}
                           </v-list-item-title>
                           <v-list-item-subtitle>
-                            {{ CurrentUser.prefecture }}
+                            {{ CurrentUser.prefecture || '都道府県：未登録' }}
                           </v-list-item-subtitle>
                           <br/>
                           <v-list-item-text>
-                            <span
-                              v-show="CurrentUser.profile_text.length>120"
-                            >
-                              {{ CurrentUser.profile_text.substring(0, 120)+'...' }}
-                            </span>
-                            <span
-                              v-show="CurrentUser.profile_text.length<=120"
-                            >
-                              {{ CurrentUser.profile_text }}
-                            </span>
+                            {{
+                              CurrentUser.profile_text
+                                ? (CurrentUser.profile_text.length > 120
+                                    ? CurrentUser.profile_text.substring(0, 120) + '...'
+                                    : CurrentUser.profile_text)
+                                : 'プロフィール文：未登録'
+                            }}
                           </v-list-item-text>
                         </v-col>
                       </v-row>
@@ -100,7 +77,7 @@
                     <v-list>
                       <v-list-item
                         to="/products/search"
-                        @click="$store.dispatch('updateProductSearchCondition', { name: '', seller: $store.state.user.current.name, description: '', type: [], prefecture: [] })"
+                        @click="updateProductSearchCondition"
                       >
                         <v-list-item-avatar
                           left
@@ -109,23 +86,18 @@
                             mdi-food-apple
                           </v-icon>
                         </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-show="CurrentUser.id===$auth.user.id"
-                          >
-                            あなたの出品した農産物を見る
-                          </v-list-item-title>
-                          <v-list-item-title
-                            v-show="CurrentUser.id!==$auth.user.id"
-                          >
-                            {{ CurrentUser.name }}さんの出品した農産物を見る
-                          </v-list-item-title>
-                        </v-list-item-content>
+                        <v-list-item-title>
+                          {{
+                            CurrentUser.id === $auth.user.id
+                              ? 'あなたの出品した農産物を見る'
+                              : CurrentUser.name + 'さんの出品した農産物を見る'
+                          }}
+                        </v-list-item-title>
                       </v-list-item>
 
                       <v-list-item
                         to="/posts/search"
-                        @click="$store.dispatch('updatePostSearchCondition', { title: '', poster: $store.state.user.current.name, body: '' })"
+                        @click="updatePostSearchCondition"
                       >
                         <v-list-item-avatar
                           left
@@ -134,23 +106,18 @@
                             mdi-file-document
                           </v-icon>
                         </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-show="CurrentUser.id===$auth.user.id"
-                          >
-                            あなたのを投稿したつぶやきを見る
-                          </v-list-item-title>
-                          <v-list-item-title
-                            v-show="CurrentUser.id!==$auth.user.id"
-                          >
-                            {{ CurrentUser.name }}さんの投稿したつぶやきを見る
-                          </v-list-item-title>
-                        </v-list-item-content>
+                        <v-list-item-title>
+                          {{
+                            CurrentUser.id === $auth.user.id
+                              ? 'あなたの投稿したつぶやきを見る'
+                              : CurrentUser.name + 'さんの投稿したつぶやきを見る'
+                          }}
+                        </v-list-item-title>
                       </v-list-item>
 
                       <V-list-item
                         to="/communities/search"
-                        @click="$store.dispatch('updateCommunitySearchCondition', { name: '', maker: $store.state.user.current.name, text: '' })"
+                        @click="updateCommunitySearchCondition"
                       >
                         <v-list-item-avatar
                           left
@@ -159,18 +126,13 @@
                             mdi-charity
                           </v-icon>
                         </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-show="CurrentUser.id===$auth.user.id"
-                          >
-                            あなたの作成したコミュニティを見る
-                          </v-list-item-title>
-                          <v-list-item-title
-                            v-show="CurrentUser.id!==$auth.user.id"
-                          >
-                            {{ CurrentUser.name }}さんの作成したコミュニティを見る
-                          </v-list-item-title>
-                        </v-list-item-content>
+                        <v-list-item-title>
+                          {{
+                            CurrentUser.id === $auth.user.id
+                              ? 'あなたの作成したコミュニティを見る'
+                              : CurrentUser.name + 'さんの作成したコミュニティを見る'
+                          }}
+                        </v-list-item-title>
                       </V-list-item>
                     </v-list>
                   </v-col>
@@ -215,61 +177,72 @@ import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 export default {
   layout: 'mypage',
   middleware: ['get-user-current', 'get-user-relationship'],
-  data () {
+  data() {
     return {
       noPersonImg
     }
   },
   computed: {
     CurrentUser() {
-      const copyCurrentUser = this.$store.state.user.current
-      return copyCurrentUser
+      return this.$store.state.user.current
     }
   },
   methods: {
-    addRelationship(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('following_id', this.$auth.user.id)
-        formData.append('followed_id', id)
-        await this.$axios.$post(`/api/v1/relationships`, formData)
-        .then(response => {
-          const msg = 'フォローしました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'フォローできませんでした'
-          const color = 'error'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        await this.$axios.$get(`/api/v1/relationships/${id}`)
-        .then(relationship => this.$store.dispatch('getUserRelationship', relationship))
+    async processResponse(action, successMsg, errorMsg, successCallback) {
+      try {
+        await action()
+        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' })
+        if (successCallback) {
+          successCallback()
+        }
+      } catch (e) {
+        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' })
       }
-      asyncFunc().finally(response => console.log(response))
+    },
+    addRelationship(id) {
+      const formData = new FormData()
+      formData.append('following_id', this.$auth.user.id)
+      formData.append('followed_id', id)
+
+      const action = () => this.$axios.$post('/api/v1/relationships', formData)
+      const successMsg = 'フォローしました'
+      const errorMsg = 'フォローできませんでした'
+      const successCallback = async () => {
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}`)
+        this.$store.dispatch('getUserRelationship', relationship)
+      }
+
+      this.processResponse(action, successMsg, errorMsg, successCallback)
     },
     deleteRelationship(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('following_id', this.$auth.user.id)
-        formData.append('followed_id', id)
-        await this.$axios.$delete('/api/v1/relationships', {date:formData})
-        .then(response => {
-          const msg = 'フォローを解除しました'
-          const color = 'success'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        .catch(error => {
-          console.log(error)
-          const msg = 'フォローを解除できませんでした'
-          const color = 'error'
-          return this.$store.dispatch('getToast', { msg, color })
-        })
-        await this.$axios.$get(`/api/v1/relationships/${id}`)
-        .then(relationship => this.$store.dispatch('getUserRelationship', relationship))
+      const formData = new FormData()
+      formData.append('following_id', this.$auth.user.id)
+      formData.append('followed_id', id)
+
+      const action = () => this.$axios.$delete('/api/v1/relationships', { date: formData })
+      const successMsg = 'フォローを解除しました'
+      const errorMsg = 'フォローを解除できませんでした'
+      const successCallback = async () => {
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}`)
+        this.$store.dispatch('getUserRelationship', relationship)
       }
-      asyncFunc().finally(response => console.log(response))
+
+      this.processResponse(action, successMsg, errorMsg, successCallback)
+    },
+    updateProductSearchCondition() {
+      this.$store.dispatch('updateProductSearchCondition', {
+        seller: this.$store.state.user.current.name
+      });
+    },
+    updatePostSearchCondition() {
+      this.$store.dispatch('updatePostSearchCondition', {
+        poster: this.$store.state.user.current.name
+      });
+    },
+    updateCommunitySearchCondition() {
+      this.$store.dispatch('updateCommunitySearchCondition', {
+        maker: this.$store.state.user.current.name
+      });
     }
   }
 }

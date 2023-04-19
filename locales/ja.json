@@ -21,10 +21,10 @@
         "followed": "フォロワー",
         "following": "フォロー"
       },
-      "address_payment": "住所＆お支払い"
+      "PersonalInfo": "個人情報"
     },
     "settings": {
-      "address": "住所変更",
+      "address": "住所編集",
       "deactivate": "退会する",
       "email": "メールアドレス変更",
       "information": "お知らせ",
