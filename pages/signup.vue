@@ -77,12 +77,14 @@ export default {
         formData.append('password', this.params.user.password)
         await this.$axios.$post('api/v1/users', formData)
         .then(response => {
+          // eslint-disable-next-line no-console
           console.log(response)
           const msg = 'メールアドレスに確認メールを送信しました'
           const color = 'success'
           return this.$store.dispatch('getToast', { msg, color })
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
           console.log(error)
           const msg = 'ユーザー登録ができませんでした'
           const color = 'error'

@@ -16,80 +16,78 @@
           >
             お問い合わせ
           </v-card-title>
-          <template>
-            <v-row
-              justify="center"
+          <v-row
+            justify="center"
+          >
+            <v-col
+              cols="12"
+              sm="10"
+              md="8"
+              class="mb-10"
             >
-              <v-col
-                cols="12"
-                sm="10"
-                md="8"
-                class="mb-10"
+              <v-form
+                ref="contact"
+                v-model="isValid"
               >
-                <v-form
-                  ref="contact"
-                  v-model="isValid"
-                >
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                      >
-                        <v-text-field
-                          v-model="name"
-                          :rules="nameRules"
-                          :disabled="sentIt"
-                          label="名前(必須)"
-                          outlined
-                        />
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                      >
-                        <v-text-field
-                          v-model="email"
-                          :rules="emailRules"
-                          :disabled="sentIt"
-                          label="メールアドレス(必須)"
-                          outlined
-                          validate-on-blur
-                        />
-                      </v-col>
-                    </v-row>
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                      <v-text-field
+                        v-model="name"
+                        :rules="nameRules"
+                        :disabled="sentIt"
+                        label="名前(必須)"
+                        outlined
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                      <v-text-field
+                        v-model="email"
+                        :rules="emailRules"
+                        :disabled="sentIt"
+                        label="メールアドレス(必須)"
+                        outlined
+                        validate-on-blur
+                      />
+                    </v-col>
+                  </v-row>
 
-                    <v-textarea
-                      v-model="contents"
-                      :rules="contentRules"
-                      :disabled="sentIt"
-                      label="お問い合わせの内容をお聞かせください(必須)"
-                      rows="5"
-                      outlined
-                      auto-grow
-                    />
-          
-                    <v-btn
-                      :disabled="!isValid || loading || sentIt"
-                      :loading="loading"
-                      color="primary"
-                      class="mr-2"
-                      @click="onSend"
-                    >
-                      送信する
-                    </v-btn>
-          
-                    <v-btn
-                      text
-                      @click="formReset"
-                    >
-                      キャンセル
-                    </v-btn>
-                  </v-container>
-                </v-form>
-              </v-col>
-            </v-row>
-          </template>
+                  <v-textarea
+                    v-model="contents"
+                    :rules="contentRules"
+                    :disabled="sentIt"
+                    label="お問い合わせの内容をお聞かせください(必須)"
+                    rows="5"
+                    outlined
+                    auto-grow
+                  />
+        
+                  <v-btn
+                    :disabled="!isValid || loading || sentIt"
+                    :loading="loading"
+                    color="primary"
+                    class="mr-2"
+                    @click="onSend"
+                  >
+                    送信する
+                  </v-btn>
+        
+                  <v-btn
+                    text
+                    @click="formReset"
+                  >
+                    キャンセル
+                  </v-btn>
+                </v-container>
+              </v-form>
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
@@ -134,8 +132,7 @@ export default {
         this.$store.dispatch('getToast', { msg, color })
       }).catch((error) => {
         this.loading = false
-        console.error('Error sending contact form:', error)
-        const msg = 'お問い合わせの送信中にエラーが発生しました。'
+        const msg = `お問い合わせの送信中にエラーが発生しました: ${error.message}`
         const color = 'error'
         this.$store.dispatch('getToast', { msg, color })
       })

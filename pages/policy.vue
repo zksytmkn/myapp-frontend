@@ -320,7 +320,6 @@
               以上
             </p>
           </v-card-text>
-
         </v-card>
       </v-col>
     </v-row>
