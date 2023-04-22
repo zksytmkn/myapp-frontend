@@ -8,113 +8,99 @@
           class="pa-6"
         >
           <v-card-title
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h5"
           >
-            <h2>
-              プライバシーポリシー
-            </h2>
+            プライバシーポリシー
           </v-card-title>
           <v-card-text>
             Edibleは，本ウェブサイト上で提供するサービス（以下,「本サービス」といいます。）における，ユーザーの個人情報の取扱いについて，
             以下のとおりプライバシーポリシー(以下，「本ポリシー」といいます。）を定めます。
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第１条（個人情報）
-            </h2>
+            第１条（個人情報）
           </v-card-subtitle>
           <v-card-text>
             <ol>
-              <p
-                style="margin-bottom:0;"
-              >
+              <li>
                 「個人情報」とは，個人情報保護法にいう「個人情報」を指すものとし，生存する個人に関する情報であって，当該情報に含まれる氏名，生年月日，住所，電話番号，連絡先その他の記述等により特定の個人を識別できる情報及び容貌，指紋，声紋にかかるデータ，及び健康保険証の保険者番号などの当該情報単体から特定の個人を識別できる情報（個人識別情報）を指します。
-              </p>
+              </li>
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第２条（個人情報の収集方法）
-            </h2>
+            第２条（個人情報の収集方法）
           </v-card-subtitle>
           <v-card-text>
             <ol>
-              <p
-                style="margin-bottom:0;"
-              >
+              <li>
                 Edibleは，ユーザーが利用登録をする際に氏名，生年月日，住所，電話番号，メールアドレス，銀行口座番号，クレジットカード番号，運転免許証番号などの個人情報をお尋ねすることがあります。また，ユーザーと提携先などとの間でなされたユーザーの個人情報を含む取引記録や決済に関する情報を,Edibleの提携先（情報提供元，広告主，広告配信先などを含みます。以下，｢提携先｣といいます。）などから収集することがあります。
-              </p>
+              </li>
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第３条（個人情報を収集・利用する目的）
-            </h2>
+            第３条（個人情報を収集・利用する目的）
           </v-card-subtitle>
           <v-card-text>
+            <p>
+              Edibleが個人情報を収集・利用する目的は，以下のとおりです。
+            </p>
             <ol>
-              <p>
-                Edibleが個人情報を収集・利用する目的は，以下のとおりです。
-              </p>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 ユーザーに自分の登録情報の閲覧や修正，利用状況の閲覧を行っていただくために，氏名，住所，連絡先，支払方法などの登録情報，利用されたサービスや購入された商品，およびそれらの代金などに関する情報を表示する目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 ユーザーにお知らせや連絡をするためにメールアドレスを利用する場合やユーザーに商品を送付したり必要に応じて連絡したりするため，氏名や住所などの連絡先情報を利用する目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 ユーザーの本人確認を行うために，氏名，生年月日，住所，電話番号，銀行口座番号，クレジットカード番号，運転免許証番号，配達証明付き郵便の到達結果などの情報を利用する目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 ユーザーに代金を請求するために，購入された商品名や数量，利用されたサービスの種類や期間，回数，請求金額，氏名，住所，銀行口座番号やクレジットカード番号などの支払に関する情報などを利用する目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 ユーザーが簡便にデータを入力できるようにするために，Edibleに登録されている情報を入力画面に表示させたり，ユーザーのご指示に基づいて他のサービスなど（提携先が提供するものも含みます）に転送したりする目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 代金の支払を遅滞したり第三者に損害を発生させたりするなど，本サービスの利用規約に違反したユーザーや，不正・不当な目的でサービスを利用しようとするユーザーの利用をお断りするために，利用態様，氏名や住所など個人を特定するための情報を利用する目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 ユーザーからのお問い合わせに対応するために，お問い合わせ内容や代金の請求に関する情報などEdibleがユーザーに対してサービスを提供するにあたって必要となる情報や，ユーザーのサービス利用状況，連絡先情報などを利用する目的
               </li>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 上記の利用目的に付随する目的
               </li>
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第４条（利用目的の変更）
-            </h2>
+            第４条（利用目的の変更）
           </v-card-subtitle>
           <v-card-text>
             <ol>
               <li
-                style="padding:10px 0 10px 0;"
+                style="margin-bottom:10px;"
               >
                 Edibleは，利用目的が変更前と関連性を有すると合理的に認められる場合に限り，個人情報の利用目的を変更するものとします。
               </li>
@@ -124,81 +110,79 @@
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第５条（個人情報の第三者提供）
-            </h2>
+            第５条（個人情報の第三者提供）
           </v-card-subtitle>
           <v-card-text>
             <ol>
               <li
-                style="padding:10px 0 10px 0;"
+                style="margin-bottom:10px;"
               >
                 Edibleは，次に掲げる場合を除いて，あらかじめユーザーの同意を得ることなく，第三者に個人情報を提供することはありません。ただし，個人情報保護法その他の法令で認められる場合を除きます。
               </li>
               <ol>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   法令に基づく場合
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   人の生命，身体または財産の保護のために必要がある場合であって，本人の同意を得ることが困難であるとき
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   公衆衛生の向上または児童の健全な育成の推進のために特に必要がある場合であって，本人の同意を得ることが困難であるとき
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合であって，本人の同意を得ることにより当該事務の遂行に支障を及ぼすおそれがあるとき
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   予め次の事項を告知あるいは公表をしている場合
                 </li>
                 <ol>
                   <li
-                    style="padding-bottom:10px;"
+                    style="margin-bottom:10px;"
                   >
                     利用目的に第三者への提供を含むこと
                   </li>
                   <li
-                    style="padding-bottom:10px;"
+                    style="margin-bottom:10px;"
                   >
                     第三者に提供されるデータの項目
                   </li>
                   <li
-                    style="padding-bottom:10px;"
+                    style="margin-bottom:10px;"
                   >
                     第三者への提供の手段または方法
                   </li>
                   <li
-                    style="padding-bottom:10px;"
+                    style="margin-bottom:10px;"
                   >
                     本人の求めに応じて個人情報の第三者への提供を停止すること
                   </li>
                 </ol>
               </ol>
               <li
-                style="padding-bottom:10px;"
+                style="margin-bottom:10px;"
               >
                 前項の定めにかかわらず，次に掲げる場合は第三者には該当しないものとします。
               </li>
               <ol>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   Edibleが利用目的の達成に必要な範囲内において個人情報の取扱いの全部または一部を委託する場合
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   合併その他の事由による事業の承継に伴って個人情報が提供される場合
                 </li>
@@ -209,32 +193,30 @@
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第６条（個人情報の開示）
-            </h2>
+            第６条（個人情報の開示）
           </v-card-subtitle>
           <v-card-text>
             <ol>
               <li
-                style="padding:10px 0 10px 0;"
+                style="margin-bottom:10px;"
               >
                 Edibleは，本人から個人情報の開示を求められたときは，本人に対し，遅滞なくこれを開示します。ただし，開示することにより次のいずれかに該当する場合は，その全部または一部を開示しないこともあり，開示しない決定をした場合には，その旨を遅滞なく通知します。なお，個人情報の開示に際しては，１件あたり１，０００円の手数料を申し受けます。
               </li>
               <ol>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   本人または第三者の生命，身体，財産その他の権利利益を害するおそれがある場合
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   Edibleの業務の適正な実施に著しい支障を及ぼすおそれがある場合
                 </li>
                 <li
-                  style="padding-bottom:10px;"
+                  style="margin-bottom:10px;"
                 >
                   その他法令に違反することとなる場合
                 </li>
@@ -245,16 +227,14 @@
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第７条（個人情報の訂正および削除）
-            </h2>
+            第７条（個人情報の訂正および削除）
           </v-card-subtitle>
           <v-card-text>
             <ol>
               <li
-                style="padding:10px 0 10px 0;"
+                style="margin-bottom:10px;"
               >
                 ユーザーは，Edibleの保有する自己の個人情報が誤った情報である場合には，Edibleが定める手続きにより，Edibleに対して個人情報の訂正または削除を請求することができます。
               </li>
@@ -264,11 +244,9 @@
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第８条（個人情報の利用停止等）
-            </h2>
+            第８条（個人情報の利用停止等）
           </v-card-subtitle>
           <v-card-text>
             <ol>
@@ -280,16 +258,14 @@
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第９条（プライバシーポリシーの変更）
-            </h2>
+            第９条（プライバシーポリシーの変更）
           </v-card-subtitle>
           <v-card-text>
             <ol>
               <li
-                style="padding:10px 0 10px 0;"
+                style="margin-bottom:10px;"
               >
                 本ポリシーの内容は，ユーザーに通知することなく，変更することができるものとします。
               </li>
@@ -299,26 +275,22 @@
             </ol>
           </v-card-text>
           <v-card-subtitle
-            class="text-left font-weight-bold"
+            class="text-left font-weight-bold text-h6"
           >
-            <h2>
-              第１０条（お問い合わせ窓口）
-            </h2>
+            第１０条（お問い合わせ窓口）
           </v-card-subtitle>
           <v-card-text>
-            <ol>
-              <p
-                style="margin-bottom:0;"
-              >
+            <ul style="list-style-type: none;">
+              <li>
                 本ポリシーに関するお問い合わせは，下記の窓口までお願いいたします。
-              </p>
-              <p>
+              </li>
+              <li
+                style="margin-bottom:10px;"
+              >
                 メールアドレス：edible@gmail.com
-              </p>
-            </ol>
-            <p>
-              以上
-            </p>
+              </li>
+            </ul>
+            以上
           </v-card-text>
         </v-card>
       </v-col>
