@@ -33,14 +33,14 @@
                     <v-list class="mt-3">
                       <v-list-item>
                         <v-list-item-title>
-                          住所：<br /><br />
                           <template v-if="$store.state.user.login.zipcode && $store.state.user.login.street && $store.state.user.login.building">
+                            住所：<br /><br />
                             {{ $store.state.user.login.zipcode }}<br /><br />
                             {{ $store.state.user.login.street }}
                             {{ $store.state.user.login.building }}
                           </template>
                           <template v-else>
-                            未登録
+                            <span class="text--secondary">住所：未登録</span>
                           </template>
                         </v-list-item-title>
                       </v-list-item>

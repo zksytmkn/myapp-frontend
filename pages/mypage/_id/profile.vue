@@ -54,11 +54,11 @@
                           <v-list-item-title>
                             {{ CurrentUser.name }}
                           </v-list-item-title>
-                          <v-list-item-subtitle>
+                          <v-list-item-title :class="{ 'text--secondary': !CurrentUser.prefecture }">
                             {{ CurrentUser.prefecture || '都道府県：未登録' }}
-                          </v-list-item-subtitle>
+                          </v-list-item-title>
                           <br/>
-                          <v-list-item-text>
+                          <v-list-item-text :class="{ 'text--secondary': !CurrentUser.profile_text }">
                             {{
                               CurrentUser.profile_text
                                 ? (CurrentUser.profile_text.length > 120
