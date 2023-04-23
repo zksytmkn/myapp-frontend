@@ -204,23 +204,32 @@ export default {
   },
   methods: {
     async deleteProduct(id) {
-    try {
-      await this.$axios.$delete(`/api/v1/products/${id}`);
-      this.showNotification("農産物を削除しました", "success");
-
-      await this.$axios.$get("api/v1/products").then((products) =>
-        this.$store.dispatch("getProductList", products)
-      );
-      // Update favorites and unfavorites list after deleting the product
-      await this.updateFavoritesAndUnfavorites();
-    } catch (error) {
-      this.showNotification("農産物を削除できませんでした", "error");
-    }
-  },
+      try {
+        await this.$axios.$delete(`/api/v1/products/${id}`);
+        this.showNotification("農産物を削除しました", "success");
+  
+        await this.$axios.$get("api/v1/products").then((products) =>
+          this.$store.dispatch("getProductList", products)
+        );
+        // Update favorites and unfavorites list after deleting the product
+        await this.updateFavoritesAndUnfavorites();
+      } catch (error) {
+        this.showNotification("農産物を削除できませんでした", "error");
+      }
+    },
     showNotification(msg, color) {
       this.$store.dispatch('getToast', { msg, color });
     },
     async addProductToCart(id, quantity) {
+      if (
+        !this.$store.state.user.login.zipcode ||
+        !this.$store.state.user.login.street ||
+        !this.$store.state.user.login.building
+      ) {
+        this.showNotification("まずは住所を編集してください", "error");
+        return;
+      }
+
       try {
         const cart = this.$store.state.carts.find(cart => cart.product_id === id);
         const product = this.$store.state.product.list.find(product => product.id === id);

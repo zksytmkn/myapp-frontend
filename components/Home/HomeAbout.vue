@@ -175,7 +175,7 @@
           >
             <v-spacer />
             <v-radio-group
-              v-model="selectedAnswerer"
+              v-model="answer"
               row
             >
               <v-radio
@@ -201,13 +201,13 @@
               :class="['white--text', que.color]"
               class="font-weight-bold"
             >
-              {{ que.name[answerer] }}
+              {{ que.name[answer] }}
               <v-icon
                 class="ml-2"
                 color="white"
                 dense
               >
-                {{ que.icon[answerer] }}
+                {{ que.icon[answer] }}
               </v-icon>
             </v-card-title>
   
@@ -215,14 +215,14 @@
               class="justify-center align-baseline font-weight-bold"
               style="color:rgba(0, 0, 0, 0.9);"
             >
-              {{ que.text[answerer] }}
+              {{ que.text[answer] }}
             </v-card-actions>
             <v-divider/>
             <v-card-actions
               class="justify-center align-baseline font-weight-bold"
               style="color:rgba(0, 128, 128, 0.9);"
             >
-              {{ que.answer[answerer] }}
+              {{ que.answer[answer] }}
             </v-card-actions>
           </v-card>
         </v-col>
@@ -286,7 +286,7 @@ export default {
       postsImg,
       communitiesImg,
       answerers,
-      selectedAnswerer: answerers[0].label,
+      answer: answerers[0].label,
       questions: [
         {
           name: {

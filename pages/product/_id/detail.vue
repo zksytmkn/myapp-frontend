@@ -399,6 +399,15 @@ export default {
       } catch (error) {}
     },
     async addProductToCart(id, quantity) {
+      if (
+        !this.$store.state.user.login.zipcode ||
+        !this.$store.state.user.login.street ||
+        !this.$store.state.user.login.building
+      ) {
+        this.$store.dispatch('getToast', { msg: 'まずは住所を編集してください', color: 'error' });
+        return;
+      }
+
       const cartExists = this.$store.state.carts.some(cart => cart.product_id === id)
       const productQuantity = Number(this.$store.state.product.current.stock) - Number(quantity)
 

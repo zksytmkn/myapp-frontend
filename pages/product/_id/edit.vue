@@ -62,6 +62,18 @@
                           :disabled="sentIt"
                         ></v-select>
                       </v-col>
+                      <v-col cols="11">
+                        <v-select
+                          v-model="inputted.prefecture"
+                          dense
+                          outlined
+                          label="都道府県"
+                          :rules="prefectureRules"
+                          :disabled="sentIt"
+                          :items="prefectureItems"
+                        >
+                        </v-select>
+                      </v-col>
 
                       <v-col cols="11">
                         <v-row>
@@ -149,6 +161,7 @@ export default {
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`,
       ],
       categoryRules: [v => !!v || '種類を選択してください'],
+      prefectureRules: [v => !!v || '都道府県を選択してください'],
       priceRules: [v => !!v || '価格を入力してください'],
       stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '数量を入力してください'],
       descRules: [
@@ -160,12 +173,62 @@ export default {
         name: '',
         user_id: this.$auth.user.id,
         category: '',
+        prefecture: '',
         price: null,
         stock: null,
         description: '',
         image: null,
       },
       categoryItems: ['野菜', '果物'],
+      prefectureItems: [
+        '北海道',
+        '青森県',
+        '岩手県',
+        '宮城県',
+        '秋田県',
+        '山形県',
+        '福島県',
+        '茨城県',
+        '栃木県',
+        '群馬県',
+        '埼玉県',
+        '千葉県',
+        '東京都',
+        '神奈川県',
+        '新潟県',
+        '富山県',
+        '石川県',
+        '福井県',
+        '山梨県',
+        '長野県',
+        '岐阜県',
+        '静岡県',
+        '愛知県',
+        '三重県',
+        '滋賀県',
+        '京都府',
+        '大阪府',
+        '兵庫県',
+        '奈良県',
+        '和歌山県',
+        '鳥取県',
+        '島根県',
+        '岡山県',
+        '広島県',
+        '山口県',
+        '徳島県',
+        '香川県',
+        '愛媛県',
+        '高知県',
+        '福岡県',
+        '佐賀県',
+        '長崎県',
+        '熊本県',
+        '大分県',
+        '宮崎県',
+        '鹿児島県',
+        '沖縄県'
+      ]
     }
   },
   computed: {

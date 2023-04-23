@@ -212,6 +212,15 @@ export default {
       this.$store.dispatch('getToast', { msg, color });
     },
     async addProductToCart(id, quantity) {
+      if (
+        !this.$store.state.user.login.zipcode ||
+        !this.$store.state.user.login.street ||
+        !this.$store.state.user.login.building
+      ) {
+        this.showNotification("まずは住所を編集してください", "error");
+        return;
+      }
+
       try {
         const cart = this.$store.state.carts.find(cart => cart.product_id === id);
         const product = this.$store.state.product.list.find(product => product.id === id);
