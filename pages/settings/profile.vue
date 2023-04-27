@@ -15,9 +15,7 @@
             v-model="isValid"
             @submit.prevent="editProfile"
           >
-            <v-list
-              color="transparent"
-            >
+            <v-list>
               <v-list-item>
                 <v-list-item-title>
                   プロフィール編集

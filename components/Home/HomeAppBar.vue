@@ -51,11 +51,9 @@
           exact
           @click="$vuetify.goTo(`#${menu.title}`)"
         >
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t(`menus.${menu.title}`) }}
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>
+            {{ $t(`menus.${menu.title}`) }}
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>

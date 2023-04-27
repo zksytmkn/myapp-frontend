@@ -21,16 +21,14 @@
               color="transparent"
             >
               <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="text-h5 font-weight-bold"
-                    style="white-space:pre-line; text-shadow:1px 1px 1px black;"
-                  >
-                    Farming, gardening, food loss ... and so on.
-                    many posts and murmuring are here.
-                    So, please take a look. ☺︎☺︎☺︎
-                  </v-list-item-title>
-                </v-list-item-content>
+                <v-list-item-title
+                  class="text-h5 font-weight-bold"
+                  style="white-space:pre-line; text-shadow:1px 1px 1px black;"
+                >
+                  Farming, gardening, food loss ... and so on.
+                  many posts and murmuring are here.
+                  So, please take a look. ☺︎☺︎☺︎
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-col>

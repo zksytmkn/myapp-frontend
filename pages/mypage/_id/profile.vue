@@ -11,9 +11,7 @@
           flat
           rounded="lg"
         >
-          <v-list
-            color="transparent"
-          >
+          <v-list>
             <v-list-item>
               <v-list-item-title>
                 {{ CurrentUser.id === $auth.user.id ? 'あなたのプロフィール' : CurrentUser.name + 'さんのプロフィール' }}

@@ -5,15 +5,11 @@
     <v-sheet
       rounded="lg"
     >
-      <v-list
-        color="transparent"
-      >
+      <v-list>
         <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>
-              お知らせ
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>
+            お知らせ
+          </v-list-item-title>
         </v-list-item>
 
         <v-divider/>

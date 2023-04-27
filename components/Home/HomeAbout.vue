@@ -205,7 +205,6 @@
               <v-icon
                 class="ml-2"
                 color="white"
-                dense
               >
                 {{ que.icon[answer] }}
               </v-icon>
@@ -240,11 +239,9 @@
       <v-list-item
         class="text-center font-weight-bold"
       >
-        <v-list-item-content>
-          <v-list-item-title>
-            全ての機能が無料でご利用できます！
-          </v-list-item-title>
-        </v-list-item-content>
+        <v-list-item-title>
+          全ての機能が無料でご利用できます！
+        </v-list-item-title>
       </v-list-item>
       <v-list-item
         class="justify-center"

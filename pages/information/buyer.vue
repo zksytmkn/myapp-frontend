@@ -11,9 +11,7 @@
           <v-sheet
             rounded="lg"
           >
-            <v-list
-              color="transparent"
-            >
+            <v-list>
               <v-list-item>
                 <v-list-item-title>
                   注文（購入）
@@ -24,11 +22,9 @@
               <v-list-item
                 v-show="!orderMenus.length"
               >
-                <v-list-item-content>
-                  <v-list-item-title>
-                    該当する注文はありませんでした。
-                  </v-list-item-title>
-                </v-list-item-content>
+                <v-list-item-title>
+                  該当する注文はありませんでした。
+                </v-list-item-title>
               </v-list-item>
               <v-list-item
                 v-for="(order, i) in orderMenus.slice(pageSize*(page-1),pageSize*(page))"

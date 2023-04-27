@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container
-      class="mt-3"
+      class="mt-12"
     >
       <v-row>
         <info-menu />
@@ -11,9 +11,7 @@
           <v-sheet
             rounded="lg"
           >
-            <v-list
-              color="transparent"
-            >
+            <v-list>
               <v-list-item>
                 <v-list-item-title>
                   詳細
@@ -175,17 +173,15 @@
                               class="pt-0"
                             >
                               <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-subtitle
-                                    class="pt-0 font-weight-bold"
-                                    style="white-space:pre-line; line-height:2;"
-                                  >
-                                    ＊注文内容
-                                    ¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}
-                                    小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}
-                                    注文日：{{ dateFormat(currentOrder.created_at) }}
-                                  </v-list-item-subtitle>
-                                </v-list-item-content>
+                                <v-list-item-subtitle
+                                  class="pt-0 font-weight-bold"
+                                  style="white-space:pre-line; line-height:2;"
+                                >
+                                  ＊注文内容
+                                  ¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}
+                                  小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}
+                                  注文日：{{ dateFormat(currentOrder.created_at) }}
+                                </v-list-item-subtitle>
                               </v-list-item>
                             </v-list>
                           </v-col>

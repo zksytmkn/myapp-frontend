@@ -227,20 +227,6 @@
                     <br>
                     {{ dateFormat(message.updated_at) }}
                   </div>
-                  <div v-if="message.user.id === $auth.user.id">
-                    <v-menu app offset-x offset-y>
-                      <template #activator="{ on }">
-                        <v-btn icon v-on="on">
-                          <v-icon>mdi-dots-horizontal</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list dense>
-                        <v-list-item @click="deleteCommunityMessage(message.id)">
-                          <v-list-item-title>削除する</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </div>
                   <v-list
                     :class="message.user.id === $auth.user.id ? 'ml-6 pa-2 teal lighten-2 text-white' : 'mr-6 pa-2 orange lighten-2'"
                     style="border-radius: 18px; margin-left: 12px; margin-right: 12px; display: inline-block;"
@@ -366,14 +352,6 @@ export default {
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
-    },
-    deleteCommunityMessage(messageId) {
-      this.processResponse(
-        () => this.$axios.$delete(`/api/v1/community_messages/${messageId}`),
-        'メッセージを削除しました',
-        'メッセージを削除できませんでした',
-        () => this.refreshMessages()
-      )
     },
     async refreshMessages() {
       const messages = await this.$axios.$get(`api/v1/community_messages/${this.inputted.communityId}`);

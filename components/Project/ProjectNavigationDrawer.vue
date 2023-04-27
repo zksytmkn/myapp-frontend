@@ -36,11 +36,9 @@
               {{ nav.icon }}
             </v-icon>
           </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ nav.name }}
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>
+            {{ nav.name }}
+          </v-list-item-title>
         </template>
         <v-list-item
           v-for="(list, j) in nav.lists"
@@ -54,19 +52,15 @@
               {{ list.icon }}
             </v-icon>
           </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ list.name }}
-            </v-list-item-title>
-          </v-list-item-content>
+          <v-list-item-title>
+            {{ list.name }}
+          </v-list-item-title>
         </v-list-item>
       </v-list-group>
       <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            その他
-          </v-list-item-title>
-        </v-list-item-content>
+        <v-list-item-title>
+          その他
+        </v-list-item-title>
       </v-list-item>
       <v-divider/>
       <v-list-item
@@ -81,11 +75,9 @@
             {{ other.icon }}
           </v-icon>
         </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ other.name }}
-          </v-list-item-title>
-        </v-list-item-content>
+        <v-list-item-title>
+          {{ other.name }}
+        </v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
