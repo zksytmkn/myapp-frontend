@@ -46,34 +46,27 @@
                             <v-list>
                               <v-list-item>
                                 <v-list-item-content>
-                                  <v-list-item-title
-                                    v-show="currentOrder.product.user_id !== $auth.user.id"
-                                  >
+                                  <v-list-item-title>
                                     <nuxt-link
                                       class="text-decoration-none font-weight-bold teal--text"
-                                      :to="$my.productLinkToDetail(currentOrder.product_id)"
+                                      :to="currentOrder.product.user_id !== $auth.user.id ? $my.productLinkToDetail(currentOrder.product_id) : $my.userLinkToProfile(currentOrder.order.user_id)"
                                     >
-                                      {{ currentOrder.product.name }}
+                                      {{
+                                        currentOrder.product.user_id !== $auth.user.id
+                                          ? currentOrder.product.name
+                                          : currentOrder.order.user.name
+                                      }}
                                     </nuxt-link>
-                                    を購入しました。
-                                  </v-list-item-title>
-                                  <v-list-item-title
-                                    v-show="currentOrder.product.user_id === $auth.user.id"
-                                  >
-                                    <nuxt-link
-                                      class="text-decoration-none font-weight-bold teal--text"
-                                      :to="$my.userLinkToProfile(currentOrder.order.user_id)"
-                                    >
-                                      {{ currentOrder.order.user.name }}
-                                    </nuxt-link>
-                                    さんは、
-                                    <br/>
-                                    <nuxt-link
-                                      class="text-decoration-none font-weight-bold teal--text"
-                                      :to="$my.productLinkToDetail(currentOrder.product_id)"
-                                    >
-                                      {{ currentOrder.product.name }}
-                                    </nuxt-link>  
+                                    <template v-if="currentOrder.product.user_id === $auth.user.id">
+                                      さんは、
+                                      <br />
+                                      <nuxt-link
+                                        class="text-decoration-none font-weight-bold teal--text"
+                                        :to="$my.productLinkToDetail(currentOrder.product_id)"
+                                      >
+                                        {{ currentOrder.product.name }}
+                                      </nuxt-link>
+                                    </template>
                                     を購入しました。
                                   </v-list-item-title>
                                   <v-list-item-subtitle
@@ -83,80 +76,31 @@
                                     お届け先：〒{{ currentOrder.order.zipcode }}
                                     {{ currentOrder.order.street }} {{ currentOrder.order.building }}
                                     <span
-                                      v-show="currentOrder.status==='confirm_payment'"
+                                      v-for="(status, statusKey) in orderStatus"
+                                      v-show="currentOrder.status === statusKey"
+                                      :key="statusKey"
                                       class="black--text"
                                       style="white-space:normal;"
                                     >
-                                      入金済み（出荷待ち）
-                                      <v-icon
-                                        class="black--text"
-                                      >
-                                        mdi-credit-card-outline
+                                      {{ status.text }}
+                                      <v-icon class="black--text">
+                                        {{ status.icon }}
                                       </v-icon>
                                     </span>
-                                    <span
-                                      v-show="currentOrder.status==='shipped'"
-                                      class="black--text"
-                                      style="white-space:normal;"
-                                    >
-                                      出荷済み（配送待ち）
-                                      <v-icon
-                                        class="black--text"
-                                      >
-                                        mdi-package-variant-closed
-                                      </v-icon>
-                                    </span>
-                                    <span
-                                      v-show="currentOrder.status==='out_for_delivery'"
-                                      class="black--text"
-                                      style="white-space:normal;"
-                                    >
-                                      配送中（配達待ち）
-                                      <v-icon
-                                        class="black--text"
-                                      >
-                                        mdi-truck-delivery-outline
-                                      </v-icon>
-                                    </span>
-                                    <span
-                                      v-show="currentOrder.status==='delivered'"
-                                      class="black--text"
-                                      style="white-space:normal;"
-                                    >
-                                      配達済み
-                                      <v-icon
-                                        class="black--text"
-                                      >
-                                        mdi-package-variant-closed-check
-                                      </v-icon>
-                                    </span>
-                                    <br/>
+                                    <br />
                                     <v-btn
-                                      v-show="currentOrder.status==='confirm_payment' && currentOrder.product.user_id === $auth.user.id"
+                                      v-for="(status, statusKey) in orderStatus"
+                                      v-show="currentOrder.status === statusKey && 
+                                              ((statusKey === 'confirm_payment' && currentOrder.product.user_id === $auth.user.id) ||
+                                              (statusKey === 'shipped' && currentOrder.product.user_id === $auth.user.id) ||
+                                              (statusKey === 'out_for_delivery' && currentOrder.order.user_id === $auth.user.id))"
+                                      :key="statusKey"
                                       class="font-weight-bold mt-3"
                                       color="teal"
                                       dark
-                                      @click="ship(currentOrder.id)"
+                                      @click="handleButtonClick(statusKey, currentOrder.id)"
                                     >
-                                      出荷しました
-                                    </v-btn>
-                                    <v-btn
-                                      v-show="currentOrder.status==='shipped' && currentOrder.product.user_id === $auth.user.id"
-                                      class="font-weight-bold mt-3"
-                                      color="teal"
-                                      dark
-                                      @click="deliver(currentOrder.id)"
-                                    >
-                                      配送しました
-                                    </v-btn>
-                                    <v-btn
-                                      v-show="currentOrder.status==='out_for_delivery' && currentOrder.order.user_id === $auth.user.id"
-                                      class="font-weight-bold mt-3"
-                                      color="teal"
-                                      dark
-                                      @click="delivered(currentOrder.id)"
-                                    >
-                                      配達されました
+                                      {{ status.buttonText }}
                                     </v-btn>
                                   </v-list-item-subtitle>
                                 </v-list-item-content>
@@ -196,6 +140,83 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <v-card flat rounded="lg">
+            <v-list>
+              <v-list-item>
+                <v-list-item-title class="font-weight-bold">
+                  メッセージ
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+            <v-divider/>
+            <v-sheet
+              ref="messageContainer"
+              class="overflow-y-auto grey lighten-5 text-caption font-weight-medium pt-4"
+              :style="{height: 'calc(100vh - 250px)', 'background-color': '#e0f2f1'}"
+            >
+              <v-row v-for="(message, i) in messages" :key="`message-${i}`">
+                <v-col
+                  cols="12"
+                  :class="message.user.id === $auth.user.id ? 'd-flex justify-end' : 'd-flex'"
+                >
+                  <div v-if="message.user.id !== $auth.user.id" class="mb-1" style="font-size: 0.7rem; margin-left: 30px;">
+                    <router-link
+                      v-if="isUserInParticipation(message.user.id)"
+                      v-slot="{ navigate }"
+                      :to="$my.userLinkToProfile(message.user.id)"
+                      custom
+                    >
+                      <strong @click="navigate">
+                        {{ message.user.name }}
+                      </strong>
+                    </router-link>
+                    <strong v-else>退会済みユーザー</strong>
+                    <br>
+                    {{ dateFormat(message.updated_at) }}
+                  </div>
+                  <v-list
+                    :class="message.user.id === $auth.user.id ? 'ml-6 pa-2 teal lighten-2 text-white' : 'mr-6 pa-2 orange lighten-2'"
+                    style="border-radius: 18px; margin-left: 12px; margin-right: 12px; display: inline-block;"
+                    :style="{ maxWidth: '50%', width: 'auto' }"
+                  >
+                    <v-list-item-title
+                      class="font-weight-bold"
+                      :style="{ 'word-wrap': 'break-word', 'white-space': 'pre-wrap' }"
+                    >{{ message.communityMessage_content }}</v-list-item-title>
+                  </v-list>
+                  <div v-if="message.user.id === $auth.user.id" class="mt-1" style="font-size: 0.7rem; margin-right: 30px;">
+                    <strong>あなた</strong>
+                    <br>
+                    {{ dateFormat(message.updated_at) }}
+                  </div>
+                </v-col>
+              </v-row>
+            </v-sheet>
+            <v-divider/>
+            <v-sheet class="pa-4" height="110">
+              <v-form ref="new" v-model="valid" @submit.prevent="addCommunityMessage">
+                <v-text-field
+                  v-model="inputted.msg"
+                  :rules="msgRules"
+                  label="メッセージを入力する"
+                  counter="200"
+                  dense
+                  append-icon="mdi-send"
+                  @click:append="addCommunityMessage"
+                />
+              </v-form>
+              <v-btn text @click="formReset">
+                キャンセル
+              </v-btn>
+            </v-sheet>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -211,64 +232,115 @@ export default {
   middleware: 'get-order-current',
   data () {
     return {
-      noImg
-    }
+      noImg,
+      msgRules: [v => !!v || ''],
+      inputted: { msg: '', communityId: this.$store.state.community.current.community.id, userId: this.$auth.user.id },
+      orderStatus: {
+        confirm_payment: {
+          text: "入金済み（出荷待ち）",
+          icon: "mdi-credit-card-outline",
+          buttonText: "出荷しました",
+          statusToUpdate: "shipped",
+        },
+        shipped: {
+          text: "出荷済み（配送待ち）",
+          icon: "mdi-package-variant-closed",
+          buttonText: "配送しました",
+          statusToUpdate: "out_for_delivery",
+        },
+        out_for_delivery: {
+          text: "配送中（配達待ち）",
+          icon: "mdi-truck-delivery-outline",
+          buttonText: "配達されました",
+          statusToUpdate: "delivered",
+        },
+        delivered: { text: "配達済み", icon: "mdi-package-variant-closed-check" },
+      },
+    };
   },
   computed: {
     currentOrder() {
-      const copyCurrentOrder = this.$store.state.order.current
-      return copyCurrentOrder
+      return this.$store.state.order.current;
     },
     currentOrderProduct() {
-      const copyCurrentOrderProduct = Array.from(this.$store.state.product.list.filter(product => product.id === this.$store.state.order.current.product_id))
-      return copyCurrentOrderProduct
+      const copyCurrentOrderProduct = Array.from(
+        this.$store.state.product.list.filter(
+          (product) => product.id === this.$store.state.order.current.product_id
+        )
+      );
+      return copyCurrentOrderProduct;
+    },
+    messages() {
+      return Array.from(this.$store.state.community.message).sort((a, b) => a.created_at.localeCompare(b.created_at));
     },
     dateFormat() {
-      return (date) => {
-        const dateTimeFormat = new Intl.DateTimeFormat(
-          'ja', { dateStyle: 'medium' }
-        )
-        return dateTimeFormat.format(new Date(date))
-      }
-    }
+      return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
+    },
   },
   methods: {
-    ship(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('status', 'shipped')
-        await this.$axios.$patch(`/api/v1/orders/${id}`, formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await this.$axios.$get(`/api/v1/orders/${id}`)
-        .then(order => this.$store.dispatch('getCurrentOrder', order))
+    async updateOrderStatus(id, status) {
+      const formData = new FormData();
+      formData.append("status", status);
+
+      try {
+        await this.$axios.$patch(`/api/v1/orders/${id}`, formData);
+        const order = await this.$axios.$get(`/api/v1/orders/${id}`);
+        this.$store.dispatch("getCurrentOrder", order);
+      } catch (error) {
       }
-      asyncFunc().finally(response => console.log(response))
     },
-    deliver(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('status', 'out_for_delivery')
-        await this.$axios.$patch(`/api/v1/orders/${id}`, formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await this.$axios.$get(`/api/v1/orders/${id}`)
-        .then(order => this.$store.dispatch('getCurrentOrder', order))
+    handleButtonClick(statusKey, orderId) {
+      const statusToUpdate = this.orderStatus[statusKey].statusToUpdate;
+      if (statusToUpdate) {
+        this.updateOrderStatus(orderId, statusToUpdate);
       }
-      asyncFunc().finally(response => console.log(response))
     },
-    delivered(id) {
-      const asyncFunc = async() => {
-        const formData = new FormData()
-        formData.append('status', 'delivered')
-        await this.$axios.$patch(`/api/v1/orders/${id}`, formData)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-        await this.$axios.$get(`/api/v1/orders/${id}`)
-        .then(order => this.$store.dispatch('getCurrentOrder', order))
+    async processResponse(action, successMsg, errorMsg, successCallback) {
+      try {
+        await action();
+        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' });
+        if (successCallback) {
+          successCallback();
+        }
+      } catch (e) {
+        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
       }
-      asyncFunc().finally(response => console.log(response))
-    }
-  }
-}
+    },
+    async addCommunityMessage() {
+      if (!this.valid) return;
+      const formData = new FormData();
+      formData.append("communityMessage_content", this.inputted.msg);
+      formData.append("community_id", this.inputted.communityId);
+      formData.append("user_id", this.inputted.userId);
+      this.formReset();
+
+      await this.processResponse(
+        () => this.$axios.$post("/api/v1/community_messages", formData),
+        "メッセージを送信しました",
+        "メッセージを送信できませんでした",
+        async () => {
+          await this.refreshMessages();
+          await this.scrollBottom();
+        }
+      );
+    },
+    formReset() {
+      this.sentIt = false
+      this.$refs.new.reset()
+    },
+    async refreshMessages() {
+      const messages = await this.$axios.$get(`api/v1/community_messages/${this.inputted.communityId}`);
+      this.$store.dispatch('getCommunityMessage', messages);
+    },
+    scrollBottom() {
+      this.$nextTick(() => {
+        const container = this.$refs.messageContainer;
+        if (container) {
+          const scrollableElement = container.$el;
+          scrollableElement.scrollTop = scrollableElement.scrollHeight;
+        }
+      });
+    },
+  },
+};
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container
-      class="mt-3"
+      class="mt-12"
     >
       <v-row>
         <info-menu />

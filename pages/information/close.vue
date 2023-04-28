@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container
-      class="mt-3"
+      class="mt-12"
     >
       <v-row>
         <info-menu />
@@ -38,15 +38,8 @@
                     mdi-information-variant
                   </v-icon>
                 </v-list-item-avatar>
-                <v-list-item-title
-                  v-show="order.product.user_id !== $auth.user.id"
-                >
-                  {{ order.product.name }}を購入しました。
-                </v-list-item-title>
-                <v-list-item-title
-                  v-show="order.product.user_id === $auth.user.id"
-                >
-                  {{ order.product.name }}が購入されました。
+                <v-list-item-title>
+                  {{ order.product.name }}{{ order.product.user_id !== $auth.user.id ? 'を購入しました。' : 'が購入されました。' }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
