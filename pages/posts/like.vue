@@ -118,7 +118,6 @@
 <script>
 export default {
   layout: 'logged-in',
-  middleware: ['get-post-list'],
   data () {
     return {
       page: 1,

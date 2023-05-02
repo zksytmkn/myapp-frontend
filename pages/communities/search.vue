@@ -187,7 +187,6 @@
 <script>
 export default {
   layout: 'logged-in',
-  middleware: ['get-community-list'],
   data () {
     return {
       page: 1,

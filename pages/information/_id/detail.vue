@@ -148,7 +148,7 @@
             <v-list>
               <v-list-item>
                 <v-list-item-title class="font-weight-bold">
-                  メッセージ
+                  {{ currentOrder.product.user_id === $auth.user.id ? '購入者とのメッセージ' : '出品者とのメッセージ' }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -186,7 +186,7 @@
                     <v-list-item-title
                       class="font-weight-bold"
                       :style="{ 'word-wrap': 'break-word', 'white-space': 'pre-wrap' }"
-                    >{{ message.communityMessage_content }}</v-list-item-title>
+                    >{{ message.content }}</v-list-item-title>
                   </v-list>
                   <div v-if="message.user.id === $auth.user.id" class="mt-1" style="font-size: 0.7rem; margin-right: 30px;">
                     <strong>あなた</strong>
@@ -198,7 +198,7 @@
             </v-sheet>
             <v-divider/>
             <v-sheet class="pa-4" height="110">
-              <v-form ref="new" v-model="valid" @submit.prevent="addCommunityMessage">
+              <v-form ref="new" v-model="valid" @submit.prevent="addOrderMessage">
                 <v-text-field
                   v-model="inputted.msg"
                   :rules="msgRules"
@@ -206,7 +206,7 @@
                   counter="200"
                   dense
                   append-icon="mdi-send"
-                  @click:append="addCommunityMessage"
+                  @click:append="addOrderMessage"
                 />
               </v-form>
               <v-btn text @click="formReset">
@@ -229,12 +229,11 @@ export default {
     InfoMenu
   },
   layout:"logged-in",
-  middleware: 'get-order-current',
   data () {
     return {
       noImg,
       msgRules: [v => !!v || ''],
-      inputted: { msg: '', communityId: this.$store.state.community.current.community.id, userId: this.$auth.user.id },
+      inputted: { msg: '', orderId: this.$store.state.community.current.community.id, userId: this.$auth.user.id },
       orderStatus: {
         confirm_payment: {
           text: "入金済み（出荷待ち）",
@@ -271,7 +270,7 @@ export default {
       return copyCurrentOrderProduct;
     },
     messages() {
-      return Array.from(this.$store.state.community.message).sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return Array.from(this.$store.state.order.message).sort((a, b) => a.created_at.localeCompare(b.created_at));
     },
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
@@ -306,16 +305,16 @@ export default {
         this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
       }
     },
-    async addCommunityMessage() {
+    async addOrderMessage() {
       if (!this.valid) return;
       const formData = new FormData();
-      formData.append("communityMessage_content", this.inputted.msg);
-      formData.append("community_id", this.inputted.communityId);
+      formData.append("content", this.inputted.msg);
+      formData.append("order_id", this.inputted.orderId);
       formData.append("user_id", this.inputted.userId);
       this.formReset();
 
       await this.processResponse(
-        () => this.$axios.$post("/api/v1/community_messages", formData),
+        () => this.$axios.$post("/api/v1/order_messages", formData),
         "メッセージを送信しました",
         "メッセージを送信できませんでした",
         async () => {
@@ -329,8 +328,8 @@ export default {
       this.$refs.new.reset()
     },
     async refreshMessages() {
-      const messages = await this.$axios.$get(`api/v1/community_messages/${this.inputted.communityId}`);
-      this.$store.dispatch('getCommunityMessage', messages);
+      const messages = await this.$axios.$get('api/v1/order_messages');
+      this.$store.dispatch('getOrderMessage', messages);
     },
     scrollBottom() {
       this.$nextTick(() => {

@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  middleware: ['authentication', 'get-community-list', 'get-cart'],
+  middleware: ['get-community-list', 'get-community-current', 'get-community-message', 'get-community-invitation', 'get-community-participation'],
   data () {
     return {
       drawer: null

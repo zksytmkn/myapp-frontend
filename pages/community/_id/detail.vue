@@ -235,7 +235,7 @@
                     <v-list-item-title
                       class="font-weight-bold"
                       :style="{ 'word-wrap': 'break-word', 'white-space': 'pre-wrap' }"
-                    >{{ message.communityMessage_content }}</v-list-item-title>
+                    >{{ message.content }}</v-list-item-title>
                   </v-list>
                   <div v-if="message.user.id === $auth.user.id" class="mt-1" style="font-size: 0.7rem; margin-right: 30px;">
                     <strong>あなた</strong>
@@ -334,13 +334,13 @@ export default {
     async addCommunityMessage() {
       if (!this.valid) return;
       const formData = new FormData();
-      formData.append("communityMessage_content", this.inputted.msg);
+      formData.append("content", this.inputted.msg);
       formData.append("community_id", this.inputted.communityId);
       formData.append("user_id", this.inputted.userId);
       this.formReset();
 
       await this.processResponse(
-        () => this.$axios.$post("/api/v1/community_messages", formData),
+        () => this.$axios.$post(`/api/v1/communities/${this.inputted.communityId}/community_messages`, formData),
         "メッセージを送信しました",
         "メッセージを送信できませんでした",
         async () => {
@@ -354,7 +354,7 @@ export default {
       this.$refs.new.reset()
     },
     async refreshMessages() {
-      const messages = await this.$axios.$get(`api/v1/community_messages/${this.inputted.communityId}`);
+      const messages = await this.$axios.$get('api/v1/community_messages');
       this.$store.dispatch('getCommunityMessage', messages);
     },
     async participateInCommunity(communityId) {

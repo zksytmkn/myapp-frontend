@@ -67,8 +67,9 @@ export const state = () => ({
   },
   carts: [],
   order: {
+    current: null,
     list: [],
-    current: null
+    message: []
   }
 })
 
@@ -117,6 +118,9 @@ export const mutations = {
   },
   setOrders (state, payload) {
     state.order.list = payload
+  },
+  setOrderMessage (state, payload) {
+    state.order.message = payload
   },
   setCurrentOrder (state, payload) {
     state.order.current = payload
@@ -248,6 +252,10 @@ export const actions = {
   getOrders ({ commit }, orders) {
     orders = orders || []
     commit('setOrders', orders)
+  },
+  getOrderMessage ({ commit }, messages) {
+    messages = messages || []
+    commit('setOrderMessage', messages)
   },
   getCurrentOrder ({ commit }, order) {
     commit('setCurrentOrder', order) 

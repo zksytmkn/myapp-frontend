@@ -59,7 +59,7 @@
                   </v-row>
 
                   <v-textarea
-                    v-model="contents"
+                    v-model="content"
                     :rules="contentRules"
                     :disabled="sentIt"
                     label="お問い合わせの内容をお聞かせください(必須)"
@@ -109,7 +109,7 @@ export default {
         v => !!v || 'メールアドレスを入力してください',
         v => /.+@.+\..+/.test(v) || 'メールアドレスが正しくありません'
       ],
-      contents: '',
+      content: '',
       contentRules: [
         v => !!v || 'お問い合わせ内容を入力してください'
       ],
@@ -123,7 +123,7 @@ export default {
       this.$axios.post('/api/v1/contacts', {
         name: this.name,
         email: this.email,
-        contents: this.contents
+        content: this.content
       }).then(() => {
         this.loading = false
         this.sentIt = true

@@ -151,7 +151,7 @@
                 <v-card-subtitle>{{ dateFormat(comment.updated_at) }}</v-card-subtitle>
               </v-list-item>
               <v-list-item>
-                <v-list-item-text>{{ comment.postComment_content }}</v-list-item-text>
+                <v-list-item-text>{{ comment.content }}</v-list-item-text>
               </v-list-item>
               <v-divider/>
             </v-list>
@@ -219,7 +219,7 @@ export default {
       cmtRules: [
         v => !!v || ''
       ],
-      inputted: { comment: '', postId: this.$store.state.post.current.id, userId: this.$auth.user.id }
+      inputted: { comment: '' }
     }
   },
   computed: {
@@ -274,13 +274,13 @@ export default {
     async addPostComment() {
       if (!this.Valid) return
       const formData = new FormData()
-      formData.append('postComment_content', this.inputted.comment)
-      formData.append('post_id', this.inputted.postId)
-      formData.append('user_id', this.inputted.userId)
+      formData.append('content', this.inputted.comment)
+      formData.append('post_id', this.currentPost.id)
+      formData.append('user_id', this.$auth.user.id)
       this.formReset()
 
       await this.processResponse(
-        () => this.$axios.$post('/api/v1/post_comments', formData),
+        () => this.$axios.$post(`/api/v1/posts/${this.currentPost.id}/post_comments`, formData),
         'コメントしました',
         'コメントできませんでした',
         () => this.refreshComments()
@@ -292,7 +292,7 @@ export default {
     },
     deletePostComment(commentId) {
       this.processResponse(
-        () => this.$axios.$delete(`/api/v1/post_comments/${commentId}`),
+        () => this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}/post_comments/${commentId}`),
         'コメントを削除しました',
         'コメントを削除できませんでした',
         () => this.refreshComments()
@@ -326,7 +326,7 @@ export default {
       } catch (error) {}
     },
     async refreshComments() {
-      const comments = await this.$axios.$get(`api/v1/post_comments/${this.inputted.postId}`);
+      const comments = await this.$axios.$get(`api/v1/posts/${this.currentPost.id}/post_comments`);
       this.$store.dispatch('getPostComment', comments);
     },
   }

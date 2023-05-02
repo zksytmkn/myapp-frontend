@@ -206,7 +206,7 @@ export default {
       const successMsg = 'フォローしました'
       const errorMsg = 'フォローできませんでした'
       const successCallback = async () => {
-        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}`)
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`)
         this.$store.dispatch('getUserRelationship', relationship)
       }
 
@@ -221,7 +221,7 @@ export default {
       const successMsg = 'フォローを解除しました'
       const errorMsg = 'フォローを解除できませんでした'
       const successCallback = async () => {
-        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}`)
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`)
         this.$store.dispatch('getUserRelationship', relationship)
       }
 

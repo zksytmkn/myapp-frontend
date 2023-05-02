@@ -222,7 +222,7 @@
                 <v-card-subtitle>{{ dateFormat(comment.updated_at) }}</v-card-subtitle>
               </v-list-item>
               <v-list-item>
-                <v-list-item-text>{{ comment.productComment_content }}</v-list-item-text>
+                <v-list-item-text>{{ comment.content }}</v-list-item-text>
               </v-list-item>
               <v-divider/>
             </v-list>
@@ -347,7 +347,7 @@ export default {
     async addProductComment() {
       if (!this.Valid) return
       const formData = new FormData()
-      formData.append('productComment_content', this.inputted.comment)
+      formData.append('content', this.inputted.comment)
       formData.append('product_id', this.inputted.productId)
       formData.append('user_id', this.inputted.userId)
       this.formReset()
@@ -446,7 +446,7 @@ export default {
       } catch (error) {}
     },
     async refreshComments() {
-      const comments = await this.$axios.$get(`api/v1/product_comments/${this.inputted.productId}`);
+      const comments = await this.$axios.$get(`api/v1/product_comments`, { params: { product_id: this.inputted.productId } });
       this.$store.dispatch('getProductComment', comments);
     },
     truncate(text, maxLength) {
