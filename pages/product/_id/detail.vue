@@ -288,11 +288,7 @@ export default {
       Valid: false,
       cmt: false,
       cmtRules: [v => !!v || ''],
-      inputted: { 
-        comment: '', 
-        productId: this.$store.state.product.current.id, 
-        userId: this.$auth.user.id 
-      },
+      inputted: { comment: '' },
     }
   },
   computed: {
@@ -345,27 +341,28 @@ export default {
       );
     },
     async addProductComment() {
-      if (!this.Valid) return
-      const formData = new FormData()
-      formData.append('content', this.inputted.comment)
-      formData.append('product_id', this.inputted.productId)
-      formData.append('user_id', this.inputted.userId)
-      this.formReset()
+      if (!this.Valid) return;
+      const data = {
+        product_comment: {
+          content: this.inputted.comment,
+        },
+      };
+      this.formReset();
 
       await this.processResponse(
-        () => this.$axios.$post('/api/v1/product_comments', formData),
+        () => this.$axios.$post(`/api/v1/products/${this.currentProduct.id}/product_comments`, data),
         'コメントしました',
         'コメントできませんでした',
         () => this.refreshComments()
-      )
+      );
     },
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    deleteProductComment(commentId) {
+    deleteProductComment(id) {
       this.processResponse(
-        () => this.$axios.$delete(`/api/v1/product_comments/${commentId}`),
+        () => this.$axios.$delete(`/api/v1/products/${this.currentProduct.id}/product_comments/${id}`),
         'コメントを削除しました',
         'コメントを削除できませんでした',
         () => this.refreshComments()
@@ -446,7 +443,7 @@ export default {
       } catch (error) {}
     },
     async refreshComments() {
-      const comments = await this.$axios.$get(`api/v1/product_comments`, { params: { product_id: this.inputted.productId } });
+      const comments = await this.$axios.$get(`api/v1/products/${this.currentProduct.id}/product_comments`);
       this.$store.dispatch('getProductComment', comments);
     },
     truncate(text, maxLength) {

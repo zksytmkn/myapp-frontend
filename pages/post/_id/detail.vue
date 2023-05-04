@@ -272,27 +272,28 @@ export default {
       );
     },
     async addPostComment() {
-      if (!this.Valid) return
-      const formData = new FormData()
-      formData.append('content', this.inputted.comment)
-      formData.append('post_id', this.currentPost.id)
-      formData.append('user_id', this.$auth.user.id)
-      this.formReset()
+      if (!this.Valid) return;
+      const data = {
+        post_comment: {
+          content: this.inputted.comment,
+        },
+      };
+      this.formReset();
 
       await this.processResponse(
-        () => this.$axios.$post(`/api/v1/posts/${this.currentPost.id}/post_comments`, formData),
+        () => this.$axios.$post(`/api/v1/posts/${this.currentPost.id}/post_comments`, data),
         'コメントしました',
         'コメントできませんでした',
         () => this.refreshComments()
-      )
+      );
     },
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    deletePostComment(commentId) {
+    deletePostComment(id) {
       this.processResponse(
-        () => this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}/post_comments/${commentId}`),
+        () => this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}/post_comments/${id}`),
         'コメントを削除しました',
         'コメントを削除できませんでした',
         () => this.refreshComments()

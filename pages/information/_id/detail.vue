@@ -233,7 +233,7 @@ export default {
     return {
       noImg,
       msgRules: [v => !!v || ''],
-      inputted: { msg: '', orderId: this.$store.state.community.current.community.id, userId: this.$auth.user.id },
+      inputted: { msg: '' },
       orderStatus: {
         confirm_payment: {
           text: "入金済み（出荷待ち）",
@@ -307,14 +307,13 @@ export default {
     },
     async addOrderMessage() {
       if (!this.valid) return;
-      const formData = new FormData();
-      formData.append("content", this.inputted.msg);
-      formData.append("order_id", this.inputted.orderId);
-      formData.append("user_id", this.inputted.userId);
+      const data = {
+        content: this.inputted.msg,
+      };
       this.formReset();
 
       await this.processResponse(
-        () => this.$axios.$post("/api/v1/order_messages", formData),
+        () => this.$axios.$post(`/api/v1/orders/${this.currentOrder.id}/order_messages`, data),
         "メッセージを送信しました",
         "メッセージを送信できませんでした",
         async () => {
@@ -328,7 +327,7 @@ export default {
       this.$refs.new.reset()
     },
     async refreshMessages() {
-      const messages = await this.$axios.$get('api/v1/order_messages');
+      const messages = await this.$axios.$get(`api/v1/orders/${this.currentOrder.id}/order_messages`);
       this.$store.dispatch('getOrderMessage', messages);
     },
     scrollBottom() {

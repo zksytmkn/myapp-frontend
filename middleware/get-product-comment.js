@@ -1,4 +1,4 @@
 export default async ({ store, params, $axios }) => {
-  await $axios.$get(`api/v1/product_comments`, { params: { product_id: params.id } })
+  await $axios.$get(`api/v1/products/${params.id}/product_comments`)
     .then(comments => store.dispatch('getProductComment', comments))
 }

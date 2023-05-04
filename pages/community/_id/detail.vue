@@ -280,7 +280,7 @@ export default {
       noImg,
       valid: false,
       msgRules: [v => !!v || ''],
-      inputted: { msg: '', communityId: this.$store.state.community.current.community.id, userId: this.$auth.user.id }
+      inputted: { msg: '' }
     }
   },
   computed: {
@@ -333,14 +333,14 @@ export default {
     },
     async addCommunityMessage() {
       if (!this.valid) return;
-      const formData = new FormData();
-      formData.append("content", this.inputted.msg);
-      formData.append("community_id", this.inputted.communityId);
-      formData.append("user_id", this.inputted.userId);
       this.formReset();
 
       await this.processResponse(
-        () => this.$axios.$post(`/api/v1/communities/${this.inputted.communityId}/community_messages`, formData),
+        () => this.$axios.$post(`/api/v1/communities/${this.currentCommunity.id}/community_messages`, {
+          community_message: {
+            content: this.inputted.msg
+          }
+        }),
         "メッセージを送信しました",
         "メッセージを送信できませんでした",
         async () => {
@@ -354,7 +354,7 @@ export default {
       this.$refs.new.reset()
     },
     async refreshMessages() {
-      const messages = await this.$axios.$get('api/v1/community_messages');
+      const messages = await this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}/community_messages`);
       this.$store.dispatch('getCommunityMessage', messages);
     },
     async participateInCommunity(communityId) {
