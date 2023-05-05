@@ -393,7 +393,10 @@ export default {
         this.$store.dispatch('getProductFavorites', allFavorites)
         this.$store.dispatch('getProductUnfavorite', userUnfavorites)
         this.$store.dispatch('getProductUnfavorites', allUnfavorites)
-      } catch (error) {}
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     },
     async addProductToCart(id, quantity) {
       if (
@@ -440,7 +443,10 @@ export default {
 
         this.$store.dispatch('getCarts', carts)
         this.$store.dispatch('getCurrentProduct', currentProduct)
-      } catch (error) {}
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/products/${this.currentProduct.id}/product_comments`);

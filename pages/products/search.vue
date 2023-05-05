@@ -399,6 +399,8 @@ export default {
   
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     async updateFavoritesAndUnfavorites() {
@@ -462,6 +464,8 @@ export default {
 
         this.calculateSearchedProducts();
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     buttonClass(actionType, id) {

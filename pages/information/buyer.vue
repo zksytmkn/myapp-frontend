@@ -9,7 +9,7 @@
           cols="9"
         >
           <v-sheet
-            rounded="lg"
+            rounded
           >
             <v-list>
               <v-list-item>
@@ -20,26 +20,24 @@
 
               <v-divider/>
               <v-list-item
-                v-show="!orderMenus.length"
+                v-show="!orderDetails.length"
               >
                 <v-list-item-title>
                   該当する注文はありませんでした。
                 </v-list-item-title>
               </v-list-item>
               <v-list-item
-                v-for="(order, i) in orderMenus.slice(pageSize*(page-1),pageSize*(page))"
-                :key="`order-${i}`"
-                :to="$my.informationLinkToDetail(order.id)"
+                v-for="(orderDetail, i) in orderDetails.slice(pageSize * (page - 1), pageSize * page)"
+                :key="`orderDetail-${i}`"
+                :to="$my.informationLinkToDetail(orderDetail.id)"
               >
-                <v-list-item-avatar
-                  left
-                >
+                <v-list-item-avatar left>
                   <v-icon>
                     mdi-information-variant
                   </v-icon>
                 </v-list-item-avatar>
                 <v-list-item-title>
-                  {{ order.product.name }}を購入しました。
+                  {{ orderDetail.product.name }}を購入しました。
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -49,10 +47,10 @@
     </v-container>
 
     <v-pagination
-      v-show="orderMenus.length"
+      v-show="orderDetails.length"
       v-model="page"
       class="my-6"
-      :length="Math.ceil(orderMenus.length/pageSize)"
+      :length="Math.ceil(orderDetails.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -74,9 +72,9 @@ export default {
     }
   },
   computed: {
-    orderMenus () {
-      const copyOrderMenus = Array.from(this.$store.state.order.list.buyer)
-      return copyOrderMenus.sort((a, b) => {
+    orderDetails () {
+      const copyOrderDetails = Array.from(this.$store.state.order.list.buyer)
+      return copyOrderDetails.sort((a, b) => {
         if (a.created_at > b.created_at) { return -1 }
         if (a.created_at < b.created_at) { return 1 }
         return 0

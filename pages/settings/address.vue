@@ -143,6 +143,8 @@ export default {
         const response = await this.$axios.$post('/api/v1/auth_token/refresh');
         this.$auth.login(response);
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
 
       this.loading = false;

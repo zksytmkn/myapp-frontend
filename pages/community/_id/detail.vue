@@ -333,7 +333,6 @@ export default {
     },
     async addCommunityMessage() {
       if (!this.valid) return;
-      this.formReset();
 
       await this.processResponse(
         () => this.$axios.$post(`/api/v1/communities/${this.currentCommunity.id}/community_messages`, {
@@ -346,6 +345,7 @@ export default {
         async () => {
           await this.refreshMessages();
           await this.scrollBottom();
+          this.formReset();
         }
       );
     },

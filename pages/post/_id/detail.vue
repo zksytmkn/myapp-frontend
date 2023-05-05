@@ -324,7 +324,10 @@ export default {
         this.$store.dispatch('getPostFavorites', allFavorites)
         this.$store.dispatch('getPostUnfavorite', userUnfavorites)
         this.$store.dispatch('getPostUnfavorites', allUnfavorites)
-      } catch (error) {}
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/posts/${this.currentPost.id}/post_comments`);

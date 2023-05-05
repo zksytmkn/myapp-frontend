@@ -26,7 +26,7 @@
                   >
                     <v-col
                       cols="11"
-                      class="mt-9"
+                      class="mt-9 mb-9"
                     >
                       <v-container>
                         <v-row
@@ -47,17 +47,22 @@
                               <v-list-item>
                                 <v-list-item-content>
                                   <v-list-item-title>
-                                    <nuxt-link
-                                      class="text-decoration-none font-weight-bold teal--text"
-                                      :to="currentOrder.product.user_id !== $auth.user.id ? $my.productLinkToDetail(currentOrder.product_id) : $my.userLinkToProfile(currentOrder.order.user_id)"
-                                    >
-                                      {{
-                                        currentOrder.product.user_id !== $auth.user.id
-                                          ? currentOrder.product.name
-                                          : currentOrder.order.user.name
-                                      }}
-                                    </nuxt-link>
-                                    <template v-if="currentOrder.product.user_id === $auth.user.id">
+                                    <template v-if="currentOrder.product.user_id !== $auth.user.id">
+                                      <nuxt-link
+                                        class="text-decoration-none font-weight-bold teal--text"
+                                        :to="$my.productLinkToDetail(currentOrder.product_id)"
+                                      >
+                                        {{ currentOrder.product.name }}
+                                      </nuxt-link>
+                                      が購入されました。
+                                    </template>
+                                    <template v-else>
+                                      <nuxt-link
+                                        class="text-decoration-none font-weight-bold teal--text"
+                                        :to="$my.userLinkToProfile(currentOrder.order.user_id)"
+                                      >
+                                        {{ currentOrder.order.user.name }}
+                                      </nuxt-link>
                                       さんは、
                                       <br />
                                       <nuxt-link
@@ -66,8 +71,41 @@
                                       >
                                         {{ currentOrder.product.name }}
                                       </nuxt-link>
+                                      を購入しました。
                                     </template>
-                                    を購入しました。
+                                    <v-dialog
+                                      v-model="orderInfoDialog"
+                                      max-width="500"
+                                    >
+                                      <template #activator="{ on }">
+                                        <v-icon
+                                          v-on="on"
+                                        >
+                                          mdi-information-variant-circle-outline
+                                        </v-icon>
+                                      </template>
+
+                                      <v-card>
+                                        <v-card-title>
+                                          注文詳細
+                                        </v-card-title>
+                                        <v-card-text>
+                                          数量：¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}<br>
+                                          小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}<br>
+                                          注文日：{{ dateFormat(currentOrder.created_at) }}
+                                        </v-card-text>
+                                        <v-card-actions>
+                                          <v-spacer></v-spacer>
+                                          <v-btn
+                                            color="primary"
+                                            text
+                                            @click="orderInfoDialog = false"
+                                          >
+                                            閉じる
+                                          </v-btn>
+                                        </v-card-actions>
+                                      </v-card>
+                                    </v-dialog>
                                   </v-list-item-title>
                                   <v-list-item-subtitle
                                     class="pt-0 font-weight-bold"
@@ -108,28 +146,6 @@
                             </v-list>
                           </v-col>
                         </v-row>
-                        <v-row>
-                          <v-col
-                            cols="11"
-                          >
-                            <v-divider/>
-                            <v-list
-                              class="pt-0"
-                            >
-                              <v-list-item>
-                                <v-list-item-subtitle
-                                  class="pt-0 font-weight-bold"
-                                  style="white-space:pre-line; line-height:2;"
-                                >
-                                  ＊注文内容
-                                  ¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}
-                                  小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}
-                                  注文日：{{ dateFormat(currentOrder.created_at) }}
-                                </v-list-item-subtitle>
-                              </v-list-item>
-                            </v-list>
-                          </v-col>
-                        </v-row>
                       </v-container>
                     </v-col>
                   </v-row>
@@ -137,14 +153,8 @@
               </v-list-item>
             </v-list>
           </v-sheet>
-        </v-col>
-      </v-row>
-    </v-container>
 
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-card flat rounded="lg">
+          <v-card flat rounded="lg" class="mt-12 mb-12">
             <v-list>
               <v-list-item>
                 <v-list-item-title class="font-weight-bold">
@@ -229,11 +239,13 @@ export default {
     InfoMenu
   },
   layout:"logged-in",
+  middleware: [ 'get-order-current', 'get-order-message' ],
   data () {
     return {
       noImg,
       msgRules: [v => !!v || ''],
       inputted: { msg: '' },
+      orderInfoDialog: false,
       orderStatus: {
         confirm_payment: {
           text: "入金済み（出荷待ち）",
@@ -286,6 +298,8 @@ export default {
         const order = await this.$axios.$get(`/api/v1/orders/${id}`);
         this.$store.dispatch("getCurrentOrder", order);
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     handleButtonClick(statusKey, orderId) {

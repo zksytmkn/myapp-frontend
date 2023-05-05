@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  middleware: ['get-product-list', 'get-product-current', 'get-product-comment', 'get-product-favorite', 'get-product-favorites', 'get-product-unfavorite', 'get-product-unfavorites'],
+  middleware: ['get-product-list', 'get-product-favorite', 'get-product-favorites', 'get-product-unfavorite', 'get-product-unfavorites'],
   data () {
     return {
       drawer: null

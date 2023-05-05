@@ -146,7 +146,7 @@
                     class="pt-0 font-weight-bold"
                     style="white-space:pre-line; line-height:2;"
                   >
-                    ¥{{ cart.product.price.toLocaleString() }} × {{ cart.quantity }}
+                    数量：¥{{ cart.product.price.toLocaleString() }} × {{ cart.quantity }}
                     小計（税込）：¥{{ Math.floor(cart.product.price * cart.quantity * 1.1).toLocaleString() }}
                   </v-card-subtitle>
                   <v-divider/>
@@ -218,6 +218,8 @@ export default {
   
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     async updateFavoritesAndUnfavorites() {
@@ -259,6 +261,8 @@ export default {
 
         this.$store.dispatch('getCarts', response);
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     }
   },

@@ -64,6 +64,7 @@ export default {
       });
     },
     handleError(error) {
+      // eslint-disable-next-line no-console
       console.error(error);
       if (error.response && error.response.status === 404) {
         const msg = "メールアドレスが見つかりません";

@@ -6,17 +6,20 @@ export default ({ $axios, $auth, isDev }) => {
       config.headers.common.Authorization = `Bearer ${$auth.token}`
     }
     if (isDev) {
+      // eslint-disable-next-line no-console
       console.log(config)
     }
   })
   // レスポンスログ
   $axios.onResponse((config) => {
     if (isDev) {
+      // eslint-disable-next-line no-console
       console.log(config)
     }
   })
   // エラーログ
   $axios.onError((e) => {
+    // eslint-disable-next-line no-console
     console.log(e.response)
   })
 }

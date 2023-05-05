@@ -414,6 +414,8 @@ export default {
   
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     async updateFavoritesAndUnfavorites() {

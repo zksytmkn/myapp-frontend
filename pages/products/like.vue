@@ -268,6 +268,8 @@ export default {
         this.$store.dispatch('getProductList', productsResponse);
         this.$store.dispatch('getProductFavorite', favoritesResponse);
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     async handleFavorites(id, type, method) {
@@ -283,6 +285,8 @@ export default {
 
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     async updateFavoritesAndUnfavorites() {

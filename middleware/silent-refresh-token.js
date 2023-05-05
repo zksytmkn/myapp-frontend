@@ -1,6 +1,7 @@
 export default async ({ $auth, $axios, store, route, redirect, isDev }) => {
   if ($auth.isExistUserAndExpired()) {
     if (isDev) {
+      // eslint-disable-next-line no-console
       console.log('Execute silent refresh!!')
     }
     await $axios.$post('/api/v1/auth_token/refresh')
@@ -9,6 +10,7 @@ export default async ({ $auth, $axios, store, route, redirect, isDev }) => {
         const msg = 'セッションの有効期限が切れました。' +
                     'もう一度ログインしてください'
         // TODO test
+        // eslint-disable-next-line no-console
         console.log(msg)
         // TODO トースター出力
         // store.dispatch('getToast', { msg })

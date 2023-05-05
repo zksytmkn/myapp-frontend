@@ -181,6 +181,8 @@ export default {
   
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     async updateFavoritesAndUnfavorites() {
@@ -257,6 +259,8 @@ export default {
         this.$store.dispatch('getCarts', cartsResponse);
         this.$store.dispatch('getProductList', productsResponse);
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
       }
     },
     buttonClass(actionType, id) {
