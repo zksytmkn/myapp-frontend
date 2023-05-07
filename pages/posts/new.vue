@@ -305,7 +305,7 @@ export default {
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'つぶやきを投稿できませんでした', color: 'error' });
       }
-    
+
       const posts = await this.$axios.$get('api/v1/posts');
       this.$store.dispatch('getPostList', posts);
     

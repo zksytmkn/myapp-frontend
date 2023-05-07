@@ -8,7 +8,8 @@
         <v-col
           cols="9"
         >
-          <v-sheet
+          <v-card
+            flat
             rounded="lg"
           >
             <v-list>
@@ -21,28 +22,14 @@
               <v-divider/>
               <v-list-item>
                 <v-container>
-                  <v-row
-                    justify="center"
-                  >
-                    <v-col
-                      cols="11"
-                      class="mt-9 mb-9"
-                    >
+                  <v-row justify="center">
+                    <v-col cols="11">
                       <v-container>
-                        <v-row
-                          align="center"
-                        >
-                          <v-col
-                            cols="5"
-                          >
-                            <v-img
-                              :src="currentOrderProduct.image_url ? currentOrderProduct.image_url : noImg"
-                            >
-                            </v-img>
+                        <v-row align="start">
+                          <v-col cols="5" class="img-container" :style="{ 'margin-top': marginTop }">
+                            <v-img :src="currentOrderProduct.image_url ? currentOrderProduct.image_url : noImg"></v-img>
                           </v-col>
-                          <v-col
-                            cols="7"
-                          >
+                          <v-col cols="7">
                             <v-list>
                               <v-list-item>
                                 <v-list-item-content>
@@ -54,7 +41,7 @@
                                       >
                                         {{ currentOrder.product.name }}
                                       </nuxt-link>
-                                      が購入されました。
+                                      を購入しました。
                                     </template>
                                     <template v-else>
                                       <nuxt-link
@@ -73,74 +60,59 @@
                                       </nuxt-link>
                                       を購入しました。
                                     </template>
-                                    <v-dialog
-                                      v-model="orderInfoDialog"
-                                      max-width="500"
-                                    >
-                                      <template #activator="{ on }">
-                                        <v-icon
-                                          v-on="on"
-                                        >
+                                  </v-list-item-title>
+                                  <v-card class="mt-4 mb-4" outlined>
+                                    <v-card-text class="pa-2">
+                                      <v-timeline class="compact-timeline" dense>
+                                        <v-timeline-item v-for="(status, statusKey) in orderStatus" :key="statusKey" color="teal" :icon="currentOrder.status === statusKey ? 'mdi-check' : 'mdi-circle'">
+                                          <span>{{ status.text }}</span>
+                                        </v-timeline-item>
+                                      </v-timeline>
+                                    </v-card-text>
+                                  </v-card>
+                                  <v-btn
+                                    v-for="(status, statusKey) in orderStatus"
+                                    v-show="currentOrder.status === statusKey && 
+                                            ((statusKey === 'confirm_payment' && currentOrder.product.user_id === $auth.user.id) ||
+                                            (statusKey === 'shipped' && currentOrder.product.user_id === $auth.user.id) ||
+                                            (statusKey === 'out_for_delivery' && currentOrder.order.user_id === $auth.user.id))"
+                                    :key="statusKey"
+                                    class="font-weight-bold mt-3"
+                                    color="teal"
+                                    dark
+                                    @click="handleButtonClick(statusKey, currentOrder.id)"
+                                  >
+                                    {{ status.buttonText }}
+                                  </v-btn>
+                                  <v-dialog v-model="orderInfoDialog" max-width="500">
+                                    <template #activator="{ on }">
+                                      <v-btn color="teal" text class="mt-3" v-on="on">
+                                        <v-icon left>
                                           mdi-information-variant-circle-outline
                                         </v-icon>
-                                      </template>
+                                        注文詳細
+                                      </v-btn>
+                                    </template>
 
-                                      <v-card>
-                                        <v-card-title>
-                                          注文詳細
-                                        </v-card-title>
-                                        <v-card-text>
-                                          数量：¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}<br>
-                                          小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}<br>
-                                          注文日：{{ dateFormat(currentOrder.created_at) }}
-                                        </v-card-text>
-                                        <v-card-actions>
-                                          <v-spacer></v-spacer>
-                                          <v-btn
-                                            color="primary"
-                                            text
-                                            @click="orderInfoDialog = false"
-                                          >
-                                            閉じる
-                                          </v-btn>
-                                        </v-card-actions>
-                                      </v-card>
-                                    </v-dialog>
-                                  </v-list-item-title>
-                                  <v-list-item-subtitle
-                                    class="pt-0 font-weight-bold"
-                                    style="white-space:pre-line; line-height:2;"
-                                  >
-                                    お届け先：〒{{ currentOrder.order.zipcode }}
-                                    {{ currentOrder.order.street }} {{ currentOrder.order.building }}
-                                    <span
-                                      v-for="(status, statusKey) in orderStatus"
-                                      v-show="currentOrder.status === statusKey"
-                                      :key="statusKey"
-                                      class="black--text"
-                                      style="white-space:normal;"
-                                    >
-                                      {{ status.text }}
-                                      <v-icon class="black--text">
-                                        {{ status.icon }}
-                                      </v-icon>
-                                    </span>
-                                    <br />
-                                    <v-btn
-                                      v-for="(status, statusKey) in orderStatus"
-                                      v-show="currentOrder.status === statusKey && 
-                                              ((statusKey === 'confirm_payment' && currentOrder.product.user_id === $auth.user.id) ||
-                                              (statusKey === 'shipped' && currentOrder.product.user_id === $auth.user.id) ||
-                                              (statusKey === 'out_for_delivery' && currentOrder.order.user_id === $auth.user.id))"
-                                      :key="statusKey"
-                                      class="font-weight-bold mt-3"
-                                      color="teal"
-                                      dark
-                                      @click="handleButtonClick(statusKey, currentOrder.id)"
-                                    >
-                                      {{ status.buttonText }}
-                                    </v-btn>
-                                  </v-list-item-subtitle>
+                                    <v-card>
+                                      <v-card-title>
+                                        注文詳細
+                                      </v-card-title>
+                                      <v-card-text>
+                                        数量：¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}<br>
+                                        小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}<br>
+                                        お届け先：〒{{ currentOrder.order.zipcode }}<br>
+                                        {{ currentOrder.order.street }} {{ currentOrder.order.building }}<br>
+                                        注文日：{{ dateFormat(currentOrder.created_at) }}
+                                      </v-card-text>
+                                      <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="primary" text @click="orderInfoDialog = false">
+                                          閉じる
+                                        </v-btn>
+                                      </v-card-actions>
+                                    </v-card>
+                                  </v-dialog>
                                 </v-list-item-content>
                               </v-list-item>
                             </v-list>
@@ -152,7 +124,7 @@
                 </v-container>
               </v-list-item>
             </v-list>
-          </v-sheet>
+          </v-card>
 
           <v-card flat rounded="lg" class="mt-12 mb-12">
             <v-list>
@@ -265,7 +237,10 @@ export default {
           buttonText: "配達されました",
           statusToUpdate: "delivered",
         },
-        delivered: { text: "配達済み", icon: "mdi-package-variant-closed-check" },
+        delivered: {
+          text: "配達済み",
+          icon: "mdi-package-variant-closed-check",
+        },
       },
     };
   },
@@ -287,25 +262,43 @@ export default {
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
+    isUserInParticipation() {
+      return (userId) =>
+        this.$store.state.community.current.participation.some(
+          (participant) => participant.id === userId
+        );
+    },
+    marginTop() {
+      const buttonVisible =
+        (this.currentOrder.status === "confirm_payment" &&
+          this.currentOrder.product.user_id === this.$auth.user.id) ||
+        (this.currentOrder.status === "shipped" &&
+          this.currentOrder.product.user_id === this.$auth.user.id) ||
+        (this.currentOrder.status === "out_for_delivery" &&
+          this.currentOrder.order.user_id === this.$auth.user.id);
+
+      return buttonVisible ? "4rem" : "2rem";
+    },
   },
   methods: {
-    async updateOrderStatus(id, status) {
-      const formData = new FormData();
-      formData.append("status", status);
+    async updateOrderStatus(orderDetailId, status) {
+      const data = {
+        status
+      };
 
       try {
-        await this.$axios.$patch(`/api/v1/orders/${id}`, formData);
-        const order = await this.$axios.$get(`/api/v1/orders/${id}`);
+        await this.$axios.$patch(`/api/v1/orders/${orderDetailId}`, data);
+        const order = await this.$axios.$get(`/api/v1/orders/${orderDetailId}`);
         this.$store.dispatch("getCurrentOrder", order);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
       }
     },
-    handleButtonClick(statusKey, orderId) {
+    handleButtonClick(statusKey, orderDetailId) {
       const statusToUpdate = this.orderStatus[statusKey].statusToUpdate;
       if (statusToUpdate) {
-        this.updateOrderStatus(orderId, statusToUpdate);
+        this.updateOrderStatus(orderDetailId, statusToUpdate);
       }
     },
     async processResponse(action, successMsg, errorMsg, successCallback) {
@@ -356,3 +349,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.compact-timeline {
+  padding: 6px 0 0 0;
+  font-size: 0.6rem;
+}
+
+.compact-timeline .v-timeline-item {
+  padding: 0 0 6px;
+}
+
+.img-container {
+  margin-top: 2rem;
+}
+</style>
