@@ -234,27 +234,18 @@ export default {
         const cart = this.$store.state.carts.find(cart => cart.product_id === id);
         const product = this.$store.state.product.list.find(product => product.id === id);
         const productQuantity = Number(product.stock) - Number(quantity);
-        const formDataProducts = new FormData();
-        formDataProducts.append('stock', productQuantity);
 
         if (!cart) {
-          const formDataCarts = new FormData();
-          formDataCarts.append('user_id', this.$auth.user.id);
-          formDataCarts.append('product_id', id);
-          formDataCarts.append('quantity', quantity);
-
           await Promise.all([
-            this.$axios.$post('/api/v1/carts', formDataCarts),
-            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+            this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
           ]);
         } else {
           const cartQuantity = Number(cart.quantity) + Number(quantity);
-          const formDataCarts = new FormData();
-          formDataCarts.append('quantity', cartQuantity);
-        
+
           await Promise.all([
-            this.$axios.$patch(`/api/v1/carts/${cart.id}`, formDataCarts),
-            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+            this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
           ]);
         }
 
@@ -275,12 +266,9 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/product_${type}s/${id}`);
         } else {
-          const formData = new FormData()
-          formData.append('product_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/product_${type}s`, formData)
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
         }
 
         await this.updateFavoritesAndUnfavorites();

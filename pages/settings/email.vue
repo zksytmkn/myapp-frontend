@@ -7,7 +7,8 @@
       <v-col
         cols="9"
       >
-        <v-sheet
+        <v-card
+          flat
           rounded="lg"
         >
           <v-form
@@ -71,7 +72,7 @@
               </v-list-item>
             </v-list>
           </v-form>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -93,11 +94,12 @@ export default {
 
       if (this.isValid) {
         try {
-          const formData = new FormData();
-          formData.append('email', this.inputted.email);
-          formData.append('current_password', this.inputted.password);
+          const data = {
+            email: this.inputted.email,
+            current_password: this.inputted.password
+          };
 
-          await this.$axios.$post('/api/v1/users/send_email_reset_confirmation', formData);
+          await this.$axios.$post('/api/v1/users/send_email_reset_confirmation', data);
 
           const msg = 'メールアドレスに確認メールを送信しました';
           const color = 'success';

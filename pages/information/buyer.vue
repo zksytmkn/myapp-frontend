@@ -8,8 +8,9 @@
         <v-col
           cols="9"
         >
-          <v-sheet
-            rounded
+          <v-card
+            flat
+            rounded="lg"
           >
             <v-list>
               <v-list-item>
@@ -41,7 +42,7 @@
                 </v-list-item-title>
               </v-list-item>
             </v-list>
-          </v-sheet>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>

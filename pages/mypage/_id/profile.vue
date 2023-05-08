@@ -198,34 +198,34 @@ export default {
       }
     },
     addRelationship(id) {
-      const formData = new FormData()
-      formData.append('following_id', this.$auth.user.id)
-      formData.append('followed_id', id)
+      const data = {
+        followed_id: id
+      };
 
-      const action = () => this.$axios.$post('/api/v1/relationships', formData)
-      const successMsg = 'フォローしました'
-      const errorMsg = 'フォローできませんでした'
+      const action = () => this.$axios.$post('/api/v1/relationships', data);
+      const successMsg = 'フォローしました';
+      const errorMsg = 'フォローできませんでした';
       const successCallback = async () => {
-        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`)
-        this.$store.dispatch('getUserRelationship', relationship)
-      }
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
+        this.$store.dispatch('getUserRelationship', relationship);
+      };
 
-      this.processResponse(action, successMsg, errorMsg, successCallback)
+      this.processResponse(action, successMsg, errorMsg, successCallback);
     },
     deleteRelationship(id) {
-      const formData = new FormData()
-      formData.append('following_id', this.$auth.user.id)
-      formData.append('followed_id', id)
+      const data = {
+        followed_id: id
+      };
 
-      const action = () => this.$axios.$delete('/api/v1/relationships', { date: formData })
-      const successMsg = 'フォローを解除しました'
-      const errorMsg = 'フォローを解除できませんでした'
+      const action = () => this.$axios.$delete('/api/v1/relationships', { data });
+      const successMsg = 'フォローを解除しました';
+      const errorMsg = 'フォローを解除できませんでした';
       const successCallback = async () => {
-        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`)
-        this.$store.dispatch('getUserRelationship', relationship)
-      }
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
+        this.$store.dispatch('getUserRelationship', relationship);
+      };
 
-      this.processResponse(action, successMsg, errorMsg, successCallback)
+      this.processResponse(action, successMsg, errorMsg, successCallback);
     },
     updateProductSearchCondition() {
       this.$store.dispatch('updateProductSearchCondition', {

@@ -171,32 +171,38 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
         } else {
-          const formData = new FormData()
-          formData.append('product_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/product_${type}s`, formData)
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
         }
-  
-        await this.updateFavoritesAndUnfavorites();
+    
+        // Vuexストア内のデータを直接更新
+        const isFavorite = type === "favorite";
+        const product = this.$store.state.product.current;
+        if (method === 'delete') {
+          if (isFavorite) {
+            product.favorites_count--;
+          } else {
+            product.unfavorites_count--;
+          }
+        } else if (isFavorite) {
+          product.favorites_count++;
+        } else {
+          product.unfavorites_count++;
+        }
+    
+        // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+        const [userFavorites, userUnfavorites] = await Promise.all([
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get('api/v1/product_unfavorites')
+        ]);
+    
+        this.$store.dispatch('getProductFavorite', userFavorites);
+        this.$store.dispatch('getProductUnfavorite', userUnfavorites);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
       }
-    },
-    async updateFavoritesAndUnfavorites() {
-      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-        this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_favorites'),
-        this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_unfavorites')
-      ]);
-
-      this.$store.dispatch('getProductFavorite', userFavorites);
-      this.$store.dispatch('getProductFavorites', allFavorites);
-      this.$store.dispatch('getProductUnfavorite', userUnfavorites);
-      this.$store.dispatch('getProductUnfavorites', allUnfavorites);
     },
     async deleteProduct(id) {
       try {
@@ -227,27 +233,18 @@ export default {
         const cart = this.$store.state.carts.find(cart => cart.product_id === id);
         const product = this.$store.state.product.list.find(product => product.id === id);
         const productQuantity = Number(product.stock) - Number(quantity);
-        const formDataProducts = new FormData();
-        formDataProducts.append('stock', productQuantity);
 
         if (!cart) {
-          const formDataCarts = new FormData();
-          formDataCarts.append('user_id', this.$auth.user.id);
-          formDataCarts.append('product_id', id);
-          formDataCarts.append('quantity', quantity);
-
           await Promise.all([
-            this.$axios.$post('/api/v1/carts', formDataCarts),
-            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+            this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
           ]);
         } else {
           const cartQuantity = Number(cart.quantity) + Number(quantity);
-          const formDataCarts = new FormData();
-          formDataCarts.append('quantity', cartQuantity);
-        
+
           await Promise.all([
-            this.$axios.$patch(`/api/v1/carts/${cart.id}`, formDataCarts),
-            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
+            this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
           ]);
         }
 

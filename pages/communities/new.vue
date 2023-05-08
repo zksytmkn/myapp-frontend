@@ -223,7 +223,7 @@ export default {
         v => !!v || '',
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null },
+      inputted: { name: '', description: '', image: null },
       container: {
         sm: 10,
         md: 8
@@ -256,7 +256,7 @@ export default {
       try {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
-        formData.append('user_id', this.inputted.user_id)
+        formData.append('user_id', this.$auth.user.id)
         formData.append('description', this.inputted.description)
 
         if (this.inputted.image !== null) {

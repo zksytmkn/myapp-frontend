@@ -3,7 +3,7 @@
     <v-row>
       <setting-menu />
       <v-col cols="9">
-        <v-sheet rounded="lg">
+        <v-card flat rounded="lg">
           <v-list>
             <v-list-item>
               <v-list-item-title>アカウント削除</v-list-item-title>
@@ -54,7 +54,7 @@
               </v-container>
             </v-list-item>
           </v-list>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

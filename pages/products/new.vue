@@ -404,14 +404,11 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
         } else {
-          const formData = new FormData()
-          formData.append('product_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/product_${type}s`, formData)
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
         }
-  
+
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -430,6 +427,47 @@ export default {
       this.$store.dispatch('getProductFavorites', allFavorites);
       this.$store.dispatch('getProductUnfavorite', userUnfavorites);
       this.$store.dispatch('getProductUnfavorites', allUnfavorites);
+    },
+    async addProductToCart(id, quantity) {
+      if (
+        !this.$store.state.user.login.zipcode ||
+        !this.$store.state.user.login.street ||
+        !this.$store.state.user.login.building
+      ) {
+        this.showNotification("まずは住所を編集してください", "error");
+        return;
+      }
+    
+      try {
+        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
+        const product = this.$store.state.product.list.find(product => product.id === id);
+        const productQuantity = Number(product.stock) - Number(quantity);
+    
+        if (!cart) {
+          await Promise.all([
+            this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
+          ]);
+        } else {
+          const cartQuantity = Number(cart.quantity) + Number(quantity);
+    
+          await Promise.all([
+            this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
+          ]);
+        }
+    
+        const [cartsResponse, productsResponse] = await Promise.all([
+          this.$axios.$get('/api/v1/carts'),
+          this.$axios.$get('/api/v1/products')
+        ]);
+    
+        this.$store.dispatch('getCarts', cartsResponse);
+        this.$store.dispatch('getProductList', productsResponse);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     },
     buttonClass(actionType, id) {
       if (actionType === 'favorite' && this.$store.state.product.favorite.some(item => item.id === id)) {

@@ -100,7 +100,7 @@
                                       </v-card-title>
                                       <v-card-text>
                                         数量：¥{{ currentOrder.price.toLocaleString() }} × {{ currentOrder.quantity }}<br>
-                                        小計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}<br>
+                                        合計（税込）：¥{{ Math.floor(currentOrder.product.price * currentOrder.quantity * 1.1).toLocaleString() }}<br>
                                         お届け先：〒{{ currentOrder.order.zipcode }}<br>
                                         {{ currentOrder.order.street }} {{ currentOrder.order.building }}<br>
                                         注文日：{{ dateFormat(currentOrder.created_at) }}
@@ -232,7 +232,7 @@ export default {
           statusToUpdate: "out_for_delivery",
         },
         out_for_delivery: {
-          text: "配送中（配達待ち）",
+          text: "配送済み（配達待ち）",
           icon: "mdi-truck-delivery-outline",
           buttonText: "配達されました",
           statusToUpdate: "delivered",

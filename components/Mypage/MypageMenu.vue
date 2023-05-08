@@ -2,7 +2,8 @@
   <v-col
     cols="3"
   >
-    <v-sheet
+    <v-card
+      flat
       rounded="lg"
     >
       <v-list>
@@ -70,7 +71,7 @@
           </v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-sheet>
+    </v-card>
   </v-col>
 </template>
 

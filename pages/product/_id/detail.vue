@@ -308,17 +308,6 @@ export default {
           : !this.$store.state.product.unfavorite.some(unfavorite => unfavorite.id === this.currentProduct.id);
       };
     },
-    buttonClass() {
-      return (actionType) => {
-        if (actionType === 'favorites' && this.$store.state.product.favorite.some(item => item.id === this.currentProduct.id)) {
-          return 'likeColor';
-        } else if (actionType === 'unfavorites' && this.$store.state.product.unfavorite.some(item => item.id === this.currentProduct.id)) {
-          return 'dislikeColor';
-        } else {
-        return 'grey';
-        }
-      };
-    },
   },
   methods: {
     async processResponse(action, successMsg, errorMsg, successCallback) {
@@ -374,75 +363,22 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/product_${type}/${id}/user`);
         } else {
-          const formData = new FormData()
-          formData.append('product_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/product_${type}`, formData)
+          await this.$axios[method](`/api/v1/product_${type}`, { product_id: id });
         }
-
+    
         const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
           this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
           this.$axios.$get('api/v1/product_favorites'),
           this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
           this.$axios.$get('api/v1/product_unfavorites')
         ])
-
+    
         this.$store.dispatch('getProductFavorite', userFavorites)
         this.$store.dispatch('getProductFavorites', allFavorites)
         this.$store.dispatch('getProductUnfavorite', userUnfavorites)
         this.$store.dispatch('getProductUnfavorites', allUnfavorites)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    },
-    async addProductToCart(id, quantity) {
-      if (
-        !this.$store.state.user.login.zipcode ||
-        !this.$store.state.user.login.street ||
-        !this.$store.state.user.login.building
-      ) {
-        this.$store.dispatch('getToast', { msg: 'まずは住所を編集してください', color: 'error' });
-        return;
-      }
-
-      const cartExists = this.$store.state.carts.some(cart => cart.product_id === id)
-      const productQuantity = Number(this.$store.state.product.current.stock) - Number(quantity)
-
-      const formDataCarts = new FormData()
-      formDataCarts.append('user_id', this.$auth.user.id)
-      formDataCarts.append('product_id', id)
-      formDataCarts.append('quantity', quantity)
-
-      const formDataProducts = new FormData()
-      formDataProducts.append('stock', productQuantity)
-
-      try {
-        if (!cartExists) {
-          await Promise.all([
-          this.$axios.$post('/api/v1/carts', formDataCarts),
-          this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
-          ])
-        } else {
-          const cartId = this.$store.state.carts.find(cart => cart.product_id === id).id
-          const cartQuantity = Number(this.$store.state.carts.find(cart => cart.product_id === id).quantity) + Number(quantity)
-          formDataCarts.append('quantity', cartQuantity)
-
-          await Promise.all([
-            this.$axios.$patch(`/api/v1/carts/${cartId}`, formDataCarts),
-            this.$axios.$patch(`/api/v1/products/${id}`, formDataProducts)
-          ])
-        }
-
-        const [carts, currentProduct] = await Promise.all([
-          this.$axios.$get('/api/v1/carts'),
-          this.$axios.$get(`/api/v1/products/${id}`)
-        ])
-
-        this.$store.dispatch('getCarts', carts)
-        this.$store.dispatch('getCurrentProduct', currentProduct)
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
@@ -459,6 +395,58 @@ export default {
       if (category === "野菜") return "mdi-seed-outline";
       if (category === "果物") return "mdi-food-apple-outline";
       return "";
+    },
+    async addProductToCart(id, quantity) {
+      if (
+        !this.$store.state.user.login.zipcode ||
+        !this.$store.state.user.login.street ||
+        !this.$store.state.user.login.building
+      ) {
+        this.showNotification("まずは住所を編集してください", "error");
+        return;
+      }
+    
+      try {
+        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
+        const product = this.$store.state.product.list.find(product => product.id === id);
+        const productQuantity = Number(product.stock) - Number(quantity);
+    
+        if (!cart) {
+          await Promise.all([
+            this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
+          ]);
+        } else {
+          const cartQuantity = Number(cart.quantity) + Number(quantity);
+    
+          await Promise.all([
+            this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
+            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
+          ]);
+        }
+    
+        const [cartsResponse, productsResponse] = await Promise.all([
+          this.$axios.$get('/api/v1/carts'),
+          this.$axios.$get('/api/v1/products')
+        ]);
+    
+        this.$store.dispatch('getCarts', cartsResponse);
+        this.$store.dispatch('getProductList', productsResponse);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
+    },
+    buttonClass() {
+      return (actionType) => {
+        if (actionType === 'favorites' && this.$store.state.product.favorite.some(item => item.id === this.currentProduct.id)) {
+          return 'likeColor';
+        } else if (actionType === 'unfavorites' && this.$store.state.product.unfavorite.some(item => item.id === this.currentProduct.id)) {
+          return 'dislikeColor';
+        } else {
+        return 'grey';
+        }
+      };
     },
   }
 }

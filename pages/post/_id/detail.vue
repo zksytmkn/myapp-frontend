@@ -305,29 +305,29 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/post_${type}/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
         } else {
-          const formData = new FormData()
-          formData.append('post_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/post_${type}`, formData)
+          await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
         }
 
-        const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-          this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_favorites'),
-          this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/post_unfavorites')
-        ])
-
-        this.$store.dispatch('getPostFavorite', userFavorites)
-        this.$store.dispatch('getPostFavorites', allFavorites)
-        this.$store.dispatch('getPostUnfavorite', userUnfavorites)
-        this.$store.dispatch('getPostUnfavorites', allUnfavorites)
+        await this.updateFavoritesAndUnfavorites();
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
       }
+    },
+    async updateFavoritesAndUnfavorites() {
+      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
+        this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/post_favorites'),
+        this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
+        this.$axios.$get('api/v1/post_unfavorites')
+      ]);
+
+      this.$store.dispatch('getPostFavorite', userFavorites);
+      this.$store.dispatch('getPostFavorites', allFavorites);
+      this.$store.dispatch('getPostUnfavorite', userUnfavorites);
+      this.$store.dispatch('getPostUnfavorites', allUnfavorites);
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/posts/${this.currentPost.id}/post_comments`);

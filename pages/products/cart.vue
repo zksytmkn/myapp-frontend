@@ -124,9 +124,7 @@
                         </v-btn>
                         <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
                           {{
-                            $store.state.product[actionType + 's'].filter(
-                              item => item.product_id === cart.product_id
-                            ).length
+                            $store.state.product.current[actionType + 's_count']
                           }}
                         </span>
                       </div>
@@ -208,57 +206,52 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
         } else {
-          const formData = new FormData()
-          formData.append('product_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/product_${type}s`, formData)
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
         }
-  
-        await this.updateFavoritesAndUnfavorites();
+    
+        // Vuexストア内のデータを直接更新
+        const isFavorite = type === "favorite";
+        const product = this.$store.state.product.current;
+        if (method === 'delete') {
+          if (isFavorite) {
+            product.favorites_count--;
+          } else {
+            product.unfavorites_count--;
+          }
+        } else if (isFavorite) {
+          product.favorites_count++;
+        } else {
+          product.unfavorites_count++;
+        }
+    
+        // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+        const [userFavorites, userUnfavorites] = await Promise.all([
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get('api/v1/product_unfavorites')
+        ]);
+    
+        this.$store.dispatch('getProductFavorite', userFavorites);
+        this.$store.dispatch('getProductUnfavorite', userUnfavorites);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
       }
     },
-    async updateFavoritesAndUnfavorites() {
-      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-        this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_favorites'),
-        this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_unfavorites')
-      ]);
-
-      this.$store.dispatch('getProductFavorite', userFavorites);
-      this.$store.dispatch('getProductFavorites', allFavorites);
-      this.$store.dispatch('getProductUnfavorite', userUnfavorites);
-      this.$store.dispatch('getProductUnfavorites', allUnfavorites);
-    },
-    buttonClass(actionType, id) {
-      if (actionType === 'favorite' && this.$store.state.product.favorite.some(item => item.id === id)) {
-        return 'likeColor';
-      } else if (actionType === 'unfavorite' && this.$store.state.product.unfavorite.some(item => item.id === id)) {
-        return 'dislikeColor';
-      } else {
-        return 'grey';
-      }
-    },
     async removeProductFromCart(productId, quantity, cartId) {
       try {
         const productQuantity = Number(this.$store.state.product.list.find(product => product.id === productId).stock) + Number(quantity);
-        const formDataProducts = new FormData();
-        formDataProducts.append('stock', productQuantity);
-
+    
         await Promise.all([
           this.$axios.$delete(`/api/v1/carts/${cartId}`),
-          this.$axios.$patch(`/api/v1/products/${productId}`, formDataProducts)
+          this.$axios.$patch(`/api/v1/products/${productId}`, { stock: productQuantity })
         ]);
-
+    
         const [response] = await Promise.all([
           this.$axios.$get('/api/v1/carts')
         ]);
-
+    
         this.$store.dispatch('getCarts', response);
       } catch (error) {
         // eslint-disable-next-line no-console

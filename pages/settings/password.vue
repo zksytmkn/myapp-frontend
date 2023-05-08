@@ -7,7 +7,8 @@
       <v-col
         cols="9"
       >
-        <v-sheet
+        <v-card
+          flat
           rounded="lg"
         >
           <v-form
@@ -83,7 +84,7 @@
               </v-list-item>
             </v-list>
           </v-form>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -102,12 +103,12 @@ export default {
   methods: {
     async editPassword() {
       this.loading = true;
-
+    
       if (!this.isValid) {
         this.loading = false;
         return;
       }
-
+    
       if (this.inputted.password !== this.inputted.password_confirmation) {
         const msg = '新しいパスワードと確認用パスワードが一致しません';
         const color = 'error';
@@ -115,18 +116,19 @@ export default {
         this.loading = false;
         return;
       }
-
+    
       try {
-        const formData = new FormData();
-        formData.append("password", this.inputted.password);
-        formData.append("current_password", this.inputted.current_password);
-
-        await this.$axios.$patch("/api/v1/users/update_password", formData)
-
+        const data = {
+          password: this.inputted.password,
+          current_password: this.inputted.current_password
+        };
+    
+        await this.$axios.$patch("/api/v1/users/update_password", data)
+    
         const msg = 'パスワードを変更しました';
         const color = 'success';
         this.$store.dispatch('getToast', { msg, color });
-
+    
         const response = await this.$axios.$post('/api/v1/auth_token/refresh');
         this.$auth.login(response);
       } catch (error) {

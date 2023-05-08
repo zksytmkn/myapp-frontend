@@ -136,14 +136,11 @@ export default {
   methods: {
     async addOrder() {
       try {
-        const formData = new FormData();
-        formData.append('user_id', this.$auth.user.id);
-        formData.append('billing_amount', Math.floor(this.$store.getters.cartTotalPrice));
-        formData.append('zipcode', this.$auth.user.zipcode);
-        formData.append('street', this.$auth.user.street);
-        formData.append('building', this.$auth.user.building);
-
-        await this.$axios.$post('/api/v1/orders', formData);
+        const data = {
+          billing_amount: Math.floor(this.$store.getters.cartTotalPrice)
+        };
+    
+        await this.$axios.$post('/api/v1/orders', data);
 
         const cartsResponse = await this.$axios.$get('/api/v1/carts');
         this.$store.dispatch('getCarts', cartsResponse);

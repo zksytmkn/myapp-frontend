@@ -7,7 +7,8 @@
       <v-col
         cols="9"
       >
-        <v-sheet
+        <v-card
+          flat
           rounded="lg"
         >
           <v-form
@@ -91,7 +92,7 @@
               </v-list-item>
             </v-list>
           </v-form>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -131,9 +132,8 @@ export default {
       this.loading = true;
 
       try {
-        const formData = new FormData();
-        Object.entries(this.inputted).forEach(([key, value]) => formData.append(key, value));
-        await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, formData);
+        const data = { ...this.inputted };
+        await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, data);
         this.$store.dispatch('getToast', { msg: '住所を編集しました', color: 'success' });
       } catch (error) {
         this.$store.dispatch('getToast', { msg: '住所を編集できませんでした', color: 'error' });

@@ -7,7 +7,8 @@
       <v-col
         cols="9"
       >
-        <v-sheet
+        <v-card
+          flat
           rounded="lg"
         >
           <v-form
@@ -121,7 +122,7 @@
               </v-list-item>
             </v-list>
           </v-form>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

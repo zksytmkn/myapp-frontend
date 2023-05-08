@@ -36,8 +36,10 @@ export const state = () => ({
   },
   product: {
     current: null,
-    ...createRelatedData(['list', 'comment', 'favorite', 'favorites', 'unfavorite', 'unfavorites']),
-    searchCondition: createSearchCondition(['name', 'seller', 'text', 'type', 'prefecture'])
+    ...createRelatedData(['list', 'comment', 'favorite', 'unfavorite']),
+    searchCondition: createSearchCondition(['name', 'seller', 'text', 'type', 'prefecture']),
+    favorites_count: 0,
+    unfavorites_count: 0
   },
   post: {
     current: null,
@@ -95,14 +97,14 @@ export const mutations = {
   setProductFavorite (state, payload) {
     state.product.favorite = payload
   },
-  setProductFavorites (state, payload) {
-    state.product.favorites = payload
+  setProductFavoritesCount (state, count) {
+    state.product.favorites_count = count
   },
   setProductUnfavorite (state, payload) {
     state.product.unfavorite = payload
   },
-  setProductUnfavorites (state, payload) {
-    state.product.unfavorites = payload
+  setProductUnfavoritesCount (state, count) {
+    state.product.unfavorites_count = count
   },
   setProductQuantity (state, { id, quantity }) {
     state.product.list.find(product => product.id === id).quantity = quantity
@@ -209,12 +211,16 @@ export const mutations = {
 }
 
 export const actions = {
-  getProductList ({ commit }, products) {
+  getProductList ({ commit }, { products, favoritesCount, unfavoritesCount }) {
     products = products || []
     commit('setProductList', products)
+    commit('setProductFavoritesCount', favoritesCount)
+    commit('setProductUnfavoritesCount', unfavoritesCount)
   },
-  getCurrentProduct ({ commit }, product) {
+  getCurrentProduct ({ commit }, { product, favoritesCount, unfavoritesCount }) {
     commit('setCurrentProduct', product)
+    commit('setProductFavoritesCount', favoritesCount)
+    commit('setProductUnfavoritesCount', unfavoritesCount)
   },
   getProductComment ({ commit }, comments) {
     comments = comments || []
@@ -224,17 +230,15 @@ export const actions = {
     favorite = favorite || []
     commit('setProductFavorite', favorite)
   },
-  getProductFavorites ({ commit }, favorites) {
-    favorites = favorites || []
-    commit('setProductFavorites', favorites)
+  getProductFavoritesCount({ commit }, count) {
+    commit('setProductFavoritesCount', count)
   },
   getProductUnfavorite ({ commit }, unfavorite) {
     unfavorite = unfavorite || []
     commit('setProductUnfavorite', unfavorite)
   },
-  getProductUnfavorites ({ commit }, unfavorites) {
-    unfavorites = unfavorites || []
-    commit('setProductUnfavorites', unfavorites)
+  setProductUnfavoritesCount({ commit }, count) {
+    commit('setProductUnfavoritesCount', count)
   },
   getProductQuantity ({ commit }, { id, quantity }) {
     commit('setProductQuantity', { id, quantity })

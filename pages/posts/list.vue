@@ -139,14 +139,11 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/post_${type}s/${id}/user/${this.$auth.user.id}`);
+          await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
         } else {
-          const formData = new FormData()
-          formData.append('post_id', id)
-          formData.append('user_id', this.$auth.user.id)
-          await this.$axios[method](`/api/v1/post_${type}s`, formData)
+          await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
         }
-  
+
         await this.updateFavoritesAndUnfavorites();
       } catch (error) {
         // eslint-disable-next-line no-console
