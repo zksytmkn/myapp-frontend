@@ -149,7 +149,7 @@ export default {
         v => !!v || '',
         v => (!!v && bodyMax >= v.length) || `${bodyMax}文字以内で入力してください`
       ],
-      inputted: { title: '', userId: this.$auth.user.id, body: '', image: null }
+      inputted: { title: '', body: '', image: null }
     }
   },
   computed: {
@@ -174,7 +174,7 @@ export default {
             formData.append(key, this.inputted[key]);
           }
         });
-      
+
         const config = {
           headers: {
             "Content-Type": "multipart/form-data",

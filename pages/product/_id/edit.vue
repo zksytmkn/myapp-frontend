@@ -171,7 +171,6 @@ export default {
       ],
       inputted: {
         name: '',
-        user_id: this.$auth.user.id,
         category: '',
         prefecture: '',
         price: null,

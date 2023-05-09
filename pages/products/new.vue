@@ -331,7 +331,7 @@ export default {
         v => !!v || '',
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, category: '', prefecture: this.$auth.user.prefecture, price: null, quantity: 1, stock: null, description: '', image: null },
+      inputted: { name: '', category: '', price: null, stock: null, description: '', image: null },
       typeItems: [
         '野菜',
         '果物'

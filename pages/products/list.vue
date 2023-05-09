@@ -49,9 +49,7 @@
                         </v-btn>
                         <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
                           {{
-                            $store.state.product[actionType + 's'].filter(
-                              item => item.product_id === product.id
-                            ).length
+                            actionType === 'favorite' ? product.favorites_count : product.unfavorites_count
                           }}
                         </span>
                       </div>
@@ -178,7 +176,7 @@ export default {
     
         // Vuexストア内のデータを直接更新
         const isFavorite = type === "favorite";
-        const product = this.$store.state.product.current;
+        const product = this.$store.state.product.list.find(product => product.id === id);
         if (method === 'delete') {
           if (isFavorite) {
             product.favorites_count--;

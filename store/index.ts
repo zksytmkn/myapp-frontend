@@ -38,12 +38,10 @@ export const state = () => ({
     current: null,
     ...createRelatedData(['list', 'comment', 'favorite', 'unfavorite']),
     searchCondition: createSearchCondition(['name', 'seller', 'text', 'type', 'prefecture']),
-    favorites_count: 0,
-    unfavorites_count: 0
   },
   post: {
     current: null,
-    ...createRelatedData(['list', 'comment', 'favorite', 'favorites', 'unfavorite', 'unfavorites']),
+    ...createRelatedData(['list', 'comment', 'favorite', 'unfavorite']),
     searchCondition: createSearchCondition(['name', 'poster', 'text'])
   },
   community: {
@@ -54,8 +52,7 @@ export const state = () => ({
   user: {
     login: null,
     current: null,
-    list: [],
-    relationship: []
+    ...createRelatedData(['list', 'relationship']),
   },
   auth: {
     token: null,
@@ -70,8 +67,7 @@ export const state = () => ({
   carts: [],
   order: {
     current: null,
-    list: [],
-    message: []
+    ...createRelatedData(['list', 'message'])
   }
 })
 
@@ -105,15 +101,6 @@ export const mutations = {
   },
   setProductUnfavoritesCount (state, count) {
     state.product.unfavorites_count = count
-  },
-  setProductQuantity (state, { id, quantity }) {
-    state.product.list.find(product => product.id === id).quantity = quantity
-  },
-  setProductFavoriteQuantity (state, { id, quantity }) {
-    state.product.favorite.find(product => product.id === id).quantity = quantity
-  },
-  setCurrentProductQuantity(state, payload) {
-    state.product.current.quantity = payload
   },
   setCarts (state, payload) {
     state.carts = payload
@@ -211,12 +198,10 @@ export const mutations = {
 }
 
 export const actions = {
-  getProductList ({ commit }, { products, favoritesCount, unfavoritesCount }) {
-    products = products || []
-    commit('setProductList', products)
-    commit('setProductFavoritesCount', favoritesCount)
-    commit('setProductUnfavoritesCount', unfavoritesCount)
-  },
+  getProductList({ commit }, products) {
+    products = products || [];
+    commit('setProductList', products);
+  },  
   getCurrentProduct ({ commit }, { product, favoritesCount, unfavoritesCount }) {
     commit('setCurrentProduct', product)
     commit('setProductFavoritesCount', favoritesCount)
@@ -239,15 +224,6 @@ export const actions = {
   },
   setProductUnfavoritesCount({ commit }, count) {
     commit('setProductUnfavoritesCount', count)
-  },
-  getProductQuantity ({ commit }, { id, quantity }) {
-    commit('setProductQuantity', { id, quantity })
-  },
-  getProductFavoriteQuantity ({ commit }, { id, quantity }) {
-    commit('setProductFavoriteQuantity', { id, quantity })
-  },
-  getCurrentProductQuantity ({ commit }, quantity) {
-    commit('setCurrentProductQuantity', quantity)
   },
   getCarts ({ commit }, carts) {
     carts = carts || []

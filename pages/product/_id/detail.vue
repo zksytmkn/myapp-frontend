@@ -125,7 +125,8 @@
                       <v-col cols="12">
                         <v-select
                           v-if="currentProduct.stock"
-                          :value="currentProduct.quantity"
+                          ref="quantitySelect"
+                          v-model="selectedQuantity"
                           class="mt-6"
                           :items="[...Array(currentProduct.stock).keys()].map(i => ++i)"
                           solo
@@ -133,7 +134,6 @@
                           rounded
                           outlined
                           style="width: 200px; max-width: 200px"
-                          @change="quantity => $store.dispatch('getCurrentProductQuantity', quantity)"
                         ></v-select>
                         <v-card-text v-else class="px-0 font-weight-bold" style="color: #cc0000;">
                           ＊在庫が残っておりません。
@@ -146,7 +146,7 @@
                           color="teal"
                           dark
                           style="width: 200px; max-width: 200px"
-                          @click="addProductToCart(currentProduct.id, currentProduct.quantity)"
+                          @click="addProductToCart(currentProduct.id)"
                         >
                           カートに入れる
                         </v-btn>
@@ -289,6 +289,7 @@ export default {
       cmt: false,
       cmtRules: [v => !!v || ''],
       inputted: { comment: '' },
+      selectedQuantity: 1
     }
   },
   computed: {
@@ -396,7 +397,9 @@ export default {
       if (category === "果物") return "mdi-food-apple-outline";
       return "";
     },
-    async addProductToCart(id, quantity) {
+    async addProductToCart(id) {
+      const quantity = this.selectedQuantity;
+
       if (
         !this.$store.state.user.login.zipcode ||
         !this.$store.state.user.login.street ||
@@ -405,12 +408,12 @@ export default {
         this.showNotification("まずは住所を編集してください", "error");
         return;
       }
-    
+
       try {
         const cart = this.$store.state.carts.find(cart => cart.product_id === id);
         const product = this.$store.state.product.list.find(product => product.id === id);
         const productQuantity = Number(product.stock) - Number(quantity);
-    
+
         if (!cart) {
           await Promise.all([
             this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
@@ -418,18 +421,18 @@ export default {
           ]);
         } else {
           const cartQuantity = Number(cart.quantity) + Number(quantity);
-    
+
           await Promise.all([
             this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
             this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
           ]);
         }
-    
+
         const [cartsResponse, productsResponse] = await Promise.all([
           this.$axios.$get('/api/v1/carts'),
           this.$axios.$get('/api/v1/products')
         ]);
-    
+
         this.$store.dispatch('getCarts', cartsResponse);
         this.$store.dispatch('getProductList', productsResponse);
       } catch (error) {

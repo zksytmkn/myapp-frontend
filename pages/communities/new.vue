@@ -251,29 +251,28 @@ export default {
         this.loading = false
         return
       }
-
+    
       this.loading = true
       try {
         const formData = new FormData()
         formData.append('name', this.inputted.name)
-        formData.append('user_id', this.$auth.user.id)
         formData.append('description', this.inputted.description)
-
+    
         if (this.inputted.image !== null) {
           formData.append('image', this.inputted.image)
         }
-
+    
         const config = {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         }
-
+    
         this.formReset()
-
+    
         await this.$axios.$post('api/v1/communities', formData, config)
         this.$store.dispatch('getToast', { msg: 'コミュニティを作成しました', color: 'success' })
-
+    
         const communities = await this.$axios.$get('api/v1/communities')
         this.$store.dispatch('getCommunityList', communities)
       } catch (error) {

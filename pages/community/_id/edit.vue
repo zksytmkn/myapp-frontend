@@ -149,7 +149,7 @@ export default {
         v => !!v || '',
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
-      inputted: { name: '', user_id: this.$auth.user.id, description: '', image: null }
+      inputted: { name: '', description: '', image: null }
     }
   },
   computed: {
@@ -178,13 +178,13 @@ export default {
             formData.append(key, this.inputted[key]);
           }
         });
-  
+
         const config = {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         };
-  
+
         try {
           await this.$axios.$patch(`/api/v1/communities/${id}`, formData, config);
           this.$router.back();

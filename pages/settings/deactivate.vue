@@ -86,14 +86,13 @@ export default {
       }
     },
     deleteUser() {
-      const userId = this.$auth.user.id;
-      const action = () => this.$axios.$delete(`/api/v1/users/${userId}`);
+      const action = () => this.$axios.$delete(`/api/v1/users`);
       const successMsg = 'アカウントを削除しました';
       const errorMsg = 'アカウントを削除できませんでした';
       const successCallback = () => {
         this.$router.push('/logout');
       };
-    
+
       this.processResponse(action, successMsg, errorMsg, successCallback);
     }
   }

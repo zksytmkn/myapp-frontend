@@ -265,7 +265,7 @@ export default {
         v => !!v || '',
         v => (!!v && bodyMax >= v.length) || `${bodyMax}文字以内で入力してください`
       ],
-      inputted: { title: '', user_id: this.$auth.user.id, body: '', image: null }
+      inputted: { title: '', body: '', image: null }
     }
   },
   computed: {
