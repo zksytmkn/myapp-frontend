@@ -61,40 +61,27 @@
                   <v-divider />
                   <v-container>
                     <v-card-actions class="pa-1">
-                      <div v-for="actionType in ['favorites', 'unfavorites']" :key="actionType + 'Wrapper'">
-                        <div>
-                          <v-btn
-                            v-if="isNotRegistered(actionType)"
-                            :key="actionType + 'Btn'"
-                            :class="buttonClass(actionType)"
-                            class="ml-0"
-                            fab
-                            dark
-                            x-small
-                            @click="() => handleFavorites(currentPost.id, actionType, 'post')"
-                          >
-                            <v-icon>
-                              {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                            </v-icon>
-                          </v-btn>
-                          <v-btn
-                            v-else
-                            :key="actionType + 'BtnElse'"
-                            :class="buttonClass(actionType)"
-                            class="ml-0"
-                            fab
-                            dark
-                            x-small
-                            @click="() => handleFavorites(currentPost.id, actionType, 'delete')"
-                          >
-                            <v-icon>
-                              {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                            </v-icon>
-                          </v-btn>
-                          <span :key="actionType + 'Count'" class="font-weight-bold ml-1 mr-3">
-                            {{ $store.state.post[actionType].filter(item => item.post_id === currentPost.id).length }}
-                          </span>
-                        </div>
+                      <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
+                        <v-btn
+                          :key="actionType + 'Btn'"
+                          :class="buttonClass(actionType, item.id)"
+                          class="ml-0"
+                          fab
+                          dark
+                          x-small
+                          @click="handleFavorites(item.id, actionType, $store.state.post[actionType].some(x => x.id === item.id) ? 'delete' : 'post')"
+                        >
+                          <v-icon>
+                            {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                          </v-icon>
+                        </v-btn>
+                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
+                          {{
+                            $store.state.post[actionType + 's'].filter(
+                              x => x.post_id === item.id
+                            ).length
+                          }}
+                        </span>
                       </div>
 
                       <v-btn
@@ -232,13 +219,6 @@ export default {
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
-    isNotRegistered() {
-      return (actionType) => {
-        return actionType === 'favorites'
-          ? !this.$store.state.post.favorite.some(favorite => favorite.id === this.currentPost.id)
-          : !this.$store.state.post.unfavorite.some(unfavorite => unfavorite.id === this.currentPost.id);
-      };
-    },
     buttonClass() {
       return (actionType) => {
         if (actionType === 'favorites' && this.$store.state.post.favorite.some(item => item.id === this.currentPost.id)) {
@@ -299,35 +279,8 @@ export default {
         () => this.refreshComments()
       )
     },
-    handleFavorite(id, type, method) {
-      this.handleFavorites(id, type, method)
-    },
-    async handleFavorites(id, type, method) {
-      try {
-        if (method === 'delete') {
-          await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
-        } else {
-          await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
-        }
-
-        await this.updateFavoritesAndUnfavorites();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    },
-    async updateFavoritesAndUnfavorites() {
-      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-        this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/post_favorites'),
-        this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/post_unfavorites')
-      ]);
-
-      this.$store.dispatch('getPostFavorite', userFavorites);
-      this.$store.dispatch('getPostFavorites', allFavorites);
-      this.$store.dispatch('getPostUnfavorite', userUnfavorites);
-      this.$store.dispatch('getPostUnfavorites', allUnfavorites);
+    handleFavorites(id, type, method) {
+      this.$store.dispatch('handlePostFavorites', { id, type, method });
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/posts/${this.currentPost.id}/post_comments`);

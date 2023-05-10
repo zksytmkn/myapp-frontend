@@ -166,41 +166,8 @@ export default {
     }
   },
   methods: {
-    async handleFavorites(id, type, method) {
-      try {
-        if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
-        } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
-        }
-    
-        // Vuexストア内のデータを直接更新
-        const isFavorite = type === "favorite";
-        const product = this.$store.state.product.list.find(product => product.id === id);
-        if (method === 'delete') {
-          if (isFavorite) {
-            product.favorites_count--;
-          } else {
-            product.unfavorites_count--;
-          }
-        } else if (isFavorite) {
-          product.favorites_count++;
-        } else {
-          product.unfavorites_count++;
-        }
-    
-        // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
-        const [userFavorites, userUnfavorites] = await Promise.all([
-          this.$axios.$get('api/v1/product_favorites'),
-          this.$axios.$get('api/v1/product_unfavorites')
-        ]);
-    
-        this.$store.dispatch('getProductFavorite', userFavorites);
-        this.$store.dispatch('getProductUnfavorite', userUnfavorites);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
+    handleFavorites(id, type, method) {
+      this.$store.dispatch('handleProductFavorites', { id, type, method });
     },
     async deleteProduct(id) {
       try {

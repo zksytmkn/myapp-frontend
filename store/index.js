@@ -96,11 +96,27 @@ export const mutations = {
   setProductFavoritesCount (state, count) {
     state.product.favorites_count = count
   },
+  incrementProductFavoritesCount(state, id) {
+    const product = state.product.list.find(product => product.id === id);
+    product.favorites_count++;
+  },
+  decrementProductFavoritesCount(state, id) {
+    const product = state.product.list.find(product => product.id === id);
+    product.favorites_count--;
+  },
   setProductUnfavorite (state, payload) {
     state.product.unfavorite = payload
   },
   setProductUnfavoritesCount (state, count) {
     state.product.unfavorites_count = count
+  },
+  incrementProductUnfavoritesCount(state, id) {
+    const product = state.product.list.find(product => product.id === id);
+    product.unfavorites_count++;
+  },
+  decrementProductUnfavoritesCount(state, id) {
+    const product = state.product.list.find(product => product.id === id);
+    product.unfavorites_count--;
   },
   setCarts (state, payload) {
     state.carts = payload
@@ -126,14 +142,30 @@ export const mutations = {
   setPostFavorite (state, payload) {
     state.post.favorite = payload
   },
-  setPostFavorites (state, payload) {
-    state.post.favorites = payload
+  setPostFavoritesCount (state, count) {
+    state.post.favorites_count = count
+  },  
+  incrementPostFavoritesCount(state, id) {
+    const post = state.post.list.find(post => post.id === id);
+    post.favorites_count++;
+  },
+  decrementPostFavoritesCount(state, id) {
+    const post = state.post.list.find(post => post.id === id);
+    post.favorites_count--;
   },
   setPostUnfavorite (state, payload) {
     state.post.unfavorite = payload
   },
-  setPostUnfavorites (state, payload) {
-    state.post.unfavorites = payload
+  setPostUnfavoritesCount (state, count) {
+    state.post.unfavorites_count = count
+  },
+  incrementPostUnfavoritesCount(state, id) {
+    const post = state.post.list.find(post => post.id === id);
+    post.unfavorites_count++;
+  },
+  decrementPostUnfavoritesCount(state, id) {
+    const post = state.post.list.find(post => post.id === id);
+    post.unfavorites_count--;
   },
   setCommunityList (state, payload) {
     state.community.list = payload
@@ -211,20 +243,6 @@ export const actions = {
     comments = comments || []
     commit('setProductComment', comments)
   },
-  getProductFavorite ({ commit }, favorite) {
-    favorite = favorite || []
-    commit('setProductFavorite', favorite)
-  },
-  getProductFavoritesCount({ commit }, count) {
-    commit('setProductFavoritesCount', count)
-  },
-  getProductUnfavorite ({ commit }, unfavorite) {
-    unfavorite = unfavorite || []
-    commit('setProductUnfavorite', unfavorite)
-  },
-  setProductUnfavoritesCount({ commit }, count) {
-    commit('setProductUnfavoritesCount', count)
-  },
   getCarts ({ commit }, carts) {
     carts = carts || []
     commit('setCarts', carts) 
@@ -250,22 +268,6 @@ export const actions = {
   getPostComment ({ commit }, comments) {
     comments = comments || []
     commit('setPostComment', comments)
-  },
-  getPostFavorite ({ commit }, favorite) {
-    favorite = favorite || []
-    commit('setPostFavorite', favorite)
-  },
-  getPostFavorites ({ commit }, favorites) {
-    favorites = favorites || []
-    commit('setPostFavorites', favorites)
-  },
-  getPostUnfavorite ({ commit }, unfavorite) {
-    unfavorite = unfavorite || []
-    commit('setPostUnfavorite', unfavorite)
-  },
-  getPostUnfavorites ({ commit }, unfavorites) {
-    unfavorites = unfavorites || []
-    commit('setPostUnfavorites', unfavorites)
   },
   getCommunityList ({ commit }, communities) {
     communities = communities || []
@@ -328,5 +330,103 @@ export const actions = {
   },
   updateCommunitySearchCondition ({ commit }, { name, maker, type, prefecture }) {
     commit('setCommunitySearchCondition', { name, maker, type, prefecture })
-  }
+  },
+  async handleProductFavorites({ commit }, { id, type, method }) {
+    try {
+      // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+      const [userFavorites, userUnfavorites] = await Promise.all([
+        this.$axios.$get('api/v1/product_favorites'),
+        this.$axios.$get('api/v1/product_unfavorites')
+      ]);
+
+      // APIリクエストを送信
+      if (method === 'delete') {
+        await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
+      } else {
+        await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
+      }
+
+      // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+      const [updatedUserFavorites, updatedUserUnfavorites] = await Promise.all([
+        this.$axios.$get('api/v1/product_favorites'),
+        this.$axios.$get('api/v1/product_unfavorites')
+      ]);
+  
+      // Vuexストア内のデータを直接更新
+      if (method === 'post') {
+        if (type === 'favorite') {
+          if (userUnfavorites.some(unfavorite => unfavorite.id === id)) {
+            commit('decrementProductUnfavoritesCount', id);
+          }
+          commit('incrementProductFavoritesCount', id);
+        } else {
+          if (userFavorites.some(favorite => favorite.id === id)) {
+            commit('decrementProductFavoritesCount', id);
+          }
+          commit('incrementProductUnfavoritesCount', id);
+        }
+      } else if (method === 'delete') {
+        if (type === 'favorite') {
+          commit('decrementProductFavoritesCount', id);
+        } else {
+          commit('decrementProductUnfavoritesCount', id);
+        }
+      }
+  
+      commit('setProductFavorite', updatedUserFavorites);
+      commit('setProductUnfavorite', updatedUserUnfavorites);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  },
+  async handlePostFavorites({ commit }, { id, type, method }) {
+    try {
+      // ログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
+      const [userFavorites, userUnfavorites] = await Promise.all([
+        this.$axios.$get('api/v1/post_favorites'),
+        this.$axios.$get('api/v1/post_unfavorites')
+      ]);
+
+      // APIリクエストを送信
+      if (method === 'delete') {
+        await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
+      } else {
+        await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
+      }
+
+      // 更新後のログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
+      const [updatedUserFavorites, updatedUserUnfavorites] = await Promise.all([
+        this.$axios.$get('api/v1/post_favorites'),
+        this.$axios.$get('api/v1/post_unfavorites')
+      ]);
+  
+      // Vuexストア内のデータを直接更新
+      if (method === 'post') {
+        if (type === 'favorite') {
+          if (userUnfavorites.some(unfavorite => unfavorite.id === id)) {
+            commit('decrementPostUnfavoritesCount', id);
+          }
+          commit('incrementPostFavoritesCount', id);
+        } else {
+          if (userFavorites.some(favorite => favorite.id === id)) {
+            commit('decrementPostFavoritesCount', id);
+          }
+          commit('incrementPostUnfavoritesCount', id);
+        }
+      } else if (method === 'delete') {
+        if (type === 'favorite') {
+          commit('decrementPostFavoritesCount', id);
+        } else {
+          commit('decrementPostUnfavoritesCount', id);
+        }
+      }
+  
+      commit('setPostFavorite', updatedUserFavorites);
+      commit('setPostUnfavorite', updatedUserUnfavorites);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  },
 }

@@ -401,19 +401,8 @@ export default {
       this.sentIt = false;
       this.$refs.new.reset();
     },
-    async handleFavorites(id, type, method) {
-      try {
-        if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
-        } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
-        }
-
-        await this.updateFavoritesAndUnfavorites();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
+    handleFavorites(id, type, method) {
+      this.$store.dispatch('handleProductFavorites', { id, type, method });
     },
     async updateFavoritesAndUnfavorites() {
       const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([

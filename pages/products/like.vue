@@ -263,32 +263,8 @@ export default {
         console.log(error);
       }
     },
-    async handleFavorites(id, type, method) {
-      try {
-        if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}`);
-        } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
-        }
-
-        await this.updateFavoritesAndUnfavorites();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    },
-    async updateFavoritesAndUnfavorites() {
-      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-        this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_favorites'),
-        this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_unfavorites')
-      ]);
-
-      this.$store.dispatch('getProductFavorite', userFavorites);
-      this.$store.dispatch('getProductFavorites', allFavorites);
-      this.$store.dispatch('getProductUnfavorite', userUnfavorites);
-      this.$store.dispatch('getProductUnfavorites', allUnfavorites);
+    handleFavorites(id, type, method) {
+      this.$store.dispatch('handleProductFavorites', { id, type, method });
     },
     buttonClass(actionType, id) {
       if (actionType === 'favorite' && this.$store.state.product.favorite.some(item => item.id === id)) {

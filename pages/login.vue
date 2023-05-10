@@ -61,27 +61,35 @@ export default {
   },
   methods: {
     async login () {
-      this.loading = true
+      this.loading = true;
       if (this.isValid) {
-        await this.$axios.$post('/api/v1/auth_token', this.params)
-          .then(response => this.authSuccessful(response))
-          .catch(error => this.authFailure(error))
+        try {
+          const response = await this.$axios.$post('/api/v1/auth_token', this.params);
+          this.authSuccessful(response);
+        } catch (error) {
+          this.authFailure(error);
+        } finally {
+          this.loading = false;
+        }
       }
-      this.loading = false
     },
     authSuccessful (response) {
       this.$auth.login(response)
       this.$router.push(this.redirectPath)
       // 記憶ルートを初期値に戻す
       this.$store.dispatch('getRememberPath', this.loggedInHomePath)
+      // ログイン成功のトーストメッセージを表示
+      this.$store.dispatch('getToast', { msg: 'ログインしました', color: 'success' });
     },
-    authFailure ({ response }) {
-      if (response && response.status === 404) {
-        const msg = 'ユーザーが見つかりません'
-        const color = 'error'
-        return this.$store.dispatch('getToast', { msg, color })
+    authFailure (error) {
+      let msg = 'ログインできませんでした';
+      const color = 'error';
+    
+      if (error.response && error.response.status === 404) {
+        msg = 'ユーザーが見つかりません';
       }
-      return this.$my.apiErrorHandler(response)
+    
+      this.$store.dispatch('getToast', { msg, color });
     }
   }
 }

@@ -40,38 +40,27 @@
                     </v-btn>
                   </v-card-title>
                   <v-card-actions class="pa-1">
-                    <div v-for="actionType in ['favorites', 'unfavorites']" :key="actionType + 'Wrapper'">
+                    <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
                       <div>
                         <v-btn
-                          v-if="isNotRegistered(actionType)"
                           :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType)"
+                          :class="buttonClass(actionType, currentProduct.id)"
                           class="ml-0"
                           fab
                           dark
                           x-small
-                          @click="() => handleFavorites(currentProduct.id, actionType, 'post')"
+                          @click="handleFavorites(currentProduct.id, actionType, $store.state.product[actionType].some(item => item.id === currentProduct.id) ? 'delete' : 'post')"
                         >
                           <v-icon>
-                            {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                            {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
                           </v-icon>
                         </v-btn>
-                        <v-btn
-                          v-else
-                          :key="actionType + 'BtnElse'"
-                          :class="buttonClass(actionType)"
-                          class="ml-0"
-                          fab
-                          dark
-                          x-small
-                          @click="() => handleFavorites(currentProduct.id, actionType, 'delete')"
-                        >
-                          <v-icon>
-                            {{ actionType === 'favorites' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                          </v-icon>
-                        </v-btn>
-                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1 mr-3">
-                          {{ $store.state.product[actionType].filter(item => item.product_id === currentProduct.id).length }}
+                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
+                          {{
+                            $store.state.product[actionType + 's'].filter(
+                              item => item.product_id === currentProduct.id
+                            ).length
+                          }}
                         </span>
                       </div>
                     </div>
@@ -302,13 +291,6 @@ export default {
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
-    isNotRegistered() {
-      return (actionType) => {
-        return actionType === 'favorites'
-          ? !this.$store.state.product.favorite.some(favorite => favorite.id === this.currentProduct.id)
-          : !this.$store.state.product.unfavorite.some(unfavorite => unfavorite.id === this.currentProduct.id);
-      };
-    },
   },
   methods: {
     async processResponse(action, successMsg, errorMsg, successCallback) {
@@ -358,32 +340,8 @@ export default {
         () => this.refreshComments()
       )
     },
-    handleFavorite(id, type, method) {
-      this.handleFavorites(id, type, method)
-    },
-    async handleFavorites(id, type, method) {
-      try {
-        if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}/${id}/user`);
-        } else {
-          await this.$axios[method](`/api/v1/product_${type}`, { product_id: id });
-        }
-    
-        const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-          this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_favorites'),
-          this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-          this.$axios.$get('api/v1/product_unfavorites')
-        ])
-    
-        this.$store.dispatch('getProductFavorite', userFavorites)
-        this.$store.dispatch('getProductFavorites', allFavorites)
-        this.$store.dispatch('getProductUnfavorite', userUnfavorites)
-        this.$store.dispatch('getProductUnfavorites', allUnfavorites)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
+    handleFavorites(id, type, method) {
+      this.$store.dispatch('handleProductFavorites', { id, type, method });
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/products/${this.currentProduct.id}/product_comments`);

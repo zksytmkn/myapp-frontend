@@ -136,32 +136,8 @@ export default {
     },
   },
   methods: {
-    async handleFavorites(id, type, method) {
-      try {
-        if (method === 'delete') {
-          await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
-        } else {
-          await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
-        }
-
-        await this.updateFavoritesAndUnfavorites();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    },
-    async updateFavoritesAndUnfavorites() {
-      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-        this.$axios.$get(`api/v1/post_favorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/post_favorites'),
-        this.$axios.$get(`api/v1/post_unfavorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/post_unfavorites')
-      ]);
-
-      this.$store.dispatch('getPostFavorite', userFavorites);
-      this.$store.dispatch('getPostFavorites', allFavorites);
-      this.$store.dispatch('getPostUnfavorite', userUnfavorites);
-      this.$store.dispatch('getPostUnfavorites', allUnfavorites);
+    handleFavorites(id, type, method) {
+      this.$store.dispatch('handlePostFavorites', { id, type, method });
     },
     buttonClass(actionType, id) {
       if (actionType === 'favorite' && this.$store.state.post.favorite.some(item => item.id === id)) {
