@@ -1,6 +1,6 @@
 {
   "menus": {
-    "about":"サービスについて",
+    "app-about":"サービスについて",
     "contact": "お問い合わせ",
     "answerers": {
       "first": "1~3",

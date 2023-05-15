@@ -12,12 +12,12 @@
           />
         </template>
       </logged-in-app-bar>
-      <project-navigation-drawer
+      <logged-in-navigation-drawer
         :drawer.sync="drawer"
       />
       <v-main>
         <app-toaster />
-        <logged-in-app-community-eye-catch/>
+        <community-eye-catch/>
         <nuxt />
       </v-main>
       <app-footer />
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  middleware: ['get-community-list', 'get-community-invitation', 'get-community-participation'],
+  middleware: ['authentication', 'get-community-list', 'get-community-invitation', 'get-community-participation', 'get-cart'],
   data () {
     return {
       drawer: null

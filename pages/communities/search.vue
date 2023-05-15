@@ -186,7 +186,6 @@
 
 <script>
 export default {
-  layout: 'logged-in',
   data () {
     return {
       page: 1,

@@ -1,80 +1,80 @@
 <template>
   <div>
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list-item>
-            <v-list-item-title
+          あなたのカート
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list
+        v-show="!cartProducts.length"
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-title>
+            カートには何も入っておりません。
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-btn
               class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/products/list"
             >
-              あなたのカート
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider/>
-          <v-list
-            v-show="!cartProducts.length"
-            color="transparent"
+              農産物を見る
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+      <v-list
+        v-show="cartProducts.length"
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-title
+            class="font-weight-bold"
           >
-            <v-list-item>
-              <v-list-item-title>
-                カートには何も入っておりません。
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-action>
+            合計（税込）：¥{{ Math.floor(cartTotalPrice).toLocaleString() }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-row>
+              <v-col cols="auto">
                 <v-btn
                   class="font-weight-bold"
-                  color="orange"
+                  color="teal"
+                  dark
+                  to="/products/register"
+                >
+                  レジに進む
+                </v-btn>
+                <v-btn
+                  class="font-weight-bold ml-1"
+                  color="teal"
                   outlined
                   dark
                   to="/products/list"
                 >
-                  農産物を見る
+                  一覧に戻る
                 </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-          <v-list
-            v-show="cartProducts.length"
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-title
-                class="font-weight-bold"
-              >
-                合計（税込）：¥{{ Math.floor(cartTotalPrice).toLocaleString() }}
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-btn
-                class="font-weight-bold"
-                color="teal"
-                dark
-                to="/products/register"
-              >
-                レジに進む
-              </v-btn>
-              <v-btn
-                class="font-weight-bold ml-2"
-                color="teal"
-                outlined
-                dark
-                to="/products/list"
-              >
-                一覧に戻る
-              </v-btn>
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
+              </v-col>
+            </v-row>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </v-container>
 
     <v-container>
       <v-row>
         <v-col
-          v-for="(cart, i) in cartProducts"
+          v-for="(cart, i) in cartProducts.slice(pageSize * (page - 1), pageSize * page)"
           :key="`cart-${i}`"
           cols="6"
         >
@@ -85,9 +85,10 @@
                   cols="6"
                 >
                   <v-img
-                    :src="noImg"
+                    :src="cart.product.image_url || noImg"
                     max-height="360px"
                     max-width="360px"
+                    aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
@@ -99,9 +100,8 @@
                     <v-btn
                       text
                       outlined
-                      :to="$my.productLinkToDetail(cart.product_id)"
+                      :to="$my.productLinkToDetail(cart.product.id)"
                       class="font-weight-bold"
-                      style="text-transform:none"
                     >
                       詳細
                     </v-btn>
@@ -111,12 +111,12 @@
                       <div>
                         <v-btn
                           :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType, cart.product_id)"
+                          :class="buttonClass(actionType, cart.product.id)"
                           class="ml-0"
                           fab
                           dark
                           x-small
-                          @click="handleFavorites(cart.product_id, actionType, $store.state.product[actionType].some(item => item.id === cart.product_id) ? 'delete' : 'post')"
+                          @click="handleFavorites(cart.product.id, actionType, $store.state.product[actionType].some(item => item.id === cart.product.id) ? 'delete' : 'post')"
                         >
                           <v-icon>
                             {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
@@ -124,7 +124,7 @@
                         </v-btn>
                         <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
                           {{
-                            $store.state.product.current[actionType + 's_count']
+                            actionType === 'favorite' ? cart.product.favorites_count : cart.product.unfavorites_count
                           }}
                         </span>
                       </div>
@@ -157,7 +157,7 @@
                         color="teal"
                         block
                         dark
-                        @click="removeProductFromCart(cart.product_id, cart.quantity, cart.id)"
+                        @click="removeProductFromCart(cart.id)"
                       >
                         削除する
                       </v-btn>
@@ -186,7 +186,6 @@ import { mapGetters } from 'vuex'
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout: 'logged-in',
   data () {
     return {
       noImg,
@@ -197,34 +196,90 @@ export default {
   computed: {
     cartProducts() {
       return [...this.$store.state.carts].sort((a, b) => {
-        return a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0;
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
       });
     },
-    ...mapGetters(['cartTotalPrice']),
+    ...mapGetters(['cartTotalPrice', 'buttonClass']),
   },
   methods: {
-    handleFavorites(id, type, method) {
-      this.$store.dispatch('handleProductFavorites', { id, type, method });
-    },
-    async removeProductFromCart(productId, quantity, cartId) {
+    async handleFavorites(id, type, method) {
       try {
-        const productQuantity = Number(this.$store.state.product.list.find(product => product.id === productId).stock) + Number(quantity);
-    
-        await Promise.all([
-          this.$axios.$delete(`/api/v1/carts/${cartId}`),
-          this.$axios.$patch(`/api/v1/products/${productId}`, { stock: productQuantity })
+        // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+        const [favoriteResponses, unfavoriteResponses] = await Promise.all([
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get('api/v1/product_unfavorites'),
         ]);
     
-        const [response] = await Promise.all([
-          this.$axios.$get('/api/v1/carts')
-        ]);
+        const initialFavoriteData = favoriteResponses.map(productWithFavorites => ({
+          ...productWithFavorites.product,
+          favorites_count: productWithFavorites.favorites_count,
+          unfavorites_count: productWithFavorites.unfavorites_count
+        }));
+
+        // APIリクエストを送信
+        if (method === 'delete') {
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
+        } else {
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
+        }
     
-        this.$store.dispatch('getCarts', response);
+        // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+        const [updatedFavoriteResponses, updatedUnfavoriteResponses, updatedCartResponses] = await Promise.all([
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get('api/v1/product_unfavorites'),
+          this.$axios.$get('api/v1/carts'),
+        ]);
+        
+        // Vuexストア内のデータを直接更新
+        if (method === 'post') {
+          if (type === 'favorite') {
+            if (unfavoriteResponses.some(unfavorite => unfavorite.id === id)) {
+              this.$store.commit('decrementProductUnfavoritesCount', id);
+            }
+            this.$store.commit('incrementProductFavoritesCount', id);
+          } else {
+            if (initialFavoriteData.some(favorite => favorite.id === id)) {
+              this.$store.commit('decrementProductFavoritesCount', id);
+            }
+            this.$store.commit('incrementProductUnfavoritesCount', id);
+          }
+        } else if (method === 'delete') {
+          if (type === 'favorite') {
+            this.$store.commit('decrementProductFavoritesCount', id);
+          } else {
+            this.$store.commit('decrementProductUnfavoritesCount', id);
+          }
+        }
+    
+        this.$store.dispatch('getProductFavorite', updatedFavoriteResponses);
+        this.$store.dispatch('getProductUnfavorite', updatedUnfavoriteResponses);
+        this.$store.dispatch('getCarts', updatedCartResponses);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
       }
-    }
+    },
+    async removeProductFromCart(cartId) {
+      try {
+        await this.$axios.$delete(`/api/v1/carts/${cartId}`);
+
+        const response = await this.$axios.$get('/api/v1/carts');
+
+        this.$store.dispatch('getCarts', response);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          this.showNotification("カートから削除できませんでした", "error");
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(error.message);
+        }
+      }
+    },
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
+    },
   },
 }
 </script>

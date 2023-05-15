@@ -1,43 +1,37 @@
 <template>
   <div>
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list-item>
-            <v-list-item-title
+          あなたのレジ
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list
+        v-show="!cartProducts.length"
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-title>
+            農産物をカートに入れましょう。
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-btn
               class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/products/cart"
             >
-              あなたのレジ
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider/>
-          <v-list
-            v-show="!cartProducts.length"
-            color="transparent"
-          >
-            <v-list-item>
-              <v-list-item-title>
-                農産物をカートに入れましょう。
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-action>
-                <v-btn
-                  class="font-weight-bold"
-                  color="orange"
-                  outlined
-                  dark
-                  to="/products/cart"
-                >
-                  カートを見る
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
+              カートを見る
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </v-container>
 
     <v-container
@@ -144,10 +138,13 @@ export default {
 
         const cartsResponse = await this.$axios.$get('/api/v1/carts');
         this.$store.dispatch('getCarts', cartsResponse);
-        this.$store.dispatch('getToast', { msg: '農産物を購入しました', color: 'success' });
+        this.showNotification("農産物を購入しました", "success");
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '農産物を購入できませんでした', color: 'error' });
+        this.showNotification("農産物を購入できませんでした", "error");
       }
+    },
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
     },
   },
 }

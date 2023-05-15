@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    :height="homeAppBarHeight"
+    :height="beforeLoginAppBarHeight"
     :color="toolbarStyle.color"
     :elevation="toolbarStyle.elevation"
   > 
@@ -75,12 +75,12 @@ export default {
   data ({ $store }) {
     return {
       scrollY: 0,
-      homeAppBarHeight: $store.state.styles.homeAppBarHeight
+      beforeLoginAppBarHeight: $store.state.styles.beforeLoginAppBarHeight
     }
   },
   computed: {
     isScrollPoint () {
-      return this.scrollY > (this.imgHeight - this.homeAppBarHeight)
+      return this.scrollY > (this.imgHeight - this.beforeLoginAppBarHeight)
     },
     toolbarStyle () {
       const color = this.isScrollPoint ? 'white' : 'transparent'

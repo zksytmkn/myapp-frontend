@@ -197,7 +197,6 @@
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout: 'logged-in',
   data () {
     return {
       noImg,
@@ -232,27 +231,25 @@ export default {
     },
   },
   methods: {
-    async processResponse(action, successMsg, errorMsg, successCallback) {
-      try {
-        await action();
-        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' });
-        if (successCallback) {
-          successCallback();
-        }
-      } catch (e) {
-        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
-      }
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
     },
-    deleteCurrentPost(id) {
-      this.processResponse(
-        () => this.$axios.$delete(`/api/v1/posts/${id}`),
-        'つぶやきを削除しました',
-        'つぶやきを削除できませんでした',
-        () => this.$router.go(-1)
-      );
+    async deleteCurrentPost(id) {
+      if (!confirm('本当にこのつぶやきを削除しますか？')) {
+        return;
+      }
+
+      try {
+        await this.$axios.$delete(`/api/v1/posts/${id}`);
+        this.showNotification('つぶやきを削除しました', 'success');
+        this.$router.go(-1);
+      } catch (error) {
+        this.showNotification('つぶやきを削除できませんでした', 'error');
+      }
     },
     async addPostComment() {
       if (!this.Valid) return;
+      
       const data = {
         post_comment: {
           content: this.inputted.comment,
@@ -260,24 +257,26 @@ export default {
       };
       this.formReset();
 
-      await this.processResponse(
-        () => this.$axios.$post(`/api/v1/posts/${this.currentPost.id}/post_comments`, data),
-        'コメントしました',
-        'コメントできませんでした',
-        () => this.refreshComments()
-      );
+      try {
+        await this.$axios.$post(`/api/v1/posts/${this.currentPost.id}/post_comments`, data);
+        this.showNotification('コメントしました', 'success');
+        this.refreshComments();
+      } catch (error) {
+        this.showNotification('コメントできませんでした', 'error');
+      }
     },
     formReset() {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    deletePostComment(id) {
-      this.processResponse(
-        () => this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}/post_comments/${id}`),
-        'コメントを削除しました',
-        'コメントを削除できませんでした',
-        () => this.refreshComments()
-      )
+    async deletePostComment(id) {
+      try {
+        await this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}/post_comments/${id}`);
+        this.showNotification('コメントを削除しました', 'success');
+        this.refreshComments();
+      } catch (error) {
+        this.showNotification('コメントを削除できませんでした', 'error');
+      }
     },
     handleFavorites(id, type, method) {
       this.$store.dispatch('handlePostFavorites', { id, type, method });

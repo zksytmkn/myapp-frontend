@@ -128,7 +128,6 @@
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout: 'logged-in',
   data () {
     const nameMax = 13
     const descMax = 300

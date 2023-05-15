@@ -9,7 +9,7 @@
         />
       </template>
     </logged-in-app-bar>
-    <project-navigation-drawer
+    <logged-in-navigation-drawer
       :drawer.sync="drawer"
     />
     <v-main>

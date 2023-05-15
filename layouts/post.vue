@@ -12,12 +12,12 @@
           />
         </template>
       </logged-in-app-bar>
-      <project-navigation-drawer
+      <logged-in-navigation-drawer
         :drawer.sync="drawer"
       />
       <v-main>
         <app-toaster />
-        <logged-in-app-post-eye-catch/>
+        <post-eye-catch/>
         <nuxt />
       </v-main>
       <app-footer />
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  middleware: ['get-post-list', 'get-post-favorite', 'get-post-unfavorite'],
+  middleware: ['authentication', 'get-post-list', 'get-post-favorite', 'get-post-unfavorite', 'get-cart'],
   data () {
     return {
       drawer: null

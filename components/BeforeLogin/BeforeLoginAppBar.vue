@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    :height="homeAppBarHeight"
+    :height="beforeLoginAppBarHeight"
     color="white"
   >
     <nuxt-link
@@ -26,7 +26,7 @@
 export default {
   data ({ $store }) {
     return {
-      homeAppBarHeight: $store.state.styles.homeAppBarHeight
+      beforeLoginAppBarHeight: $store.state.styles.beforeLoginAppBarHeight
     }
   }
 }

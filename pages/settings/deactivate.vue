@@ -62,7 +62,6 @@
 
 <script>
 export default {
-  layout: 'logged-in',
   data () {
     return {
       setMenus: [
@@ -74,26 +73,21 @@ export default {
     }
   },
   methods: {
-    async processResponse(action, successMsg, errorMsg, successCallback) {
-      try {
-        await action();
-        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' });
-        if (successCallback) {
-          successCallback();
-        }
-      } catch (e) {
-        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
-      }
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
     },
-    deleteUser() {
-      const action = () => this.$axios.$delete(`/api/v1/users`);
-      const successMsg = 'アカウントを削除しました';
-      const errorMsg = 'アカウントを削除できませんでした';
-      const successCallback = () => {
-        this.$router.push('/logout');
-      };
+    async deleteUser() {
+      if (!confirm('本当にこのアカウントを削除しますか？')) {
+        return;
+      }
 
-      this.processResponse(action, successMsg, errorMsg, successCallback);
+      try {
+        await this.$axios.$delete(`/api/v1/users`);
+        this.showNotification('アカウントを削除しました', 'success');
+        this.$router.push('/logout');
+      } catch (error) {
+        this.showNotification('アカウントを削除できませんでした', 'error');
+      }
     }
   }
 }

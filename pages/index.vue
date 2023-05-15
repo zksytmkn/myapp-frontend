@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <home-app-bar
+    <before-login-app-about-bar
       :menus="menus"
       :img-height="imgHeight"
     />
@@ -136,32 +136,28 @@
             cols="12"
           >
             <div
-              :is="`home-${menu.title}`"
+              :is="`before-login-${menu.title}`"
             />
           </v-col>
         </v-row>
       </v-container>
     </v-sheet>
-    <app-policy />
+    <app-footer-top />
     <app-footer />
   </v-app>
 </template>
 
 <script>
-import HomeAbout from '~/components/Home/HomeAbout'
 import SDGsImg from '~/assets/images/before-logged-in/SDGs.png'
 
 export default {
-  components: {
-    HomeAbout
-  },
   middleware: ['logged-in-redirect'],
   data () {
     return {
       SDGsImg,
       imgHeight: 700,
       menus: [
-        { title: 'about' }
+        { title: 'app-about' }
       ]
     }
   }

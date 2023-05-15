@@ -92,7 +92,6 @@
 
 <script>
 export default {
-  layout: 'logged-in',
   data () {
     return {
       isValid: false,

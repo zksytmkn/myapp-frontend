@@ -62,8 +62,8 @@
                         dense
                         outlined
                         label="種類"
-                        :items="typeItems"
-                        :rules="typeRules"
+                        :items="categoryItems"
+                        :rules="categoryRules"
                         :disabled="sentIt"
                       >
                       </v-select>
@@ -161,158 +161,18 @@
         </v-list-item-title>
       </v-list-item>
     </v-container>
-    <v-container>
-      <v-row>
-        <v-col
-          v-for="(product, i) in newProducts.slice(pageSize * (page - 1), pageSize * page)"
-          :key="`product-${i}`"
-          cols="6"
-        >
-          <v-card>
-            <v-container>
-              <v-row>
-                <v-col cols="6">
-                  <v-img
-                    :src="product.image_url || noImg"
-                    max-height="360px"
-                    max-width="360px"
-                    aspect-ratio="1"
-                  ></v-img>
-                  <v-card-title class="font-weight-bold pa-1" style="max-width: 360px;">
-                    {{ product.name.length > 7 ? product.name.substring(0, 7) + "..." : product.name }}
-                    <v-spacer />
-                    <v-btn text outlined :to="$my.productLinkToDetail(product.id)" class="font-weight-bold">詳細</v-btn>
-                  </v-card-title>
-                  <v-card-actions class="pa-1">
-                    <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
-                      <div>
-                        <v-btn
-                          :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType, product.id)"
-                          class="ml-0"
-                          fab
-                          dark
-                          x-small
-                          @click="handleFavorites(product.id, actionType, $store.state.product[actionType].some(item => item.id === product.id) ? 'delete' : 'post')"
-                        >
-                          <v-icon>
-                            {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                          </v-icon>
-                        </v-btn>
-                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
-                          {{
-                            $store.state.product[actionType + 's'].filter(
-                              item => item.product_id === product.id
-                            ).length
-                          }}
-                        </span>
-                      </div>
-                    </div>
-                  </v-card-actions>
-                </v-col>
-
-                <v-col cols="6">
-                  <v-card-text>
-                    {{
-                      product.description.length > 80
-                        ? product.description.substring(0, 80) + '...'
-                        : product.description
-                    }}
-                  </v-card-text>
-                  <v-card-title class="pt-0 font-weight-bold">
-                    ¥{{ product.price.toLocaleString() }}
-                  </v-card-title>
-                  <v-divider />
-                  <v-container :class="{'pt-0': product.user_id !== $auth.user.id}">
-                    <template v-if="product.user_id !== $auth.user.id">
-                      <v-card-actions class="pa-0" style="width: 80%;">
-                        <v-select
-                          v-show="product.stock"
-                          :value="product.quantity"
-                          class="mt-6"
-                          :items="[...Array(product.stock).keys()].map(i => ++i)"
-                          solo
-                          dense
-                          rounded
-                          outlined
-                          @change="quantity => $store.dispatch('getProductQuantity', { id: product.id, quantity: quantity })"
-                        ></v-select>
-                      </v-card-actions>
-                      <v-card-text
-                        v-show="!product.stock"
-                        class="px-0 font-weight-bold"
-                        style="color: #CC0000;"
-                      >
-                        ＊在庫が残っておりません。
-                      </v-card-text>
-                      <v-card-actions class="pa-0" style="width: 80%;">
-                        <v-btn
-                          :disabled="!product.stock"
-                          class="font-weight-bold"
-                          color="teal"
-                          block
-                          dark
-                          @click="addProductToCart(product.id, product.quantity)"
-                        >
-                          カートに入れる
-                        </v-btn>
-                      </v-card-actions>
-                    </template>
-                    <template v-else>
-                      <v-card-actions style="width: 86%;">
-                        <v-btn
-                          :to="$my.productLinkToEdit(product.id)"
-                          class="font-weight-bold mt-2"
-                          color="teal"
-                          block
-                          dark
-                          outlined
-                        >
-                          編集する
-                        </v-btn>
-                      </v-card-actions>
-                      <v-card-actions style="width: 86%;">
-                        <v-btn
-                          class="font-weight-bold mt-2"
-                          color="teal"
-                          block
-                          dark
-                          @click="deleteProduct(product.id)"
-                        >
-                          削除する
-                        </v-btn>
-                      </v-card-actions>
-                    </template>
-                  </v-container>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-pagination
-      v-show="newProducts.length"
-      v-model="page"
-      class="my-6"
-      :length="Math.ceil(newProducts.length/pageSize)"
-      circle
-    >
-    </v-pagination>
+    <ProductList :product-list="newProducts" />
   </div>
 </template>
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
 export default {
-  layout: 'logged-in',
   data () {
     const nameMax = 13
     const descMax = 300
     return {
       noImg,
-      page: 1,
-      pageSize: 10,
       valid: false,
       loading: false,
       imgRules: [
@@ -323,7 +183,7 @@ export default {
         v => !!v || '',
         v => (!!v && nameMax >= v.length) || `${nameMax}文字以内で入力してください`
       ],
-      typeRules: [v => !!v || '種類を選択してください'],
+      Rules: [v => !!v || '種類を選択してください'],
       priceRules: [v => !!v || '価格を入力してください'],
       stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '数量を入力してください'],
       descRules: [
@@ -332,7 +192,7 @@ export default {
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
       inputted: { name: '', category: '', price: null, stock: null, description: '', image: null },
-      typeItems: [
+      categoryItems: [
         '野菜',
         '果物'
       ]
@@ -344,13 +204,17 @@ export default {
     },
     newProducts() {
       const userProducts = this.$store.state.product.list.filter(x => x.user_id === this.$auth.user.id);
-      return userProducts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      return userProducts.sort((a, b) => {
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
+      });
     }
   },
   methods: {
     async addProduct() {
       if (!this.$auth.user.prefecture) {
-        this.$store.dispatch('getToast', { msg: 'まずはプロフィールを編集してください', color: 'error' });
+        this.showNotification("まずはプロフィールを編集してください", "error");
         return;
       }
 
@@ -376,9 +240,9 @@ export default {
     
       try {
         await this.$axios.$post('/api/v1/products', formData, config);
-        this.$store.dispatch('getToast', { msg: '農産物を出品しました', color: 'success' });
+        this.showNotification("農産物を出品しました", "success");
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '農産物を出品できませんでした', color: 'error' });
+        this.showNotification("農産物を出品できませんでした", "error");
       }
     
       const products = await this.$axios.$get('api/v1/products');
@@ -386,96 +250,13 @@ export default {
     
       this.loading = false;
     },
-    async deleteProduct(id) {
-      try {
-        await this.$axios.$delete(`/api/v1/products/${id}`);
-        await this.$axios.$get("api/v1/products").then((products) =>
-          this.$store.dispatch("getProductList", products)
-        );
-        this.$store.dispatch('getToast', { msg: '農産物を削除しました', color: 'success' });
-      } catch (error) {
-        this.$store.dispatch('getToast', { msg: '農産物を削除できませんでした', color: 'error' });
-      }
-    },
     formReset() {
       this.sentIt = false;
       this.$refs.new.reset();
     },
-    handleFavorites(id, type, method) {
-      this.$store.dispatch('handleProductFavorites', { id, type, method });
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
     },
-    async updateFavoritesAndUnfavorites() {
-      const [userFavorites, allFavorites, userUnfavorites, allUnfavorites] = await Promise.all([
-        this.$axios.$get(`api/v1/product_favorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_favorites'),
-        this.$axios.$get(`api/v1/product_unfavorites/${this.$auth.user.id}`),
-        this.$axios.$get('api/v1/product_unfavorites')
-      ]);
-
-      this.$store.dispatch('getProductFavorite', userFavorites);
-      this.$store.dispatch('getProductFavorites', allFavorites);
-      this.$store.dispatch('getProductUnfavorite', userUnfavorites);
-      this.$store.dispatch('getProductUnfavorites', allUnfavorites);
-    },
-    async addProductToCart(id, quantity) {
-      if (
-        !this.$store.state.user.login.zipcode ||
-        !this.$store.state.user.login.street ||
-        !this.$store.state.user.login.building
-      ) {
-        this.showNotification("まずは住所を編集してください", "error");
-        return;
-      }
-    
-      try {
-        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
-        const product = this.$store.state.product.list.find(product => product.id === id);
-        const productQuantity = Number(product.stock) - Number(quantity);
-    
-        if (!cart) {
-          await Promise.all([
-            this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
-            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
-          ]);
-        } else {
-          const cartQuantity = Number(cart.quantity) + Number(quantity);
-    
-          await Promise.all([
-            this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
-            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
-          ]);
-        }
-    
-        const [cartsResponse, productsResponse] = await Promise.all([
-          this.$axios.$get('/api/v1/carts'),
-          this.$axios.$get('/api/v1/products')
-        ]);
-    
-        this.$store.dispatch('getCarts', cartsResponse);
-        this.$store.dispatch('getProductList', productsResponse);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    },
-    buttonClass(actionType, id) {
-      if (actionType === 'favorite' && this.$store.state.product.favorite.some(item => item.id === id)) {
-        return 'likeColor';
-      } else if (actionType === 'unfavorite' && this.$store.state.product.unfavorite.some(item => item.id === id)) {
-        return 'dislikeColor';
-      } else {
-        return 'grey';
-      }
-    }
   }
 }
 </script>
-
-<style lang="scss">
-.likeColor {
-  background: #CC0000 !important;
-}
-.dislikeColor {
-  background: #336791 !important;
-}
-</style>

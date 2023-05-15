@@ -301,17 +301,6 @@ export default {
         this.updateOrderStatus(orderDetailId, statusToUpdate);
       }
     },
-    async processResponse(action, successMsg, errorMsg, successCallback) {
-      try {
-        await action();
-        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' });
-        if (successCallback) {
-          successCallback();
-        }
-      } catch (e) {
-        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
-      }
-    },
     async addOrderMessage() {
       if (!this.valid) return;
       const data = {
@@ -319,15 +308,14 @@ export default {
       };
       this.formReset();
 
-      await this.processResponse(
-        () => this.$axios.$post(`/api/v1/orders/${this.currentOrder.id}/order_messages`, data),
-        "メッセージを送信しました",
-        "メッセージを送信できませんでした",
-        async () => {
-          await this.refreshMessages();
-          await this.scrollBottom();
-        }
-      );
+      try {
+        await this.$axios.$post(`/api/v1/orders/${this.currentOrder.id}/order_messages`, data);
+        await this.refreshMessages();
+        await this.scrollBottom();
+        this.showNotification("メッセージを送信しました", "success");
+      } catch (error) {
+        this.showNotification("メッセージを送信できませんでした", "error");
+      }
     },
     formReset() {
       this.sentIt = false
@@ -345,6 +333,9 @@ export default {
           scrollableElement.scrollTop = scrollableElement.scrollHeight;
         }
       });
+    },
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
     },
   },
 };

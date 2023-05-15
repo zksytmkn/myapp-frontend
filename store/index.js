@@ -18,7 +18,7 @@ const createRelatedData = (items) => {
 
 export const state = () => ({
   styles: {
-    homeAppBarHeight: 56
+    beforeLoginAppBarHeight: 56
   },
   loggedIn: {
     homePath: {
@@ -37,7 +37,7 @@ export const state = () => ({
   product: {
     current: null,
     ...createRelatedData(['list', 'comment', 'favorite', 'unfavorite']),
-    searchCondition: createSearchCondition(['name', 'seller', 'text', 'type', 'prefecture']),
+    searchCondition: createSearchCondition(['name', 'seller', 'description', 'category', 'prefecture']),
   },
   post: {
     current: null,
@@ -78,6 +78,15 @@ export const getters = {
   })),
   cartTotalPrice: (state, getters) => getters.cartProducts.reduce((total, cart) => total + cart.price * cart.quantity * 1.1, 0),
   cartTotalQuantity: (state, getters) => getters.cartProducts.reduce((total, cart) => total + cart.quantity, 0),
+  buttonClass: state => (actionType, id) => {
+    if (actionType === 'favorite' && state.product.favorite.some(item => item.id === id)) {
+      return 'likeColor';
+    } else if (actionType === 'unfavorite' && state.product.unfavorite.some(item => item.id === id)) {
+      return 'dislikeColor';
+    } else {
+      return 'grey';
+    }
+  }
 };
 
 export const mutations = {
@@ -118,10 +127,10 @@ export const mutations = {
     const product = state.product.list.find(product => product.id === id);
     product.unfavorites_count--;
   },
-  setCarts (state, payload) {
+  setCart (state, payload) {
     state.carts = payload
   },
-  setOrders (state, payload) {
+  setOrder (state, payload) {
     state.order.list = payload
   },
   setOrderMessage (state, payload) {
@@ -209,12 +218,8 @@ export const mutations = {
   setRememberPath (state, payload) {
     state.loggedIn.rememberPath = payload
   },
-  setProductSearchCondition (state, { name, seller, text, category, prefecture }) {
-    state.product.searchCondition.name = name
-    state.product.searchCondition.seller = seller
-    state.product.searchCondition.text = text
-    state.product.searchCondition.category = category
-    state.product.searchCondition.prefecture = prefecture
+  setProductSearchCondition (state, payload) {
+    state.product.searchCondition = payload;
   },
   setPostSearchCondition (state, { name, poster, text }) {
     state.post.searchCondition.name = name
@@ -231,32 +236,44 @@ export const mutations = {
 
 export const actions = {
   getProductList({ commit }, products) {
-    products = products || [];
-    commit('setProductList', products);
-  },  
+    const processedProducts = products.map(product => ({
+      ...product.product,
+      favorites_count: product.favorites_count,
+      unfavorites_count: product.unfavorites_count,
+    }));
+    commit('setProductList', processedProducts);
+  },
   getCurrentProduct ({ commit }, { product, favoritesCount, unfavoritesCount }) {
     commit('setCurrentProduct', product)
     commit('setProductFavoritesCount', favoritesCount)
     commit('setProductUnfavoritesCount', unfavoritesCount)
   },
-  getProductComment ({ commit }, comments) {
-    comments = comments || []
-    commit('setProductComment', comments)
+  getProductFavorite ({ commit }, favorites) {
+    const processedFavorites = favorites.map(favorite => ({
+      ...favorite.product,
+      favorites_count: favorite.favorites_count,
+      unfavorites_count: favorite.unfavorites_count,
+    }));
+    commit('setProductFavorite', processedFavorites)
+  },
+  getProductUnfavorite ({ commit }, unfavorites) {
+    unfavorites = unfavorites || []
+    commit('setProductUnfavorite', unfavorites)
   },
   getCarts ({ commit }, carts) {
     carts = carts || []
-    commit('setCarts', carts) 
+    commit('setCart', carts) 
   },
   getOrders ({ commit }, orders) {
     orders = orders || []
-    commit('setOrders', orders)
+    commit('setOrder', orders)
+  },
+  getCurrentOrder ({ commit }, order) {
+    commit('setCurrentOrder', order) 
   },
   getOrderMessage ({ commit }, messages) {
     messages = messages || []
     commit('setOrderMessage', messages)
-  },
-  getCurrentOrder ({ commit }, order) {
-    commit('setCurrentOrder', order) 
   },
   getPostList ({ commit }, posts) {
     posts = posts || []
@@ -268,6 +285,14 @@ export const actions = {
   getPostComment ({ commit }, comments) {
     comments = comments || []
     commit('setPostComment', comments)
+  },
+  getPostFavorite ({ commit }, favorites) {
+    favorites = favorites || []
+    commit('setPostFavorite', favorites)
+  },
+  getPostUnfavorite ({ commit }, unfavorites) {
+    unfavorites = unfavorites || []
+    commit('setPostUnfavorite', unfavorites)
   },
   getCommunityList ({ commit }, communities) {
     communities = communities || []
@@ -322,8 +347,10 @@ export const actions = {
     params = params || {}
     commit('setRememberPath', { name, params })
   },
-  updateProductSearchCondition ({ commit }, { name, seller, text, category, prefecture }) {
-    commit('setProductSearchCondition', { name, seller, text, category, prefecture })
+  updateProductSearchCondition ({ commit }, { name, seller, description, category, prefecture }) {
+    category = category || []
+    prefecture = prefecture || []
+    commit('setProductSearchCondition', { name, seller, description, category, prefecture })
   },
   updatePostSearchCondition ({ commit }, { name, poster, text }) {
     commit('setPostSearchCondition', { name, poster, text })
@@ -331,59 +358,10 @@ export const actions = {
   updateCommunitySearchCondition ({ commit }, { name, maker, type, prefecture }) {
     commit('setCommunitySearchCondition', { name, maker, type, prefecture })
   },
-  async handleProductFavorites({ commit }, { id, type, method }) {
-    try {
-      // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
-      const [userFavorites, userUnfavorites] = await Promise.all([
-        this.$axios.$get('api/v1/product_favorites'),
-        this.$axios.$get('api/v1/product_unfavorites')
-      ]);
-
-      // APIリクエストを送信
-      if (method === 'delete') {
-        await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
-      } else {
-        await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
-      }
-
-      // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
-      const [updatedUserFavorites, updatedUserUnfavorites] = await Promise.all([
-        this.$axios.$get('api/v1/product_favorites'),
-        this.$axios.$get('api/v1/product_unfavorites')
-      ]);
-  
-      // Vuexストア内のデータを直接更新
-      if (method === 'post') {
-        if (type === 'favorite') {
-          if (userUnfavorites.some(unfavorite => unfavorite.id === id)) {
-            commit('decrementProductUnfavoritesCount', id);
-          }
-          commit('incrementProductFavoritesCount', id);
-        } else {
-          if (userFavorites.some(favorite => favorite.id === id)) {
-            commit('decrementProductFavoritesCount', id);
-          }
-          commit('incrementProductUnfavoritesCount', id);
-        }
-      } else if (method === 'delete') {
-        if (type === 'favorite') {
-          commit('decrementProductFavoritesCount', id);
-        } else {
-          commit('decrementProductUnfavoritesCount', id);
-        }
-      }
-  
-      commit('setProductFavorite', updatedUserFavorites);
-      commit('setProductUnfavorite', updatedUserUnfavorites);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-    }
-  },
   async handlePostFavorites({ commit }, { id, type, method }) {
     try {
       // ログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
-      const [userFavorites, userUnfavorites] = await Promise.all([
+      const [favorites, unfavorites] = await Promise.all([
         this.$axios.$get('api/v1/post_favorites'),
         this.$axios.$get('api/v1/post_unfavorites')
       ]);
@@ -396,7 +374,7 @@ export const actions = {
       }
 
       // 更新後のログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
-      const [updatedUserFavorites, updatedUserUnfavorites] = await Promise.all([
+      const [updatedFavorites, updatedUnfavorites] = await Promise.all([
         this.$axios.$get('api/v1/post_favorites'),
         this.$axios.$get('api/v1/post_unfavorites')
       ]);
@@ -404,12 +382,12 @@ export const actions = {
       // Vuexストア内のデータを直接更新
       if (method === 'post') {
         if (type === 'favorite') {
-          if (userUnfavorites.some(unfavorite => unfavorite.id === id)) {
+          if (unfavorites.some(unfavorite => unfavorite.id === id)) {
             commit('decrementPostUnfavoritesCount', id);
           }
           commit('incrementPostFavoritesCount', id);
         } else {
-          if (userFavorites.some(favorite => favorite.id === id)) {
+          if (favorites.some(favorite => favorite.id === id)) {
             commit('decrementPostFavoritesCount', id);
           }
           commit('incrementPostUnfavoritesCount', id);
@@ -422,8 +400,8 @@ export const actions = {
         }
       }
   
-      commit('setPostFavorite', updatedUserFavorites);
-      commit('setPostUnfavorite', updatedUserUnfavorites);
+      commit('setPostFavorite', updatedFavorites);
+      commit('setPostUnfavorite', updatedUnfavorites);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);

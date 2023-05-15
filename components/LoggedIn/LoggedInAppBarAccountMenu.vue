@@ -69,7 +69,7 @@
         </v-list-item-title>
       </v-list-item>
       <v-list-item
-        to="/logout"
+        @click="logout"
       >
         <v-list-item-icon
           class="mr-2"
@@ -87,3 +87,27 @@
     </v-list>
   </v-menu>
 </template>
+
+<script>
+export default {
+  methods: {
+    async logout() {
+      try {
+        await this.$auth.logout()
+        // ログアウト成功のトーストメッセージを表示
+        this.$store.dispatch('getToast', {
+          msg: 'ログアウトしました',
+          color: 'success',
+        })
+        this.$router.push('/')
+      } catch (error) {
+        // ログアウト失敗のトーストメッセージを表示
+        this.$store.dispatch('getToast', {
+          msg: 'ログアウトできませんでした',
+          color: 'error',
+        })
+      }
+    },
+  },
+}
+</script>

@@ -101,7 +101,6 @@
 <script>
 const url = '/api/search?zipcode='
 export default {
-  layout: 'logged-in',
   data() {
     return {
       valid: false,

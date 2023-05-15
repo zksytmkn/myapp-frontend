@@ -124,7 +124,7 @@
                   <v-card-actions
                     style="width:30%;"
                   >
-                    <logged-in-app-community-member />
+                    <community-member />
                     <v-btn
                       class="font-weight-bold ml-2"
                       color="teal"
@@ -273,7 +273,6 @@
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout: 'logged-in',
   middleware: ['get-user-list'],
   data () {
     return {
@@ -312,42 +311,38 @@ export default {
     },
   },
   methods: {
-    async processResponse(action, successMsg, errorMsg, successCallback) {
-      try {
-        await action();
-        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' });
-        if (successCallback) {
-          successCallback();
-        }
-      } catch (e) {
-        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
-      }
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
     },
-    deleteCurrentCommunity(id) {
-      this.processResponse(
-        () => this.$axios.$delete(`/api/v1/communities/${id}`),
-        'コミュニティを削除しました',
-        'コミュニティを削除できませんでした',
-        () => this.$router.go(-1)
-      );
+    async deleteCurrentCommunity(id) {
+      try {
+        if (!confirm('本当にこのコミュニティを削除しますか？')) {
+          return;
+        }
+
+        await this.$axios.$delete(`/api/v1/communities/${id}`);
+        this.showNotification('コミュニティを削除しました', 'success');
+        this.$router.go(-1);
+      } catch (error) {
+        this.showNotification('コミュニティを削除できませんでした', 'error');
+      }
     },
     async addCommunityMessage() {
       if (!this.valid) return;
 
-      await this.processResponse(
-        () => this.$axios.$post(`/api/v1/communities/${this.currentCommunity.id}/community_messages`, {
+      try {
+        await this.$axios.$post(`/api/v1/communities/${this.currentCommunity.id}/community_messages`, {
           community_message: {
             content: this.inputted.msg
           }
-        }),
-        "メッセージを送信しました",
-        "メッセージを送信できませんでした",
-        async () => {
-          await this.refreshMessages();
-          await this.scrollBottom();
-          this.formReset();
-        }
-      );
+        });
+        this.showNotification("メッセージを送信しました", "success");
+        await this.refreshMessages();
+        await this.scrollBottom();
+        this.formReset();
+      } catch (error) {
+        this.showNotification("メッセージを送信できませんでした", "error");
+      }
     },
     formReset() {
       this.sentIt = false
@@ -358,52 +353,48 @@ export default {
       this.$store.dispatch('getCommunityMessage', messages);
     },
     async participateInCommunity(communityId) {
-      await this.processResponse(
-        () => this.$axios.$post('/api/v1/participations', {
-          user_id: this.$auth.user.id,
-          community_id: communityId
-        }),
-        'コミュニティに参加しました',
-        'コミュニティに参加できませんでした',
-        async () => {
-          const [participations, community] = await Promise.all([
-            this.$axios.$get('/api/v1/participations'),
-            this.$axios.$get(`/api/v1/communities/${communityId}`),
-          ]);
-          this.$store.dispatch('getParticipationCommunity', participations);
-          this.$store.dispatch('getCurrentCommunity', community);
-        }
-      );
+      try {
+        await this.$axios.$post('/api/v1/participations', { community_id: communityId });
+        this.showNotification('コミュニティに参加しました', 'success');
+
+        const [participations, community] = await Promise.all([
+          this.$axios.$get('/api/v1/participations'),
+          this.$axios.$get(`/api/v1/communities/${communityId}`),
+        ]);
+        this.$store.dispatch('getParticipationCommunity', participations);
+        this.$store.dispatch('getCurrentCommunity', community);
+      } catch (error) {
+        this.showNotification('コミュニティに参加できませんでした', 'error');
+      }
     },
     async withdrawCommunity(communityId) {
-      await this.processResponse(
-        () => this.$axios.$delete(`/api/v1/participations/${communityId}/user/${this.$auth.user.id}`),
-        'コミュニティを退会しました',
-        'コミュニティを退会できませんでした',
-        async () => {
-          const [participations, community] = await Promise.all([
-            this.$axios.$get('/api/v1/participations'),
-            this.$axios.$get(`/api/v1/communities/${communityId}`),
-          ]);
-          this.$store.dispatch('getParticipationCommunity', participations);
-          this.$store.dispatch('getCurrentCommunity', community);
-        }
-      );
+      try {
+        await this.$axios.$delete(`/api/v1/participations/${communityId}`);
+        this.showNotification('コミュニティを退会しました', 'success');
+
+        const [participations, community] = await Promise.all([
+          this.$axios.$get('/api/v1/participations'),
+          this.$axios.$get(`/api/v1/communities/${communityId}`),
+        ]);
+        this.$store.dispatch('getParticipationCommunity', participations);
+        this.$store.dispatch('getCurrentCommunity', community);
+      } catch (error) {
+        this.showNotification('コミュニティを退会できませんでした', 'error');
+      }
     },
     async inviteUser(userId, communityId) {
-      await this.processResponse(
-        () => this.$axios.$post('/api/v1/invitations', {
-          inviting_id: this.$auth.user.id,
+      try {
+        await this.$axios.$post('/api/v1/invitations', {
           invited_id: userId,
           community_id: communityId
-        }),
-        'コミュニティに招待しました',
-        'コミュニティに招待できませんでした',
-        async () => {
-          const community = await this.$axios.$get(`/api/v1/communities/${communityId}`);
-          this.$store.dispatch('getCurrentCommunity', community);
-        }
-      );
+        });
+        this.showNotification('コミュニティに招待しました', 'success');
+
+        const community = await this.$axios.$get(`/api/v1/communities/${communityId}`);
+        this.$store.dispatch('getCurrentCommunity', community);
+      } catch (error) {
+        this.showNotification('コミュニティに招待できませんでした', 'error');
+      }
     },
     scrollBottom() {
       this.$nextTick(() => {

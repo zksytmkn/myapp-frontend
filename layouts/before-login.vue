@@ -5,14 +5,15 @@
       <app-toaster />
       <nuxt />
     </v-main>
-    <app-policy />
+    <app-footer-top />
     <app-footer />
   </v-app>
 </template>
 
 <script>
+import AppFooter from '../components/App/AppFooter.vue'
 export default {
-  name: 'LayoutsBeforeLogin',
+  components: { AppFooter },
   middleware: ['logged-in-redirect']
 }
 </script>

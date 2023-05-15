@@ -186,46 +186,38 @@ export default {
     }
   },
   methods: {
-    async processResponse(action, successMsg, errorMsg, successCallback) {
+    showNotification(msg, color) {
+      this.$store.dispatch('getToast', { msg, color });
+    },
+    async addRelationship(id) {
+      const data = {
+        followed_id: id
+      };
+
       try {
-        await action()
-        this.$store.dispatch('getToast', { msg: successMsg, color: 'success' })
-        if (successCallback) {
-          successCallback()
-        }
-      } catch (e) {
-        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' })
+        await this.$axios.$post('/api/v1/relationships', data);
+        this.showNotification('フォローしました', 'success');
+
+        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
+        this.$store.dispatch('getUserRelationship', relationship);
+      } catch (error) {
+        this.showNotification('フォローできませんでした', 'error');
       }
     },
-    addRelationship(id) {
+    async deleteRelationship(id) {
       const data = {
         followed_id: id
       };
 
-      const action = () => this.$axios.$post('/api/v1/relationships', data);
-      const successMsg = 'フォローしました';
-      const errorMsg = 'フォローできませんでした';
-      const successCallback = async () => {
+      try {
+        await this.$axios.$delete('/api/v1/relationships', { data });
+        this.showNotification('フォローを解除しました', 'success');
+
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
         this.$store.dispatch('getUserRelationship', relationship);
-      };
-
-      this.processResponse(action, successMsg, errorMsg, successCallback);
-    },
-    deleteRelationship(id) {
-      const data = {
-        followed_id: id
-      };
-
-      const action = () => this.$axios.$delete('/api/v1/relationships', { data });
-      const successMsg = 'フォローを解除しました';
-      const errorMsg = 'フォローを解除できませんでした';
-      const successCallback = async () => {
-        const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
-        this.$store.dispatch('getUserRelationship', relationship);
-      };
-
-      this.processResponse(action, successMsg, errorMsg, successCallback);
+      } catch (error) {
+        this.showNotification('フォローを解除できませんでした', 'error');
+      }
     },
     updateProductSearchCondition() {
       this.$store.dispatch('updateProductSearchCondition', {
