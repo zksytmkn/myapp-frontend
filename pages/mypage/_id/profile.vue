@@ -75,7 +75,7 @@
                     <v-list>
                       <v-list-item
                         to="/products/search"
-                        @click="updateProductSearchCondition"
+                        @click="setProductSearchCondition"
                       >
                         <v-list-item-avatar
                           left
@@ -95,7 +95,7 @@
 
                       <v-list-item
                         to="/posts/search"
-                        @click="updatePostSearchCondition"
+                        @click="setPostSearchCondition"
                       >
                         <v-list-item-avatar
                           left
@@ -115,7 +115,7 @@
 
                       <V-list-item
                         to="/communities/search"
-                        @click="updateCommunitySearchCondition"
+                        @click="setCommunitySearchCondition"
                       >
                         <v-list-item-avatar
                           left
@@ -186,9 +186,6 @@ export default {
     }
   },
   methods: {
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
-    },
     async addRelationship(id) {
       const data = {
         followed_id: id
@@ -196,12 +193,12 @@ export default {
 
       try {
         await this.$axios.$post('/api/v1/relationships', data);
-        this.showNotification('フォローしました', 'success');
+        this.$store.dispatch('getToast', { msg: 'フォローしました', color: 'success' });
 
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
         this.$store.dispatch('getUserRelationship', relationship);
       } catch (error) {
-        this.showNotification('フォローできませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'フォローできませんでした', color: 'error' });
       }
     },
     async deleteRelationship(id) {
@@ -211,26 +208,26 @@ export default {
 
       try {
         await this.$axios.$delete('/api/v1/relationships', { data });
-        this.showNotification('フォローを解除しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'フォローを解除しました', color: 'success' });
 
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
         this.$store.dispatch('getUserRelationship', relationship);
       } catch (error) {
-        this.showNotification('フォローを解除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'フォローを解除できませんでした', color: 'error' });
       }
     },
-    updateProductSearchCondition() {
-      this.$store.dispatch('updateProductSearchCondition', {
+    setProductSearchCondition() {
+      this.$store.commit('setProductSearchCondition', {
         seller: this.$store.state.user.current.name
       });
     },
-    updatePostSearchCondition() {
-      this.$store.dispatch('updatePostSearchCondition', {
+    setPostSearchCondition() {
+      this.$store.commit('setPostSearchCondition', {
         poster: this.$store.state.user.current.name
       });
     },
-    updateCommunitySearchCondition() {
-      this.$store.dispatch('updateCommunitySearchCondition', {
+    setCommunitySearchCondition() {
+      this.$store.commit('setCommunitySearchCondition', {
         maker: this.$store.state.user.current.name
       });
     }

@@ -137,14 +137,11 @@ export default {
         await this.$axios.$post('/api/v1/orders', data);
 
         const cartsResponse = await this.$axios.$get('/api/v1/carts');
-        this.$store.dispatch('getCarts', cartsResponse);
-        this.showNotification("農産物を購入しました", "success");
+        this.$store.commit('setCart', cartsResponse);
+        this.$store.dispatch('getToast', { msg: '農産物を購入しました', color: 'success' });
       } catch (error) {
-        this.showNotification("農産物を購入できませんでした", "error");
+        this.$store.dispatch('getToast', { msg: '農産物を購入できませんでした', color: 'error' });
       }
-    },
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
     },
   },
 }

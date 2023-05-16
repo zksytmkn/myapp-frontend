@@ -207,16 +207,8 @@ export default {
     async handleFavorites(id, type, method) {
       try {
         // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
-        const [favoriteResponses, unfavoriteResponses] = await Promise.all([
-          this.$axios.$get('api/v1/product_favorites'),
-          this.$axios.$get('api/v1/product_unfavorites'),
-        ]);
-    
-        const initialFavoriteData = favoriteResponses.map(productWithFavorites => ({
-          ...productWithFavorites.product,
-          favorites_count: productWithFavorites.favorites_count,
-          unfavorites_count: productWithFavorites.unfavorites_count
-        }));
+        const favoriteResponses = this.$store.state.product.favorite;
+        const unfavoriteResponses = this.$store.state.product.unfavorite;
 
         // APIリクエストを送信
         if (method === 'delete') {
@@ -240,7 +232,7 @@ export default {
             }
             this.$store.commit('incrementProductFavoritesCount', id);
           } else {
-            if (initialFavoriteData.some(favorite => favorite.id === id)) {
+            if (favoriteResponses.some(favorite => favorite.id === id)) {
               this.$store.commit('decrementProductFavoritesCount', id);
             }
             this.$store.commit('incrementProductUnfavoritesCount', id);
@@ -255,7 +247,7 @@ export default {
     
         this.$store.dispatch('getProductFavorite', updatedFavoriteResponses);
         this.$store.dispatch('getProductUnfavorite', updatedUnfavoriteResponses);
-        this.$store.dispatch('getCarts', updatedCartResponses);
+        this.$store.commit('setCart', updatedCartResponses);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
@@ -264,21 +256,19 @@ export default {
     async removeProductFromCart(cartId) {
       try {
         await this.$axios.$delete(`/api/v1/carts/${cartId}`);
+        this.$store.dispatch('getToast', { msg: 'カートから削除しました', color: 'success' });
 
         const response = await this.$axios.$get('/api/v1/carts');
 
-        this.$store.dispatch('getCarts', response);
+        this.$store.commit('setCart', response);
       } catch (error) {
         if (error.response && error.response.status === 404) {
-          this.showNotification("カートから削除できませんでした", "error");
+          this.$store.dispatch('getToast', { msg: 'カートから削除できませんでした', color: 'error' });
         } else {
           // eslint-disable-next-line no-console
           console.log(error.message);
         }
       }
-    },
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
     },
   },
 }

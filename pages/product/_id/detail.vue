@@ -57,9 +57,7 @@
                         </v-btn>
                         <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
                           {{
-                            $store.state.product[actionType + 's'].filter(
-                              item => item.product_id === currentProduct.id
-                            ).length
+                            actionType === 'favorite' ? currentProduct.favorites_count : currentProduct.unfavorites_count
                           }}
                         </span>
                       </div>
@@ -115,7 +113,7 @@
                         <v-select
                           v-if="currentProduct.stock"
                           ref="quantitySelect"
-                          v-model="selectedQuantity"
+                          v-model="selectedQuantity[currentProduct.id]"
                           class="mt-6"
                           :items="[...Array(currentProduct.stock).keys()].map(i => ++i)"
                           solo
@@ -267,6 +265,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import noImg from '@/assets/images/logged-in/no.png'
 
 export default {
@@ -277,7 +276,7 @@ export default {
       cmt: false,
       cmtRules: [v => !!v || ''],
       inputted: { comment: '' },
-      selectedQuantity: 1
+      selectedQuantity: {}
     }
   },
   computed: {
@@ -285,16 +284,18 @@ export default {
       return this.$store.state.product.current
     },
     comments() {
-      return Array.from(this.$store.state.product.comment).sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return Array.from(this.$store.state.product.comment).sort((a, b) => {
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
+      });
     },
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
+    ...mapGetters(['buttonClass']),
   },
   methods: {
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
-    },
     async deleteCurrentProduct(id) {
       if (!confirm('本当にこの農産物を削除しますか？')) {
         return;
@@ -302,10 +303,10 @@ export default {
 
       try {
         await this.$axios.$delete(`/api/v1/products/${id}`);
-        this.showNotification('農産物を削除しました', 'success');
+        this.$store.dispatch('getToast', { msg: '農産物を削除しました', color: 'success' });
         this.$router.go(-1);
       } catch (error) {
-        this.showNotification('農産物を削除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: '農産物を削除できませんでした', color: 'error' });
       }
     },
     async addProductComment() {
@@ -320,10 +321,10 @@ export default {
 
       try {
         await this.$axios.$post(`/api/v1/products/${this.currentProduct.id}/product_comments`, data);
-        this.showNotification('コメントしました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コメントしました', color: 'success' });
         this.refreshComments();
       } catch (error) {
-        this.showNotification('コメントできませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コメントできませんでした', color: 'error' });
       }
     },
     formReset() {
@@ -333,14 +334,58 @@ export default {
     async deleteProductComment(id) {
       try {
         await this.$axios.$delete(`/api/v1/products/${this.currentProduct.id}/product_comments/${id}`);
-        this.showNotification('コメントを削除しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コメントを削除しました', color: 'success' });
         this.refreshComments();
       } catch (error) {
-        this.showNotification('コメントを削除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コメントを削除できませんでした', color: 'error' });
       }
     },
-    handleFavorites(id, type, method) {
-      this.$store.dispatch('handleProductFavorites', { id, type, method });
+    async handleFavorites(id, type, method) {
+      try {
+        // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+        const favoriteResponses = this.$store.state.product.favorite;
+        const unfavoriteResponses = this.$store.state.product.unfavorite;
+
+        // APIリクエストを送信
+        if (method === 'delete') {
+          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
+        } else {
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
+        }
+
+        // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
+        const [updatedFavoriteResponses, updatedUnfavoriteResponses] = await Promise.all([
+          this.$axios.$get('api/v1/product_favorites'),
+          this.$axios.$get('api/v1/product_unfavorites')
+        ]);
+
+        // Vuexストア内のデータを直接更新
+        if (method === 'post') {
+          if (type === 'favorite') {
+            if (unfavoriteResponses.some(unfavorite => unfavorite.id === id)) {
+              this.$store.commit('decrementCurrentProductUnfavoritesCount', id);
+            }
+            this.$store.commit('incrementCurrentProductFavoritesCount', id);
+          } else {
+            if (favoriteResponses.some(favorite => favorite.id === id)) {
+              this.$store.commit('decrementCurrentProductFavoritesCount', id);
+            }
+            this.$store.commit('incrementCurrentProductUnfavoritesCount', id);
+          }
+        } else if (method === 'delete') {
+          if (type === 'favorite') {
+            this.$store.commit('decrementCurrentProductFavoritesCount', id);
+          } else {
+            this.$store.commit('decrementCurrentProductUnfavoritesCount', id);
+          }
+        }
+
+        this.$store.dispatch('getProductFavorite', updatedFavoriteResponses);
+        this.$store.dispatch('getProductUnfavorite', updatedUnfavoriteResponses);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/products/${this.currentProduct.id}/product_comments`);
@@ -354,59 +399,8 @@ export default {
       if (category === "果物") return "mdi-food-apple-outline";
       return "";
     },
-    async addProductToCart(id) {
-      const quantity = this.selectedQuantity;
-
-      if (
-        !this.$store.state.user.login.zipcode ||
-        !this.$store.state.user.login.street ||
-        !this.$store.state.user.login.building
-      ) {
-        this.showNotification("まずは住所を編集してください", "error");
-        return;
-      }
-
-      try {
-        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
-        const product = this.$store.state.product.list.find(product => product.id === id);
-        const productQuantity = Number(product.stock) - Number(quantity);
-
-        if (!cart) {
-          await Promise.all([
-            this.$axios.$post('/api/v1/carts', { product_id: id, quantity }),
-            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
-          ]);
-        } else {
-          const cartQuantity = Number(cart.quantity) + Number(quantity);
-
-          await Promise.all([
-            this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity }),
-            this.$axios.$patch(`/api/v1/products/${id}`, { stock: productQuantity })
-          ]);
-        }
-
-        const [cartsResponse, productsResponse] = await Promise.all([
-          this.$axios.$get('/api/v1/carts'),
-          this.$axios.$get('/api/v1/products')
-        ]);
-
-        this.$store.dispatch('getCarts', cartsResponse);
-        this.$store.dispatch('getProductList', productsResponse);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
-    },
-    buttonClass() {
-      return (actionType) => {
-        if (actionType === 'favorites' && this.$store.state.product.favorite.some(item => item.id === this.currentProduct.id)) {
-          return 'likeColor';
-        } else if (actionType === 'unfavorites' && this.$store.state.product.unfavorite.some(item => item.id === this.currentProduct.id)) {
-          return 'dislikeColor';
-        } else {
-        return 'grey';
-        }
-      };
+    addProductToCart(id, quantity) {
+      this.$store.dispatch('addProductToCart', { id, quantity });
     },
   }
 }

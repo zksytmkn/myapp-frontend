@@ -73,9 +73,6 @@ export default {
     }
   },
   methods: {
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
-    },
     async deleteUser() {
       if (!confirm('本当にこのアカウントを削除しますか？')) {
         return;
@@ -83,10 +80,10 @@ export default {
 
       try {
         await this.$axios.$delete(`/api/v1/users`);
-        this.showNotification('アカウントを削除しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'アカウントを削除しました', color: 'success' });
         this.$router.push('/logout');
       } catch (error) {
-        this.showNotification('アカウントを削除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'アカウントを削除できませんでした', color: 'error' });
       }
     }
   }

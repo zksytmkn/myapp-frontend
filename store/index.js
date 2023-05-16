@@ -34,6 +34,8 @@ export const state = () => ({
       'login'
     ]
   },
+  loginType: null,
+  logoutSuccess: false,
   product: {
     current: null,
     ...createRelatedData(['list', 'comment', 'favorite', 'unfavorite']),
@@ -68,7 +70,7 @@ export const state = () => ({
   order: {
     current: null,
     ...createRelatedData(['list', 'message'])
-  }
+  },
 })
 
 export const getters = {
@@ -113,6 +115,14 @@ export const mutations = {
     const product = state.product.list.find(product => product.id === id);
     product.favorites_count--;
   },
+  incrementCurrentProductFavoritesCount(state) {
+    const product = state.product.current
+    product.favorites_count++;
+  },
+  decrementCurrentProductFavoritesCount(state) {
+    const product = state.product.current
+    product.favorites_count--;
+  },
   setProductUnfavorite (state, payload) {
     state.product.unfavorite = payload
   },
@@ -125,6 +135,14 @@ export const mutations = {
   },
   decrementProductUnfavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
+    product.unfavorites_count--;
+  },
+  incrementCurrentProductUnfavoritesCount(state) {
+    const product = state.product.current
+    product.unfavorites_count++;
+  },
+  decrementCurrentProductUnfavoritesCount(state) {
+    const product = state.product.current
     product.unfavorites_count--;
   },
   setCart (state, payload) {
@@ -221,17 +239,18 @@ export const mutations = {
   setProductSearchCondition (state, payload) {
     state.product.searchCondition = payload;
   },
-  setPostSearchCondition (state, { name, poster, text }) {
-    state.post.searchCondition.name = name
-    state.post.searchCondition.poster = poster
-    state.post.searchCondition.text = text
+  setPostSearchCondition (state, payload) {
+    state.post.searchCondition = payload;
   },
-  setCommunitySearchCondition (state, { name, maker, type, prefecture }) {
-    state.community.searchCondition.name = name
-    state.community.searchCondition.maker = maker
-    state.community.searchCondition.type = type
-    state.community.searchCondition.prefecture = prefecture
-  }
+  setCommunitySearchCondition (state, payload) {
+    state.community.searchCondition = payload
+  },
+  setLoginType(state, type) {
+    state.loginType = type;
+  },
+  setLogoutSuccess(state, payload) {
+    state.logoutSuccess = payload;
+  },
 }
 
 export const actions = {
@@ -243,11 +262,14 @@ export const actions = {
     }));
     commit('setProductList', processedProducts);
   },
-  getCurrentProduct ({ commit }, { product, favoritesCount, unfavoritesCount }) {
-    commit('setCurrentProduct', product)
-    commit('setProductFavoritesCount', favoritesCount)
-    commit('setProductUnfavoritesCount', unfavoritesCount)
-  },
+  getCurrentProduct ({ commit }, currentProduct) {
+    const processedCurrentProduct = {
+      ...currentProduct.product,
+      favorites_count: currentProduct.favorites_count,
+      unfavorites_count: currentProduct.unfavorites_count,
+    };
+    commit('setCurrentProduct', processedCurrentProduct);
+  },  
   getProductFavorite ({ commit }, favorites) {
     const processedFavorites = favorites.map(favorite => ({
       ...favorite.product,
@@ -259,10 +281,6 @@ export const actions = {
   getProductUnfavorite ({ commit }, unfavorites) {
     unfavorites = unfavorites || []
     commit('setProductUnfavorite', unfavorites)
-  },
-  getCarts ({ commit }, carts) {
-    carts = carts || []
-    commit('setCart', carts) 
   },
   getOrders ({ commit }, orders) {
     orders = orders || []
@@ -347,16 +365,39 @@ export const actions = {
     params = params || {}
     commit('setRememberPath', { name, params })
   },
-  updateProductSearchCondition ({ commit }, { name, seller, description, category, prefecture }) {
-    category = category || []
-    prefecture = prefecture || []
-    commit('setProductSearchCondition', { name, seller, description, category, prefecture })
-  },
-  updatePostSearchCondition ({ commit }, { name, poster, text }) {
-    commit('setPostSearchCondition', { name, poster, text })
-  },
-  updateCommunitySearchCondition ({ commit }, { name, maker, type, prefecture }) {
-    commit('setCommunitySearchCondition', { name, maker, type, prefecture })
+  async addProductToCart({ state, commit, dispatch }, { id, quantity }) {
+    if (
+      !state.user.login.zipcode ||
+      !state.user.login.street ||
+      !state.user.login.building
+    ) {
+      dispatch('getToast', { msg: "まずは住所を編集してください", color: "error" });
+      return;
+    }
+  
+    try {
+      const cart = state.carts.find(cart => cart.product_id === id);
+  
+      if (!cart) {
+        await this.$axios.$post('/api/v1/carts', { product_id: id, quantity });
+      } else {
+        const cartQuantity = Number(cart.quantity) + Number(quantity);
+        await this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity });
+      }
+  
+      const [carts, products] = await Promise.all([
+        this.$axios.$get('/api/v1/carts'),
+        this.$axios.$get('/api/v1/products')
+      ]);
+  
+      commit('setCart', carts);
+      dispatch('getProductList', products);
+      dispatch('getToast', { msg: "カートに入れました", color: "success" });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+      dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
+    }
   },
   async handlePostFavorites({ commit }, { id, type, method }) {
     try {

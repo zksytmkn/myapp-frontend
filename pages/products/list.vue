@@ -24,5 +24,26 @@ export default {
       });
     }
   },
+  mounted() {
+    const loginType = this.$store.state.loginType;
+  
+    if (loginType) {
+      let message = '';
+  
+      switch (loginType) {
+        case 'user':
+          message = 'ログインしました';
+          break;
+        case 'guest':
+          message = 'ゲストログインしました';
+          break;
+      }
+  
+      this.$store.dispatch('getToast', { msg: message, color: 'success' });
+  
+      // メッセージ表示後、loginTypeをnullにリセット
+      this.$store.commit('setLoginType', null);
+    }
+  }
 }
 </script>

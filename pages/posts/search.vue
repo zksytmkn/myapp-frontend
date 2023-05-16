@@ -253,7 +253,7 @@ export default {
       }
     },
     updateSearchCondition() {
-      this.$store.dispatch('updatePostSearchCondition', {
+      this.$store.commit('setPostSearchCondition', {
         title: this.searched.title,
         poster: this.searched.poster,
         body: this.searched.body,

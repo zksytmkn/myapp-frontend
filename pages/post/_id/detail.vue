@@ -231,9 +231,6 @@ export default {
     },
   },
   methods: {
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
-    },
     async deleteCurrentPost(id) {
       if (!confirm('本当にこのつぶやきを削除しますか？')) {
         return;
@@ -241,10 +238,10 @@ export default {
 
       try {
         await this.$axios.$delete(`/api/v1/posts/${id}`);
-        this.showNotification('つぶやきを削除しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'つぶやきを削除しました', color: 'success' });
         this.$router.go(-1);
       } catch (error) {
-        this.showNotification('つぶやきを削除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'つぶやきを削除できませんでした', color: 'error' });
       }
     },
     async addPostComment() {
@@ -259,10 +256,10 @@ export default {
 
       try {
         await this.$axios.$post(`/api/v1/posts/${this.currentPost.id}/post_comments`, data);
-        this.showNotification('コメントしました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コメントしました', color: 'success' });
         this.refreshComments();
       } catch (error) {
-        this.showNotification('コメントできませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コメントできませんでした', color: 'error' });
       }
     },
     formReset() {
@@ -272,10 +269,10 @@ export default {
     async deletePostComment(id) {
       try {
         await this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}/post_comments/${id}`);
-        this.showNotification('コメントを削除しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コメントを削除しました', color: 'success' });
         this.refreshComments();
       } catch (error) {
-        this.showNotification('コメントを削除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コメントを削除できませんでした', color: 'error' });
       }
     },
     handleFavorites(id, type, method) {

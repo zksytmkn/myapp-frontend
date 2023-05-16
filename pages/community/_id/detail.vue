@@ -311,9 +311,6 @@ export default {
     },
   },
   methods: {
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
-    },
     async deleteCurrentCommunity(id) {
       try {
         if (!confirm('本当にこのコミュニティを削除しますか？')) {
@@ -321,10 +318,11 @@ export default {
         }
 
         await this.$axios.$delete(`/api/v1/communities/${id}`);
-        this.showNotification('コミュニティを削除しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コミュニティを削除しました', color: 'success' });
+        
         this.$router.go(-1);
       } catch (error) {
-        this.showNotification('コミュニティを削除できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コミュニティを削除できませんでした', color: 'error' });
       }
     },
     async addCommunityMessage() {
@@ -336,12 +334,12 @@ export default {
             content: this.inputted.msg
           }
         });
-        this.showNotification("メッセージを送信しました", "success");
+        this.$store.dispatch('getToast', { msg: 'メッセージを送信しました', color: 'success' });
         await this.refreshMessages();
         await this.scrollBottom();
         this.formReset();
       } catch (error) {
-        this.showNotification("メッセージを送信できませんでした", "error");
+        this.$store.dispatch('getToast', { msg: 'メッセージを送信できませんでした', color: 'error' });
       }
     },
     formReset() {
@@ -355,7 +353,7 @@ export default {
     async participateInCommunity(communityId) {
       try {
         await this.$axios.$post('/api/v1/participations', { community_id: communityId });
-        this.showNotification('コミュニティに参加しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コミュニティに参加しました', color: 'success' });
 
         const [participations, community] = await Promise.all([
           this.$axios.$get('/api/v1/participations'),
@@ -364,13 +362,13 @@ export default {
         this.$store.dispatch('getParticipationCommunity', participations);
         this.$store.dispatch('getCurrentCommunity', community);
       } catch (error) {
-        this.showNotification('コミュニティに参加できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コミュニティに参加できませんでした', color: 'error' });
       }
     },
     async withdrawCommunity(communityId) {
       try {
         await this.$axios.$delete(`/api/v1/participations/${communityId}`);
-        this.showNotification('コミュニティを退会しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コミュニティを退会しました', color: 'success' });
 
         const [participations, community] = await Promise.all([
           this.$axios.$get('/api/v1/participations'),
@@ -379,7 +377,7 @@ export default {
         this.$store.dispatch('getParticipationCommunity', participations);
         this.$store.dispatch('getCurrentCommunity', community);
       } catch (error) {
-        this.showNotification('コミュニティを退会できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コミュニティを退会できませんでした', color: 'error' });
       }
     },
     async inviteUser(userId, communityId) {
@@ -388,12 +386,12 @@ export default {
           invited_id: userId,
           community_id: communityId
         });
-        this.showNotification('コミュニティに招待しました', 'success');
+        this.$store.dispatch('getToast', { msg: 'コミュニティに招待しました', color: 'success' });
 
         const community = await this.$axios.$get(`/api/v1/communities/${communityId}`);
         this.$store.dispatch('getCurrentCommunity', community);
       } catch (error) {
-        this.showNotification('コミュニティに招待できませんでした', 'error');
+        this.$store.dispatch('getToast', { msg: 'コミュニティに招待できませんでした', color: 'error' });
       }
     },
     scrollBottom() {

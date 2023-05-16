@@ -75,11 +75,10 @@ export default {
     },
     authSuccessful (response) {
       this.$auth.login(response)
+      this.$store.commit('setLoginType', 'user');
       this.$router.push(this.redirectPath)
       // 記憶ルートを初期値に戻す
       this.$store.dispatch('getRememberPath', this.loggedInHomePath)
-      // ログイン成功のトーストメッセージを表示
-      this.$store.dispatch('getToast', { msg: 'ログインしました', color: 'success' });
     },
     authFailure (error) {
       let msg = 'ログインできませんでした';

@@ -213,7 +213,7 @@ export default {
   },
   methods: {
     updateSearchCondition() {
-      this.$store.dispatch('updateCommunitySearchCondition', { 
+      this.$store.commit('setCommunitySearchCondition', { 
         name: this.searched.name, 
         maker: this.searched.maker, 
         description: this.searched.description 

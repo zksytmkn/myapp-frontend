@@ -312,9 +312,9 @@ export default {
         await this.$axios.$post(`/api/v1/orders/${this.currentOrder.id}/order_messages`, data);
         await this.refreshMessages();
         await this.scrollBottom();
-        this.showNotification("メッセージを送信しました", "success");
+        this.$store.dispatch('getToast', { msg: 'メッセージを送信しました', color: 'success' });
       } catch (error) {
-        this.showNotification("メッセージを送信できませんでした", "error");
+        this.$store.dispatch('getToast', { msg: 'メッセージを送信できませんでした', color: 'error' });
       }
     },
     formReset() {
@@ -333,9 +333,6 @@ export default {
           scrollableElement.scrollTop = scrollableElement.scrollHeight;
         }
       });
-    },
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
     },
   },
 };

@@ -230,7 +230,7 @@ export default {
   },
   methods: {
     updateSearchCondition() {
-      this.$store.dispatch('updateProductSearchCondition', {
+      this.$store.commit('setProductSearchCondition', {
         name: this.searched.name,
         seller: this.searched.seller,
         description: this.searched.description,

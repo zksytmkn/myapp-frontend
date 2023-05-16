@@ -111,10 +111,8 @@ export default {
     },
     authSuccessful (response) {
       this.$auth.login(response)
+      this.$store.commit('setLoginType', 'guest');
       this.$router.push(this.redirectPath)
-      const msg = 'ゲストログインしました'
-      const color = 'success'
-      return this.$store.dispatch('getToast', { msg, color })
     },
     authFailure ({ response }) {
       if (response) {

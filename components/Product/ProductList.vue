@@ -187,19 +187,27 @@ export default {
     },
   },
   methods: {
+    async deleteProduct(id) {
+      try {
+        if (!confirm('本当にこの農産物を削除しますか？')) {
+          return;
+        }
+
+        await this.$axios.$delete(`/api/v1/products/${id}`);
+        this.$store.dispatch('getToast', { msg: '農産物を削除しました', color: 'success' });
+
+        await this.$axios.$get("api/v1/products").then((products) =>
+          this.$store.dispatch("getProductList", products)
+        );
+      } catch (error) {
+        this.$store.dispatch('getToast', { msg: '農産物を削除できませんでした', color: 'error' });
+      }
+    },
     async handleFavorites(id, type, method) {
       try {
         // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
-        const [favoriteResponses, unfavoriteResponses] = await Promise.all([
-          this.$axios.$get('api/v1/product_favorites'),
-          this.$axios.$get('api/v1/product_unfavorites')
-        ]);
-
-        const initialFavoriteData = favoriteResponses.map(productWithFavorites => ({
-          ...productWithFavorites.product,
-          favorites_count: productWithFavorites.favorites_count,
-          unfavorites_count: productWithFavorites.unfavorites_count
-        }));
+        const favoriteResponses = this.$store.state.product.favorite;
+        const unfavoriteResponses = this.$store.state.product.unfavorite;
 
         // APIリクエストを送信
         if (method === 'delete') {
@@ -222,7 +230,7 @@ export default {
             }
             this.$store.commit('incrementProductFavoritesCount', id);
           } else {
-            if (initialFavoriteData.some(favorite => favorite.id === id)) {
+            if (favoriteResponses.some(favorite => favorite.id === id)) {
               this.$store.commit('decrementProductFavoritesCount', id);
             }
             this.$store.commit('incrementProductUnfavoritesCount', id);
@@ -242,56 +250,8 @@ export default {
         console.log(error);
       }
     },
-    async deleteProduct(id) {
-      try {
-        if (!confirm('本当にこの農産物を削除しますか？')) {
-          return;
-        }
-
-        await this.$axios.$delete(`/api/v1/products/${id}`);
-        this.showNotification("農産物を削除しました", "success");
-
-        await this.$axios.$get("api/v1/products").then((products) =>
-          this.$store.dispatch("getProductList", products)
-        );
-      } catch (error) {
-        this.showNotification("農産物を削除できませんでした", "error");
-      }
-    },
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
-    },
-    async addProductToCart(id, quantity) {
-      if (
-        !this.$store.state.user.login.zipcode ||
-        !this.$store.state.user.login.street ||
-        !this.$store.state.user.login.building
-      ) {
-        this.showNotification("まずは住所を編集してください", "error");
-        return;
-      }
-    
-      try {
-        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
-    
-        if (!cart) {
-          await this.$axios.$post('/api/v1/carts', { product_id: id, quantity });
-        } else {
-          const cartQuantity = Number(cart.quantity) + Number(quantity);
-          await this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity });
-        }
-    
-        const [carts, products] = await Promise.all([
-          this.$axios.$get('/api/v1/carts'),
-          this.$axios.$get('/api/v1/products')
-        ]);
-    
-        this.$store.dispatch('getCarts', carts);
-        this.$store.dispatch('getProductList', products);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
+    addProductToCart(id, quantity) {
+      this.$store.dispatch('addProductToCart', { id, quantity });
     },
   },
 };

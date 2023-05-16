@@ -214,7 +214,7 @@ export default {
   methods: {
     async addProduct() {
       if (!this.$auth.user.prefecture) {
-        this.showNotification("まずはプロフィールを編集してください", "error");
+        this.$store.dispatch('getToast', { msg: 'まずはプロフィールを編集してください', color: 'error' });
         return;
       }
 
@@ -240,9 +240,9 @@ export default {
     
       try {
         await this.$axios.$post('/api/v1/products', formData, config);
-        this.showNotification("農産物を出品しました", "success");
+        this.$store.dispatch('getToast', { msg: '農産物を出品しました', color: 'success' });
       } catch (error) {
-        this.showNotification("農産物を出品できませんでした", "error");
+        this.$store.dispatch('getToast', { msg: '農産物を出品できませんでした', color: 'error' });
       }
     
       const products = await this.$axios.$get('api/v1/products');
@@ -253,9 +253,6 @@ export default {
     formReset() {
       this.sentIt = false;
       this.$refs.new.reset();
-    },
-    showNotification(msg, color) {
-      this.$store.dispatch('getToast', { msg, color });
     },
   }
 }

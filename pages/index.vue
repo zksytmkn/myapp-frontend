@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <app-toaster />
     <before-login-app-about-bar
       :menus="menus"
       :img-height="imgHeight"
@@ -151,7 +152,7 @@
 import SDGsImg from '~/assets/images/before-logged-in/SDGs.png'
 
 export default {
-  middleware: ['logged-in-redirect'],
+  middleware: 'logged-in-redirect',
   data () {
     return {
       SDGsImg,
@@ -159,6 +160,13 @@ export default {
       menus: [
         { title: 'app-about' }
       ]
+    }
+  },
+  mounted() {
+    if (this.$store.state.logoutSuccess) {
+      this.$store.dispatch('getToast', { msg: 'ログアウトしました', color: 'success' });
+      // メッセージ表示後、logoutSuccessをfalseにリセット
+      this.$store.commit('setLogoutSuccess', false);
     }
   }
 }
