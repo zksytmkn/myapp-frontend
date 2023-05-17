@@ -273,7 +273,7 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コミュニティを作成しました', color: 'success' })
     
         const communities = await this.$axios.$get('api/v1/communities')
-        this.$store.dispatch('getCommunityList', communities)
+        this.$store.commit('setCommunityList', communities)
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'コミュニティを作成できませんでした', color: 'error' })
       } finally {

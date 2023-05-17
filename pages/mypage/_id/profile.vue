@@ -196,7 +196,7 @@ export default {
         this.$store.dispatch('getToast', { msg: 'フォローしました', color: 'success' });
 
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
-        this.$store.dispatch('getUserRelationship', relationship);
+        this.$store.commit('setUserRelationship', relationship);
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'フォローできませんでした', color: 'error' });
       }
@@ -211,7 +211,7 @@ export default {
         this.$store.dispatch('getToast', { msg: 'フォローを解除しました', color: 'success' });
 
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
-        this.$store.dispatch('getUserRelationship', relationship);
+        this.$store.commit('setUserRelationship', relationship);
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'フォローを解除できませんでした', color: 'error' });
       }

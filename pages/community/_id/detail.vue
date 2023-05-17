@@ -348,7 +348,7 @@ export default {
     },
     async refreshMessages() {
       const messages = await this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}/community_messages`);
-      this.$store.dispatch('getCommunityMessage', messages);
+      this.$store.commit('setCommunityMessage', messages);
     },
     async participateInCommunity(communityId) {
       try {
@@ -359,8 +359,8 @@ export default {
           this.$axios.$get('/api/v1/participations'),
           this.$axios.$get(`/api/v1/communities/${communityId}`),
         ]);
-        this.$store.dispatch('getParticipationCommunity', participations);
-        this.$store.dispatch('getCurrentCommunity', community);
+        this.$store.commit('setParticipationCommunity', participations);
+        this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'コミュニティに参加できませんでした', color: 'error' });
       }
@@ -374,8 +374,8 @@ export default {
           this.$axios.$get('/api/v1/participations'),
           this.$axios.$get(`/api/v1/communities/${communityId}`),
         ]);
-        this.$store.dispatch('getParticipationCommunity', participations);
-        this.$store.dispatch('getCurrentCommunity', community);
+        this.$store.commit('setParticipationCommunity', participations);
+        this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'コミュニティを退会できませんでした', color: 'error' });
       }
@@ -389,7 +389,7 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コミュニティに招待しました', color: 'success' });
 
         const community = await this.$axios.$get(`/api/v1/communities/${communityId}`);
-        this.$store.dispatch('getCurrentCommunity', community);
+        this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'コミュニティに招待できませんでした', color: 'error' });
       }

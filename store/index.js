@@ -80,10 +80,19 @@ export const getters = {
   })),
   cartTotalPrice: (state, getters) => getters.cartProducts.reduce((total, cart) => total + cart.price * cart.quantity * 1.1, 0),
   cartTotalQuantity: (state, getters) => getters.cartProducts.reduce((total, cart) => total + cart.quantity, 0),
-  buttonClass: state => (actionType, id) => {
+  productButtonClass: state => (actionType, id) => {
     if (actionType === 'favorite' && state.product.favorite.some(item => item.id === id)) {
       return 'likeColor';
     } else if (actionType === 'unfavorite' && state.product.unfavorite.some(item => item.id === id)) {
+      return 'dislikeColor';
+    } else {
+      return 'grey';
+    }
+  },
+  postButtonClass: state => (actionType, id) => {
+    if (actionType === 'favorite' && state.post.favorite.some(item => item.id === id)) {
+      return 'likeColor';
+    } else if (actionType === 'unfavorite' && state.post.unfavorite.some(item => item.id === id)) {
       return 'dislikeColor';
     } else {
       return 'grey';
@@ -104,8 +113,8 @@ export const mutations = {
   setProductFavorite (state, payload) {
     state.product.favorite = payload
   },
-  setProductFavoritesCount (state, count) {
-    state.product.favorites_count = count
+  setProductUnfavorite (state, payload) {
+    state.product.unfavorite = payload
   },
   incrementProductFavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
@@ -115,20 +124,6 @@ export const mutations = {
     const product = state.product.list.find(product => product.id === id);
     product.favorites_count--;
   },
-  incrementCurrentProductFavoritesCount(state) {
-    const product = state.product.current
-    product.favorites_count++;
-  },
-  decrementCurrentProductFavoritesCount(state) {
-    const product = state.product.current
-    product.favorites_count--;
-  },
-  setProductUnfavorite (state, payload) {
-    state.product.unfavorite = payload
-  },
-  setProductUnfavoritesCount (state, count) {
-    state.product.unfavorites_count = count
-  },
   incrementProductUnfavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
     product.unfavorites_count++;
@@ -136,6 +131,14 @@ export const mutations = {
   decrementProductUnfavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
     product.unfavorites_count--;
+  },
+  incrementCurrentProductFavoritesCount(state) {
+    const product = state.product.current
+    product.favorites_count++;
+  },
+  decrementCurrentProductFavoritesCount(state) {
+    const product = state.product.current
+    product.favorites_count--;
   },
   incrementCurrentProductUnfavoritesCount(state) {
     const product = state.product.current
@@ -169,9 +172,9 @@ export const mutations = {
   setPostFavorite (state, payload) {
     state.post.favorite = payload
   },
-  setPostFavoritesCount (state, count) {
-    state.post.favorites_count = count
-  },  
+  setPostUnfavorite (state, payload) {
+    state.post.unfavorite = payload
+  },
   incrementPostFavoritesCount(state, id) {
     const post = state.post.list.find(post => post.id === id);
     post.favorites_count++;
@@ -180,18 +183,28 @@ export const mutations = {
     const post = state.post.list.find(post => post.id === id);
     post.favorites_count--;
   },
-  setPostUnfavorite (state, payload) {
-    state.post.unfavorite = payload
-  },
-  setPostUnfavoritesCount (state, count) {
-    state.post.unfavorites_count = count
-  },
   incrementPostUnfavoritesCount(state, id) {
     const post = state.post.list.find(post => post.id === id);
     post.unfavorites_count++;
   },
   decrementPostUnfavoritesCount(state, id) {
     const post = state.post.list.find(post => post.id === id);
+    post.unfavorites_count--;
+  },
+  incrementCurrentPostFavoritesCount(state) {
+    const post = state.post.current
+    post.favorites_count++;
+  },
+  decrementCurrentPostFavoritesCount(state) {
+    const post = state.post.current
+    post.favorites_count--;
+  },
+  incrementCurrentPostUnfavoritesCount(state) {
+    const post = state.post.current
+    post.unfavorites_count++;
+  },
+  decrementCurrentPostUnfavoritesCount(state) {
+    const post = state.post.current
     post.unfavorites_count--;
   },
   setCommunityList (state, payload) {
@@ -209,7 +222,7 @@ export const mutations = {
   setCurrentUser (state, payload) {
     state.user.current = payload
   },
-  setRelationship (state, payload) {
+  setUserRelationship (state, payload) {
     state.user.relationship = payload
   },
   setParticipationCommunity (state, payload) {
@@ -262,14 +275,14 @@ export const actions = {
     }));
     commit('setProductList', processedProducts);
   },
-  getCurrentProduct ({ commit }, currentProduct) {
-    const processedCurrentProduct = {
-      ...currentProduct.product,
-      favorites_count: currentProduct.favorites_count,
-      unfavorites_count: currentProduct.unfavorites_count,
+  getCurrentProduct ({ commit }, product) {
+    const processedProduct = {
+      ...product.product,
+      favorites_count: product.favorites_count,
+      unfavorites_count: product.unfavorites_count,
     };
-    commit('setCurrentProduct', processedCurrentProduct);
-  },  
+    commit('setCurrentProduct', processedProduct);
+  },
   getProductFavorite ({ commit }, favorites) {
     const processedFavorites = favorites.map(favorite => ({
       ...favorite.product,
@@ -278,72 +291,29 @@ export const actions = {
     }));
     commit('setProductFavorite', processedFavorites)
   },
-  getProductUnfavorite ({ commit }, unfavorites) {
-    unfavorites = unfavorites || []
-    commit('setProductUnfavorite', unfavorites)
-  },
-  getOrders ({ commit }, orders) {
-    orders = orders || []
-    commit('setOrder', orders)
-  },
-  getCurrentOrder ({ commit }, order) {
-    commit('setCurrentOrder', order) 
-  },
-  getOrderMessage ({ commit }, messages) {
-    messages = messages || []
-    commit('setOrderMessage', messages)
-  },
   getPostList ({ commit }, posts) {
-    posts = posts || []
-    commit('setPostList', posts)
+    const processedPosts = posts.map(post => ({
+      ...post.post,
+      favorites_count: post.favorites_count,
+      unfavorites_count: post.unfavorites_count,
+    }));
+    commit('setPostList', processedPosts)
   },
   getCurrentPost ({ commit }, post) {
-    commit('setCurrentPost', post)
-  },
-  getPostComment ({ commit }, comments) {
-    comments = comments || []
-    commit('setPostComment', comments)
+    const processedPost = {
+      ...post.post,
+      favorites_count: post.favorites_count,
+      unfavorites_count: post.unfavorites_count,
+    };
+    commit('setCurrentPost', processedPost);
   },
   getPostFavorite ({ commit }, favorites) {
-    favorites = favorites || []
-    commit('setPostFavorite', favorites)
-  },
-  getPostUnfavorite ({ commit }, unfavorites) {
-    unfavorites = unfavorites || []
-    commit('setPostUnfavorite', unfavorites)
-  },
-  getCommunityList ({ commit }, communities) {
-    communities = communities || []
-    commit('setCommunityList', communities)
-  },
-  getCurrentCommunity ({ commit }, community) {
-    commit('setCurrentCommunity', community)
-  },
-  getCommunityMessage ({ commit }, messages) {
-    messages = messages || []
-    commit('setCommunityMessage', messages)
-  },
-  getUserList ({ commit }, users) {
-    users = users || []
-    commit('setUserList', users)
-  },
-  getCurrentUser ({ commit }, user) {
-    commit('setCurrentUser', user)
-  },
-  getUserRelationship ({ commit }, relationship) {
-    commit('setRelationship', relationship)
-  },
-  getParticipationCommunity ({ commit }, community) {
-    commit('setParticipationCommunity', community)
-  },
-  getInvitationCommunity ({ commit }, community) {
-    commit('setInvitationCommunity', community)
-  },
-  getLoggedInUser ({ commit }, user) {
-    commit('setLoggedInUser', user)
-  },
-  getAuthToken ({ commit }, token) {
-    commit('setAuthToken', token)
+    const processedFavorites = favorites.map(favorite => ({
+      ...favorite.post,
+      favorites_count: favorite.favorites_count,
+      unfavorites_count: favorite.unfavorites_count,
+    }));
+    commit('setPostFavorite', processedFavorites)
   },
   getAuthExpires ({ commit }, expires) {
     expires = expires || 0
@@ -397,55 +367,6 @@ export const actions = {
       // eslint-disable-next-line no-console
       console.log(error);
       dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
-    }
-  },
-  async handlePostFavorites({ commit }, { id, type, method }) {
-    try {
-      // ログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
-      const [favorites, unfavorites] = await Promise.all([
-        this.$axios.$get('api/v1/post_favorites'),
-        this.$axios.$get('api/v1/post_unfavorites')
-      ]);
-
-      // APIリクエストを送信
-      if (method === 'delete') {
-        await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
-      } else {
-        await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
-      }
-
-      // 更新後のログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
-      const [updatedFavorites, updatedUnfavorites] = await Promise.all([
-        this.$axios.$get('api/v1/post_favorites'),
-        this.$axios.$get('api/v1/post_unfavorites')
-      ]);
-  
-      // Vuexストア内のデータを直接更新
-      if (method === 'post') {
-        if (type === 'favorite') {
-          if (unfavorites.some(unfavorite => unfavorite.id === id)) {
-            commit('decrementPostUnfavoritesCount', id);
-          }
-          commit('incrementPostFavoritesCount', id);
-        } else {
-          if (favorites.some(favorite => favorite.id === id)) {
-            commit('decrementPostFavoritesCount', id);
-          }
-          commit('incrementPostUnfavoritesCount', id);
-        }
-      } else if (method === 'delete') {
-        if (type === 'favorite') {
-          commit('decrementPostFavoritesCount', id);
-        } else {
-          commit('decrementPostUnfavoritesCount', id);
-        }
-      }
-  
-      commit('setPostFavorite', updatedFavorites);
-      commit('setPostUnfavorite', updatedUnfavorites);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
     }
   },
 }

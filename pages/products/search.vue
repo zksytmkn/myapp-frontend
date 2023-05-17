@@ -132,27 +132,21 @@
     </v-container>
 
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list-item>
-            <v-list-item-title
-              class="font-weight-bold"
-            >
-              検索結果（{{ searchedProducts.length }}件）
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider/>
-          <v-list-item
-            v-show="!searchedProducts.length"
-          >
-            <v-list-item-title>
-              該当する農産物はありませんでした。
-            </v-list-item-title>
-          </v-list-item>
-        </v-col>
-      </v-row>
+          検索結果（{{ searchedProducts.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list-item
+        v-show="!searchedProducts.length"
+      >
+        <v-list-item-title>
+          該当する農産物はありませんでした。
+        </v-list-item-title>
+      </v-list-item>
     </v-container>
     <ProductList :product-list="searchedProducts" />
   </div>

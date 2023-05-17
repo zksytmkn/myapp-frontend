@@ -64,7 +64,7 @@
                       <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
                         <v-btn
                           :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType, item.id)"
+                          :class="postButtonClass(actionType, item.id)"
                           class="ml-0"
                           fab
                           dark
@@ -218,7 +218,7 @@ export default {
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
-    buttonClass() {
+    postButtonClass() {
       return (actionType) => {
         if (actionType === 'favorites' && this.$store.state.post.favorite.some(item => item.id === this.currentPost.id)) {
           return 'likeColor';
@@ -280,7 +280,7 @@ export default {
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/posts/${this.currentPost.id}/post_comments`);
-      this.$store.dispatch('getPostComment', comments);
+      this.$store.commit('setPostComment', comments);
     },
   }
 }

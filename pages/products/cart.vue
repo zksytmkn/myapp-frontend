@@ -71,7 +71,7 @@
       </v-list>
     </v-container>
 
-    <v-container>
+    <v-container v-show="cartProducts.length">
       <v-row>
         <v-col
           v-for="(cart, i) in cartProducts.slice(pageSize * (page - 1), pageSize * page)"
@@ -111,7 +111,7 @@
                       <div>
                         <v-btn
                           :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType, cart.product.id)"
+                          :class="productButtonClass(actionType, cart.product.id)"
                           class="ml-0"
                           fab
                           dark
@@ -201,7 +201,7 @@ export default {
         return 0;
       });
     },
-    ...mapGetters(['cartTotalPrice', 'buttonClass']),
+    ...mapGetters(['cartTotalPrice', 'productButtonClass']),
   },
   methods: {
     async handleFavorites(id, type, method) {
@@ -246,7 +246,7 @@ export default {
         }
     
         this.$store.dispatch('getProductFavorite', updatedFavoriteResponses);
-        this.$store.dispatch('getProductUnfavorite', updatedUnfavoriteResponses);
+        this.$store.commit('setProductUnfavorite', updatedUnfavoriteResponses);
         this.$store.commit('setCart', updatedCartResponses);
       } catch (error) {
         // eslint-disable-next-line no-console

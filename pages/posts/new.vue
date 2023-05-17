@@ -132,125 +132,23 @@
         </v-list-item-title>
       </v-list-item>
     </v-container>
-
-    <v-container
-      v-show="newPosts.length"
-    >
-      <v-row
-        justify="center"
-      >
-        <v-col
-          cols="12"
-        >
-          <v-data-table
-            :headers="tableHeaders"
-            :items="newPosts.slice(pageSize*(page-1),pageSize*(page))"
-            item-key="id"
-            hide-default-footer
-          >
-            <template
-              #[`item.title`]="{ item }"
-            >
-              <nuxt-link
-                :to="$my.postLinkToDetail(item.id)"
-                class="text-decoration-none teal--text"
-              >
-                {{ item.title.length > 13 ? item.title.substring(0, 13) + '...' : item.title }}
-              </nuxt-link>
-            </template>
-            <template #[`item.body`]="{ item }">
-              {{ item.body.length > 37 ? item.body.substring(0, 37) + '...' : item.body }}
-            </template>
-            <template
-              #[`item.like`] = "{ item }"
-            >
-              <div style="display: flex;">
-                <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
-                  <v-btn
-                    :key="actionType + 'Btn'"
-                    :class="buttonClass(actionType, item.id)"
-                    class="ml-0"
-                    fab
-                    dark
-                    x-small
-                    @click="handleFavorites(item.id, actionType, $store.state.post[actionType].some(x => x.id === item.id) ? 'delete' : 'post')"
-                  >
-                    <v-icon>
-                      {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                    </v-icon>
-                  </v-btn>
-                  <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
-                    {{
-                      $store.state.post[actionType + 's'].filter(
-                        x => x.post_id === item.id
-                      ).length
-                    }}
-                  </span>
-                </div>
-              </div>
-            </template>
-            <template
-              #[`item.updatedAt`]="{ item }"
-            >
-              {{ $my.dataFormat(item.updated_at) }}
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-pagination
-      v-show="newPosts.length"
-      v-model="page"
-      class="my-6"
-      :length="Math.ceil(newPosts.length/pageSize)"
-      circle
-    >
-    </v-pagination>
+    <PostTable
+      :posts="newPosts"
+    />
   </div>
 </template>
 
 <script>
 import noImg from '~/assets/images/logged-in/no.png'
+
 export default {
   data () {
     const titleMax = 30
     const bodyMax = 400
     return {
       noImg,
-      page: 1,
-      pageSize: 10,
       valid: false,
       loading: false,
-      container: {
-        sm: 10,
-        md: 8
-      },
-      card: {
-        sm: 6,
-        md: 4,
-        height: 110,
-        elevation: 4
-      },
-      tableHeaders: [
-        {
-          text: 'タイトル',
-          value: 'title'
-        },
-        {
-          text: 'つぶやき',
-          value: 'body'
-        },
-        {
-          text: 'いいね履歴',
-          width: 170,
-          value: 'like'
-        },
-        {
-          text: '更新日',
-          width: 150,
-          value: 'updatedAt'
-        }
-      ],
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ],
@@ -272,8 +170,12 @@ export default {
       return this.inputted.image ? URL.createObjectURL(this.inputted.image) : noImg;
     },
     newPosts () {
-      const userPosts = this.$store.state.post.list.filter(x => x.user_id === this.$auth.user.id);
-      return userPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const userPosts = this.$store.state.post.list.filter(post => post.user_id === this.$auth.user.id);
+      return userPosts.sort((a, b) => {
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
+      });
     }
   },
   methods: {
@@ -314,27 +216,6 @@ export default {
       this.sentIt = false
       this.$refs.new.reset()
     },
-    handleFavorites(id, type, method) {
-      this.$store.dispatch('handlePostFavorites', { id, type, method });
-    },
-    buttonClass(actionType, id) {
-      if (actionType === 'favorite' && this.$store.state.post.favorite.some(item => item.id === id)) {
-        return 'likeColor';
-      } else if (actionType === 'unfavorite' && this.$store.state.post.unfavorite.some(item => item.id === id)) {
-        return 'dislikeColor';
-      } else {
-        return 'grey';
-      }
-    },
   }
 }
 </script>
-
-<style lang="scss">
-.likeColor {
-  background: #CC0000 !important;
-}
-.dislikeColor {
-  background: #336791 !important;
-}
-</style>

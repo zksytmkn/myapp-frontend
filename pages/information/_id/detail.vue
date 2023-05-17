@@ -289,7 +289,7 @@ export default {
       try {
         await this.$axios.$patch(`/api/v1/orders/${orderDetailId}`, data);
         const order = await this.$axios.$get(`/api/v1/orders/${orderDetailId}`);
-        this.$store.dispatch("getCurrentOrder", order);
+        this.$store.commit("setCurrentOrder", order);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
@@ -323,7 +323,7 @@ export default {
     },
     async refreshMessages() {
       const messages = await this.$axios.$get(`api/v1/orders/${this.currentOrder.id}/order_messages`);
-      this.$store.dispatch('getOrderMessage', messages);
+      this.$store.commit('setOrderMessage', messages);
     },
     scrollBottom() {
       this.$nextTick(() => {

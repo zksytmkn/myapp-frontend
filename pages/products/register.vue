@@ -36,7 +36,6 @@
 
     <v-container
       v-show="cartProducts.length"
-      color="transparent"
     >
       <v-row>
         <v-col

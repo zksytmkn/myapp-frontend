@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-container>
+    <v-container v-show="products.length">
       <v-row>
         <v-col
-          v-for="(product, i) in productList.slice(pageSize * (page - 1), pageSize * page)"
+          v-for="(product, i) in products.slice(pageSize * (page - 1), pageSize * page)"
           :key="`product-${i}`"
           cols="6"
         >
@@ -27,7 +27,7 @@
                       <div>
                         <v-btn
                           :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType, product.id)"
+                          :class="productButtonClass(actionType, product.id)"
                           class="ml-0"
                           fab
                           dark
@@ -129,10 +129,10 @@
       </v-row>
     </v-container>
     <v-pagination
-      v-show="productList.length"
+      v-show="products.length"
       v-model="localPage"
       class="my-6"
-      :length="Math.ceil(productList.length/pageSize)"
+      :length="Math.ceil(products.length/pageSize)"
       circle
     >
     </v-pagination>
@@ -145,7 +145,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   props: {
-    productList: {
+    products: {
       type: Array,
       default: () => [],
     },
@@ -166,7 +166,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['buttonClass']),
+    ...mapGetters(['productButtonClass']),
   },
   watch: {
     page(newVal) {
@@ -177,7 +177,7 @@ export default {
         this.$emit('update:page', newVal);
       }
     },
-    productList: {
+    products: {
       immediate: true,
       handler(newList) {
         newList.forEach(product => {
@@ -244,7 +244,7 @@ export default {
         }
 
         this.$store.dispatch('getProductFavorite', updatedFavoriteResponses);
-        this.$store.dispatch('getProductUnfavorite', updatedUnfavoriteResponses);
+        this.$store.commit('setProductUnfavorite', updatedUnfavoriteResponses);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);

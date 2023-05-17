@@ -44,7 +44,7 @@
                       <div>
                         <v-btn
                           :key="actionType + 'Btn'"
-                          :class="buttonClass(actionType, currentProduct.id)"
+                          :class="productButtonClass(actionType, currentProduct.id)"
                           class="ml-0"
                           fab
                           dark
@@ -293,7 +293,7 @@ export default {
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
-    ...mapGetters(['buttonClass']),
+    ...mapGetters(['productButtonClass']),
   },
   methods: {
     async deleteCurrentProduct(id) {
@@ -381,7 +381,7 @@ export default {
         }
 
         this.$store.dispatch('getProductFavorite', updatedFavoriteResponses);
-        this.$store.dispatch('getProductUnfavorite', updatedUnfavoriteResponses);
+        this.$store.commit('setProductUnfavorite', updatedUnfavoriteResponses);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);

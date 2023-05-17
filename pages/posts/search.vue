@@ -1,20 +1,14 @@
 <template>
   <div>
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list-item>
-            <v-list-item-title
-              class="font-weight-bold"
-            >
-              検索
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider/>
-        </v-col>
-      </v-row>
+          検索
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
     </v-container>
 
     <v-container>
@@ -104,101 +98,25 @@
     </v-container>
 
     <v-container>
-      <v-row>
-        <v-col
-          cols="12"
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
         >
-          <v-list-item>
-            <v-list-item-title
-              class="font-weight-bold"
-            >
-              検索結果（{{ searchedPosts.length }}件）
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider/>
-          <v-list-item
-            v-show="!searchedPosts.length"
-          >
-            <v-list-item-title>
-              該当するつぶやきはありませんでした。
-            </v-list-item-title>
-          </v-list-item>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container
-      v-if="searchedPosts.length !== 0"
-    >
-      <v-row
-        justify="center"
+          検索結果（{{ searchedPosts.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list-item
+        v-show="!searchedPosts.length"
       >
-        <v-col
-          cols="12"
-        >
-          <v-data-table
-            :headers="tableHeaders"
-            :items="searchedPosts.slice(pageSize*(page-1),pageSize*(page))"
-            item-key="id"
-            hide-default-footer
-          >
-            <template
-              #[`item.title`]="{ item }"
-            >
-              <nuxt-link
-                :to="$my.postLinkToDetail(item.id)"
-                class="text-decoration-none teal--text"
-              >
-                {{ item.title.length > 13 ? item.title.substring(0, 13) + '...' : item.title }}
-              </nuxt-link>
-            </template>
-            <template #[`item.body`]="{ item }">
-              {{ item.body.length > 37 ? item.body.substring(0, 37) + '...' : item.body }}
-            </template>
-            <template
-              #[`item.like`] = "{ item }"
-            >
-              <div style="display: flex;">
-                <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
-                  <v-btn
-                    :key="actionType + 'Btn'"
-                    :class="buttonClass(actionType, item.id)"
-                    class="ml-0"
-                    fab
-                    dark
-                    x-small
-                    @click="handleFavorites(item.id, actionType, $store.state.post[actionType].some(x => x.id === item.id) ? 'delete' : 'post')"
-                  >
-                    <v-icon>
-                      {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                    </v-icon>
-                  </v-btn>
-                  <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
-                    {{
-                      $store.state.post[actionType + 's'].filter(
-                        x => x.post_id === item.id
-                      ).length
-                    }}
-                  </span>
-                </div>
-              </div>
-            </template>
-            <template
-              #[`item.updatedAt`]="{ item }"
-            >
-              {{ $my.dataFormat(item.updated_at) }}
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
+        <v-list-item-title>
+          該当するつぶやきはありませんでした。
+        </v-list-item-title>
+      </v-list-item>
     </v-container>
-    <v-pagination
-      v-show="searchedPosts.length"
-      v-model="page"
-      class="my-6"
-      :length="Math.ceil(searchedPosts.length/pageSize)"
-      circle
-    >
-    </v-pagination>
+    <PostTable
+      :posts="searchedPosts"
+    />
   </div>
 </template>
 
@@ -206,28 +124,6 @@
 export default {
   data () {
     return {
-      page: 1,
-      pageSize: 10,
-      tableHeaders: [
-        {
-          text: 'タイトル',
-          value: 'title'
-        },
-        {
-          text: 'つぶやき',
-          value: 'body'
-        },
-        {
-          text: 'いいね履歴',
-          width: 170,
-          value: 'like'
-        },
-        {
-          text: '更新日',
-          width: 150,
-          value: 'updatedAt'
-        }
-      ],
       searched: {title: '', poster: '', body: ''},
       searchedPosts: [],
     }
@@ -240,18 +136,6 @@ export default {
     this.calculateSearchedPosts();
   },
   methods: {
-    handleFavorites(id, type, method) {
-      this.$store.dispatch('handlePostFavorites', { id, type, method });
-    },
-    buttonClass(actionType, id) {
-      if (actionType === 'favorite' && this.$store.state.post.favorite.some(item => item.id === id)) {
-        return 'likeColor';
-      } else if (actionType === 'unfavorite' && this.$store.state.post.unfavorite.some(item => item.id === id)) {
-        return 'dislikeColor';
-      } else {
-        return 'grey';
-      }
-    },
     updateSearchCondition() {
       this.$store.commit('setPostSearchCondition', {
         title: this.searched.title,
@@ -296,12 +180,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.likeColor {
-  background: #CC0000 !important;
-}
-.dislikeColor {
-  background: #336791 !important;
-}
-</style>

@@ -27,9 +27,9 @@ class Authentication {
     const exp = expires * 1000
     const jwtPayload = (token) ? jwtDecode(token) : {}
 
-    this.store.dispatch('getAuthToken', token)
+    this.store.commit('setLoggedInUser', user)
+    this.store.commit('setAuthToken', token)
     this.store.dispatch('getAuthExpires', exp)
-    this.store.dispatch('getLoggedInUser', user)
     this.store.dispatch('getAuthPayload', jwtPayload)
   }
 
