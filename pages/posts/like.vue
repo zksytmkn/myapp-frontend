@@ -1,40 +1,10 @@
 <template>
   <div>
-    <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          いいね（{{ likePosts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-list
-        v-show="!likePosts.length"
-        color="transparent"
-      >
-        <v-list-item>
-          <v-list-item-title>
-            いいねしておりません。
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-action>
-            <v-btn
-              class="font-weight-bold"
-              color="orange"
-              outlined
-              dark
-              to="/posts/list"
-            >
-              つぶやきを見る
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-    </v-container>
     <PostTable
+      title="いいね"
+      message="いいねしておりません。"
       :posts="likePosts"
+      :other-posts="true"
     />
   </div>
 </template>

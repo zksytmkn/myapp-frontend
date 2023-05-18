@@ -26,18 +26,18 @@
                       <v-list-item>
                         <v-list-item-title>
                           メールアドレス：<br /><br />
-                          {{ $store.state.user.login.email }}
+                          {{ $auth.user.email }}
                         </v-list-item-title>
                       </v-list-item>
                     </v-list>
                     <v-list class="mt-3">
                       <v-list-item>
                         <v-list-item-title>
-                          <template v-if="$store.state.user.login.zipcode && $store.state.user.login.street && $store.state.user.login.building">
+                          <template v-if="$auth.user.zipcode && $auth.user.street && $auth.user.building">
                             住所：<br /><br />
-                            {{ $store.state.user.login.zipcode }}<br /><br />
-                            {{ $store.state.user.login.street }}
-                            {{ $store.state.user.login.building }}
+                            {{ $auth.user.zipcode }}<br /><br />
+                            {{ $auth.user.street }}
+                            {{ $auth.user.building }}
                           </template>
                           <template v-else>
                             <span class="text--secondary">住所：未登録</span>
@@ -66,9 +66,7 @@
 </template>
 
 <script>
-import MypageMenu from '../../components/Mypage/MypageMenu.vue'
 export default {
-  components: { MypageMenu },
-  layout: 'mypage'
+  layout: 'logged-in'
 }
 </script>

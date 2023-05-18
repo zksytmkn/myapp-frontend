@@ -121,20 +121,20 @@ export default {
     onSend () {
       this.loading = true
       this.$axios.post('/api/v1/contacts', {
-        name: this.name,
-        email: this.email,
-        content: this.content
+        contact: {
+          name: this.name,
+          email: this.email,
+          content: this.content
+        }
       }).then(() => {
         this.loading = false
         this.sentIt = true
-        const msg = 'お問い合わせ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。'
-        const color = 'success'
-        this.$store.dispatch('getToast', { msg, color })
+        this.$store.dispatch('getToast', { msg: 'お問い合わせ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。', color: 'success' });
       }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error)
         this.loading = false
-        const msg = `お問い合わせの送信中にエラーが発生しました: ${error.message}`
-        const color = 'error'
-        this.$store.dispatch('getToast', { msg, color })
+        this.$store.dispatch('getToast', { msg: 'お問い合わせの送信中にエラーが発生しました', color: 'error' });
       })
     },
     formReset () {

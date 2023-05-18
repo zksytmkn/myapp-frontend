@@ -77,12 +77,11 @@
 
 <script>
 export default {
-  layout: 'mypage',
-  middleware: ['get-user-current'],
+  layout: 'logged-in',
+  middleware: 'get-user-current',
   computed: {
     CurrentUser() {
-      const copyCurrentUser = this.$store.state.user.current
-      return copyCurrentUser
+      return this.$store.state.user.current
     }
   }
 }

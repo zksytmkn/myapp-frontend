@@ -23,7 +23,7 @@
           <v-card>
             <v-form
               ref="edit"
-              v-model="valid"
+              v-model="isValid"
               @submit.prevent="editCommunity($store.state.community.current.community.id)"
             >
               <v-list>
@@ -96,7 +96,7 @@
                         >
                           <v-btn
                             type="submit"
-                            :disabled="!valid || loading"
+                            :disabled="!isValid || loading"
                             :loading="loading"
                             class="mb-6 mr-2 font-weight-bold white--text"
                             color="teal"
@@ -133,7 +133,7 @@ export default {
     const descMax = 300
     return {
       noImg,
-      valid: false,
+      isValid: false,
       loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
@@ -170,7 +170,7 @@ export default {
   methods: {
     async editCommunity(id) {
       this.loading = true;
-      if (this.valid) {
+      if (this.isValid) {
         const formData = new FormData();
         Object.keys(this.inputted).forEach(key => {
           if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {

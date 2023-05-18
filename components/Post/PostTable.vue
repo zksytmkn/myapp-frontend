@@ -1,5 +1,42 @@
 <template>
   <div>
+    <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          {{ title }}（{{ posts.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list-item
+        v-show="!posts.length && !otherPosts"
+      >
+        <v-list-item-title>
+          {{ message }}
+        </v-list-item-title>
+      </v-list-item>
+      <v-list v-show="!posts.length && otherPosts" color="transparent">
+        <v-list-item>
+          <v-list-item-title>
+            {{ message }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-btn
+              class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/posts/list"
+            >
+              つぶやきを見る
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+    </v-container>
     <v-container v-show="posts.length">
       <v-row justify="center">
         <v-col cols="12">
@@ -59,7 +96,7 @@
     </v-container>
     <v-pagination
       v-show="posts.length"
-      v-model="localPage"
+      v-model="page"
       class="my-6"
       :length="Math.ceil(posts.length/pageSize)"
       circle
@@ -73,22 +110,27 @@ import { mapGetters } from 'vuex'
 
 export default {
   props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    message: {
+      type: String,
+      default: '',
+    },
     posts: {
       type: Array,
       default: () => [],
     },
-    pageSize: {
-      type: Number,
-      default: 10,
-    },
-    page: {
-      type: Number,
-      default: 1,
+    otherPosts: {
+      type: Boolean,
+      default: false,
     }
   },
   data() {
     return {
-      localPage: this.page,
+      page: 1,
+      pageSize: 10,
       tableHeaders: [
         {
           text: 'タイトル',
@@ -113,16 +155,6 @@ export default {
   },
   computed: {
     ...mapGetters(['postButtonClass']),
-  },
-  watch: {
-    page(newVal) {
-      this.localPage = newVal;
-    },
-    localPage(newVal) {
-      if (newVal !== this.page) {
-        this.$emit('update:page', newVal);
-      }
-    },
   },
   methods: {
     async handleFavorites(id, type, method) {

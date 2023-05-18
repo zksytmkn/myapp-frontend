@@ -27,7 +27,7 @@
                       </nuxt-link>
                     </v-card-subtitle>
                     <v-btn text outlined to="/posts/list" class="font-weight-bold">一覧</v-btn>
-                    <v-list-item-action v-if="currentPost.user_id === $auth.user.id">
+                    <v-list-item-action v-show="currentPost.user_id === $auth.user.id">
                       <v-menu app offset-x offset-y max-width="200">
                         <template #activator="{ on }">
                           <v-btn icon v-on="on">
@@ -38,7 +38,7 @@
                           <v-list-item :to="$my.postLinkToEdit(currentPost.id)">
                             <v-list-item-title>編集する</v-list-item-title>
                           </v-list-item>
-                          <v-list-item @click="deleteCurrentPost(currentPost.id)">
+                          <v-list-item @click="deleteCurrentPost">
                             <v-list-item-title>削除する</v-list-item-title>
                           </v-list-item>
                         </v-list>
@@ -64,12 +64,12 @@
                       <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
                         <v-btn
                           :key="actionType + 'Btn'"
-                          :class="postButtonClass(actionType, item.id)"
+                          :class="postButtonClass(actionType, currentPost.id)"
                           class="ml-0"
                           fab
                           dark
                           x-small
-                          @click="handleFavorites(item.id, actionType, $store.state.post[actionType].some(x => x.id === item.id) ? 'delete' : 'post')"
+                          @click="handleFavorites(actionType, $store.state.post[actionType].some(post => post.id === currentPost.id) ? 'delete' : 'post')"
                         >
                           <v-icon>
                             {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
@@ -77,9 +77,7 @@
                         </v-btn>
                         <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
                           {{
-                            $store.state.post[actionType + 's'].filter(
-                              x => x.post_id === item.id
-                            ).length
+                            actionType === 'favorite' ? currentPost.favorites_count : currentPost.unfavorites_count
                           }}
                         </span>
                       </div>
@@ -121,7 +119,7 @@
                 </v-list-item-avatar>
                 {{ comment.user.name }}
                 <v-spacer />
-                <v-list-item-action v-if="comment.user.id === $auth.user.id">
+                <v-list-item-action v-show="comment.user.id === $auth.user.id">
                   <v-menu app offset-x offset-y max-width="200">
                     <template #activator="{ on }">
                       <v-btn icon v-on="on">
@@ -142,7 +140,7 @@
               </v-list-item>
               <v-divider/>
             </v-list>
-            <v-form ref="new" v-model="Valid">
+            <v-form ref="new" v-model="isValid">
               <v-list>
                 <v-list-item>
                   <v-list-item-avatar left>
@@ -171,7 +169,7 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            :disabled="!Valid"
+                            :disabled="!isValid"
                             @click="addPostComment"
                           >
                             コメントする
@@ -194,13 +192,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   data () {
     return {
       noImg,
-      valid: false,
+      isValid: false,
       cmt: false,
       cmtRules: [
         v => !!v || ''
@@ -213,31 +212,25 @@ export default {
       return this.$store.state.post.current
     },
     comments() {
-      return Array.from(this.$store.state.post.comment).sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return Array.from(this.$store.state.post.comment).sort((a, b) => {
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
+      });
     },
     dateFormat() {
       return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
     },
-    postButtonClass() {
-      return (actionType) => {
-        if (actionType === 'favorites' && this.$store.state.post.favorite.some(item => item.id === this.currentPost.id)) {
-          return 'likeColor';
-        } else if (actionType === 'unfavorites' && this.$store.state.post.unfavorite.some(item => item.id === this.currentPost.id)) {
-          return 'dislikeColor';
-        } else {
-        return 'grey';
-        }
-      };
-    },
+    ...mapGetters(['postButtonClass']),
   },
   methods: {
-    async deleteCurrentPost(id) {
+    async deleteCurrentPost() {
       if (!confirm('本当にこのつぶやきを削除しますか？')) {
         return;
       }
 
       try {
-        await this.$axios.$delete(`/api/v1/posts/${id}`);
+        await this.$axios.$delete(`/api/v1/posts/${this.currentPost.id}`);
         this.$store.dispatch('getToast', { msg: 'つぶやきを削除しました', color: 'success' });
         this.$router.go(-1);
       } catch (error) {
@@ -245,12 +238,10 @@ export default {
       }
     },
     async addPostComment() {
-      if (!this.Valid) return;
+      if (!this.isValid) return;
       
       const data = {
-        post_comment: {
-          content: this.inputted.comment,
-        },
+        content: this.inputted.comment,
       };
       this.formReset();
 
@@ -275,8 +266,52 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コメントを削除できませんでした', color: 'error' });
       }
     },
-    handleFavorites(id, type, method) {
-      this.$store.dispatch('handlePostFavorites', { id, type, method });
+    async handleFavorites(type, method) {
+      try {
+        // ログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
+        const favoriteResponses = this.$store.state.post.favorite;
+        const unfavoriteResponses = this.$store.state.post.unfavorite;
+
+        // APIリクエストを送信
+        if (method === 'delete') {
+          await this.$axios[method](`/api/v1/post_${type}s/${this.currentPost.id}/user`);
+        } else {
+          await this.$axios[method](`/api/v1/post_${type}s`, { post_id: this.currentPost.id });
+        }
+
+        // 更新後のログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映
+        const [updatedFavoriteResponses, updatedUnfavoriteResponses] = await Promise.all([
+          this.$axios.$get('api/v1/post_favorites'),
+          this.$axios.$get('api/v1/post_unfavorites')
+        ]);
+
+        // Vuexストア内のデータを直接更新
+        if (method === 'post') {
+          if (type === 'favorite') {
+            if (unfavoriteResponses.some(unfavorite => unfavorite.id === this.currentPost.id)) {
+              this.$store.commit('decrementCurrentPostUnfavoritesCount');
+            }
+            this.$store.commit('incrementCurrentPostFavoritesCount');
+          } else {
+            if (favoriteResponses.some(favorite => favorite.id === this.currentPost.id)) {
+              this.$store.commit('decrementCurrentPostFavoritesCount');
+            }
+            this.$store.commit('incrementCurrentPostUnfavoritesCount');
+          }
+        } else if (method === 'delete') {
+          if (type === 'favorite') {
+            this.$store.commit('decrementCurrentPostFavoritesCount');
+          } else {
+            this.$store.commit('decrementCurrentPostUnfavoritesCount');
+          }
+        }
+
+        this.$store.dispatch('getPostFavorite', updatedFavoriteResponses);
+        this.$store.commit('setPostUnfavorite', updatedUnfavoriteResponses);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
     },
     async refreshComments() {
       const comments = await this.$axios.$get(`api/v1/posts/${this.currentPost.id}/post_comments`);

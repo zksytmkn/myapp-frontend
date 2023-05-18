@@ -335,38 +335,4 @@ export const actions = {
     params = params || {}
     commit('setRememberPath', { name, params })
   },
-  async addProductToCart({ state, commit, dispatch }, { id, quantity }) {
-    if (
-      !state.user.login.zipcode ||
-      !state.user.login.street ||
-      !state.user.login.building
-    ) {
-      dispatch('getToast', { msg: "まずは住所を編集してください", color: "error" });
-      return;
-    }
-  
-    try {
-      const cart = state.carts.find(cart => cart.product_id === id);
-  
-      if (!cart) {
-        await this.$axios.$post('/api/v1/carts', { product_id: id, quantity });
-      } else {
-        const cartQuantity = Number(cart.quantity) + Number(quantity);
-        await this.$axios.$patch(`/api/v1/carts/${cart.id}`, { quantity: cartQuantity });
-      }
-  
-      const [carts, products] = await Promise.all([
-        this.$axios.$get('/api/v1/carts'),
-        this.$axios.$get('/api/v1/products')
-      ]);
-  
-      commit('setCart', carts);
-      dispatch('getProductList', products);
-      dispatch('getToast', { msg: "カートに入れました", color: "success" });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-      dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
-    }
-  },
 }

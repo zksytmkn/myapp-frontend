@@ -1,5 +1,43 @@
 <template>
   <div>
+    <v-container>
+      <v-list-item>
+        <v-list-item-title
+          class="font-weight-bold"
+        >
+          {{ title }}（{{ products.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list-item
+        v-show="!products.length && !otherProducts"
+
+      >
+        <v-list-item-title>
+          {{ message }}
+        </v-list-item-title>
+      </v-list-item>
+      <v-list v-show="!products.length && otherProducts" color="transparent">
+        <v-list-item>
+          <v-list-item-title>
+            {{ message }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-btn
+              class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/products/list"
+            >
+              農産物を見る
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+    </v-container>
     <v-container v-show="products.length">
       <v-row>
         <v-col
@@ -130,7 +168,7 @@
     </v-container>
     <v-pagination
       v-show="products.length"
-      v-model="localPage"
+      v-model="page"
       class="my-6"
       :length="Math.ceil(products.length/pageSize)"
       circle
@@ -145,38 +183,35 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    message: {
+      type: String,
+      default: '',
+    },
     products: {
       type: Array,
       default: () => [],
     },
-    pageSize: {
-      type: Number,
-      default: 10,
-    },
-    page: {
-      type: Number,
-      default: 1,
-    },
+    otherProducts: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
       noImg,
-      localPage: this.page,
-      selectedQuantity: {}
+      selectedQuantity: {},
+      page: 1,
+      pageSize: 10,
     };
   },
   computed: {
     ...mapGetters(['productButtonClass']),
   },
   watch: {
-    page(newVal) {
-      this.localPage = newVal;
-    },
-    localPage(newVal) {
-      if (newVal !== this.page) {
-        this.$emit('update:page', newVal);
-      }
-    },
     products: {
       immediate: true,
       handler(newList) {
@@ -250,8 +285,39 @@ export default {
         console.log(error);
       }
     },
-    addProductToCart(id, quantity) {
-      this.$store.dispatch('addProductToCart', { id, quantity });
+    async addProductToCart(id, quantity) {
+      if (
+        !this.$auth.user.zipcode ||
+        !this.$auth.user.street ||
+        !this.$auth.user.building
+      ) {
+        this.$store.dispatch('getToast', { msg: "まずは住所を編集してください", color: "error" });
+        return;
+      }
+
+      try {
+        const cart = this.$store.state.carts.find(cart => cart.product_id === id);
+
+        if (!cart) {
+          await this.$axios.$post('/api/v1/carts', { cart: { product_id: id, quantity } });
+        } else {
+          const cartQuantity = Number(cart.quantity) + Number(quantity);
+          await this.$axios.$patch(`/api/v1/carts/${cart.id}`, { cart: { quantity: cartQuantity } });
+        }
+
+        const [carts, products] = await Promise.all([
+          this.$axios.$get('/api/v1/carts'),
+          this.$axios.$get('/api/v1/products')
+        ]);
+
+        this.$store.commit('setCart', carts);
+        this.$store.dispatch('getProductList', products);
+        this.$store.dispatch('getToast', { msg: "カートに入れました", color: "success" });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        this.$store.dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
+      }
     },
   },
 };

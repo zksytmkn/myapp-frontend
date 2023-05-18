@@ -1,14 +1,8 @@
 <template>
   <div>
-    <v-container>
-      <v-list-item>
-        <v-list-item-title class="font-weight-bold">
-          全てのコミュニティ（{{ communities.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-    </v-container>
     <CommunityList
+      title="全てのコミュニティ"
+      message="コミュニティはありませんでした。"
       :communities="communities"
     />
   </div>

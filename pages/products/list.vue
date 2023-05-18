@@ -1,14 +1,10 @@
 <template>
   <div>
-    <v-container>
-      <v-list-item>
-        <v-list-item-title class="font-weight-bold">
-          全ての農産物（{{ products.length }}件）
-        </v-list-item-title>
-        </v-list-item>
-      <v-divider />
-    </v-container>
-    <ProductList :product-list="products" />
+    <ProductList
+      title="全ての農産物"
+      message="農産物はありませんでした。"
+      :products="products"
+    />
   </div>
 </template>
 

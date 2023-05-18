@@ -211,13 +211,13 @@ export default {
     url() {
       return this.inputted.image
         ? URL.createObjectURL(this.inputted.image)
-        : this.$store.state.user.login.image_url || noPersonImg;
+        : this.$auth.user.image_url || noPersonImg;
     }
   },
   mounted() {
-    this.inputted.name = this.$store.state.user.login.name
-    this.inputted.prefecture = this.$store.state.user.login.prefecture
-    this.inputted.profile_text = this.$store.state.user.login.profile_text
+    this.inputted.name = this.$auth.user.name
+    this.inputted.prefecture = this.$auth.user.prefecture
+    this.inputted.profile_text = this.$auth.user.profile_text
   },
   methods: {
     async editProfile() {

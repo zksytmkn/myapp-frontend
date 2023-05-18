@@ -1,34 +1,11 @@
 <template>
   <div>
-    <v-container>
-      <v-list-item>
-        <v-list-item-title class="font-weight-bold">
-          購入済み（{{ orderedProducts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-list v-show="!orderedProducts.length" color="transparent">
-        <v-list-item>
-          <v-list-item-title>
-            購入しておりません。
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-action>
-            <v-btn
-              class="font-weight-bold"
-              color="orange"
-              outlined
-              dark
-              to="/products/list"
-            >
-              農産物を見る
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-    </v-container>
-    <ProductList :product-list="orderedProducts" />
+    <ProductList
+      title="購入済み"
+      message="購入しておりません。"
+      :products="orderedProducts"
+      :other-products="true"
+    />
   </div>
 </template>
 

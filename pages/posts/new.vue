@@ -20,7 +20,7 @@
           <v-card>
             <v-form
               ref="new"
-              v-model="valid"
+              v-model="isValid"
               @submit.prevent="addPost"
             >
               <v-list>
@@ -92,7 +92,7 @@
                       >
                         <v-btn
                           type="submit"
-                          :disabled="!valid || loading"
+                          :disabled="!isValid || loading"
                           :loading="loading"
                           class="mb-6 mr-2 font-weight-bold white--text"
                           color="teal"
@@ -117,22 +117,9 @@
       </v-row>
     </v-container>
 
-    <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          投稿済み（{{ newPosts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-list-item v-show="!newPosts.length">
-        <v-list-item-title>
-          投稿しておりません。
-        </v-list-item-title>
-      </v-list-item>
-    </v-container>
     <PostTable
+      title="投稿済み"
+      message="投稿しておりません。"
       :posts="newPosts"
     />
   </div>
@@ -147,7 +134,7 @@ export default {
     const bodyMax = 400
     return {
       noImg,
-      valid: false,
+      isValid: false,
       loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
@@ -180,7 +167,7 @@ export default {
   },
   methods: {
     async addPost() {
-      if (!this.valid) {
+      if (!this.isValid) {
         this.loading = false;
         return;
       }

@@ -131,24 +131,11 @@
       </v-row>
     </v-container>
 
-    <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          検索結果（{{ searchedProducts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-list-item
-        v-show="!searchedProducts.length"
-      >
-        <v-list-item-title>
-          該当する農産物はありませんでした。
-        </v-list-item-title>
-      </v-list-item>
-    </v-container>
-    <ProductList :product-list="searchedProducts" />
+    <ProductList
+      title="検索結果"
+      message="該当する農産物はありませんでした。"
+      :products="searchedProducts"
+    />
   </div>
 </template>
 

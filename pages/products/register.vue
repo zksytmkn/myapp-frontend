@@ -53,13 +53,13 @@
             <v-list>
               <v-list-item>
                 <v-list-item-text>
-                  お届け先住所：〒{{ $store.state.user.login.zipcode }}
+                  お届け先住所：〒{{ $auth.user.zipcode }}
                 </v-list-item-text>
               </v-list-item>
               <v-list-item>
                 <v-list-item-text>
-                  {{ $store.state.user.login.street }}
-                  {{ $store.state.user.login.building }}
+                  {{ $auth.user.street }}
+                  {{ $auth.user.building }}
                 </v-list-item-text>
               </v-list-item>
             </v-list>

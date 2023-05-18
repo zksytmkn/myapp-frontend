@@ -1,5 +1,43 @@
 <template>
   <div>
+    <v-container>
+      <v-list-item>
+        <v-list-item-title class="font-weight-bold">
+          {{ title }}（{{ communities.length }}件）
+        </v-list-item-title>
+      </v-list-item>
+      <v-divider/>
+      <v-list-item
+        v-show="!communities.length && !otherCommunities"
+      >
+        <v-list-item-title>
+          {{ message }}
+        </v-list-item-title>
+      </v-list-item>
+      <v-list
+        v-show="!communities.length && otherCommunities"
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-title>
+            {{ message }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-action>
+            <v-btn
+              class="font-weight-bold"
+              color="orange"
+              outlined
+              dark
+              to="/communities/list"
+            >
+              コミュニティを見る
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+    </v-container>
     <v-container v-show="communities.length">
       <v-row justify="center" align="center">
         <v-col cols="12">
@@ -37,7 +75,7 @@
 
     <v-pagination
       v-show="communities.length"
-      v-model="localPage"
+      v-model="page"
       class="my-6"
       :length="Math.ceil(communities.length / pageSize)"
       circle
@@ -48,22 +86,27 @@
 <script>
 export default {
   props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    message: {
+      type: String,
+      default: '',
+    },
     communities: {
       type: Array,
       default: () => [],
     },
-    pageSize: {
-      type: Number,
-      default: 9,
-    },
-    page: {
-      type: Number,
-      default: 1,
-    },
+    otherCommunities: {
+      type: Boolean,
+      default: false,
+    }
   },
   data () {
     return {
-      localPage: this.page,
+      page: 1,
+      pageSize: 9,
       card: {
         sm: 6,
         md: 4,
@@ -71,16 +114,6 @@ export default {
         elevation: 4
       }
     }
-  },
-  watch: {
-    page(newVal) {
-      this.localPage = newVal;
-    },
-    localPage(newVal) {
-      if (newVal !== this.page) {
-        this.$emit('update:page', newVal);
-      }
-    },
   },
 }
 </script>

@@ -39,12 +39,8 @@
 
 <script>
 import { isPasswordValid } from "@/utils/passwordValidator.js"
-import UserFormPassword from "@/components/User/UserFormPassword.vue"
 
 export default {
-  components: {
-    UserFormPassword,
-  },
   layout: 'before-login',
   data() {
     return {

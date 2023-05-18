@@ -49,7 +49,7 @@
                           fab
                           dark
                           x-small
-                          @click="handleFavorites(currentProduct.id, actionType, $store.state.product[actionType].some(item => item.id === currentProduct.id) ? 'delete' : 'post')"
+                          @click="handleFavorites(actionType, $store.state.product[actionType].some(item => item.id === currentProduct.id) ? 'delete' : 'post')"
                         >
                           <v-icon>
                             {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
@@ -113,7 +113,7 @@
                         <v-select
                           v-if="currentProduct.stock"
                           ref="quantitySelect"
-                          v-model="selectedQuantity[currentProduct.id]"
+                          v-model="selectedQuantity"
                           class="mt-6"
                           :items="[...Array(currentProduct.stock).keys()].map(i => ++i)"
                           solo
@@ -133,7 +133,7 @@
                           color="teal"
                           dark
                           style="width: 200px; max-width: 200px"
-                          @click="addProductToCart(currentProduct.id)"
+                          @click="addProductToCart(selectedQuantity)"
                         >
                           カートに入れる
                         </v-btn>
@@ -160,7 +160,7 @@
                           color="teal"
                           dark
                           style="width: 200px; max-width: 200px"
-                          @click="deleteCurrentProduct(currentProduct.id)"
+                          @click="deleteCurrentProduct"
                         >
                           削除する
                         </v-btn>
@@ -192,7 +192,7 @@
                 </v-list-item-avatar>
                 {{ comment.user.name }}
                 <v-spacer />
-                <v-list-item-action v-if="comment.user.id === $auth.user.id">
+                <v-list-item-action v-show="comment.user.id === $auth.user.id">
                   <v-menu app offset-x offset-y max-width="200">
                     <template #activator="{ on }">
                       <v-btn icon v-on="on">
@@ -213,7 +213,7 @@
               </v-list-item>
               <v-divider/>
             </v-list>
-            <v-form ref="new" v-model="Valid">
+            <v-form ref="new" v-model="isValid">
               <v-list>
                 <v-list-item>
                   <v-list-item-avatar left>
@@ -242,7 +242,7 @@
                             text
                             outlined
                             class="font-weight-bold mt-3 mb-3 mr-2"
-                            :disabled="!Valid"
+                            :disabled="!isValid"
                             @click="addProductComment"
                           >
                             コメントする
@@ -272,11 +272,11 @@ export default {
   data() {
     return {
       noImg,
-      Valid: false,
+      isValid: false,
       cmt: false,
       cmtRules: [v => !!v || ''],
       inputted: { comment: '' },
-      selectedQuantity: {}
+      selectedQuantity: 1
     }
   },
   computed: {
@@ -296,13 +296,13 @@ export default {
     ...mapGetters(['productButtonClass']),
   },
   methods: {
-    async deleteCurrentProduct(id) {
+    async deleteCurrentProduct() {
       if (!confirm('本当にこの農産物を削除しますか？')) {
         return;
       }
 
       try {
-        await this.$axios.$delete(`/api/v1/products/${id}`);
+        await this.$axios.$delete(`/api/v1/products/${this.currentProduct.id}`);
         this.$store.dispatch('getToast', { msg: '農産物を削除しました', color: 'success' });
         this.$router.go(-1);
       } catch (error) {
@@ -310,12 +310,10 @@ export default {
       }
     },
     async addProductComment() {
-      if (!this.Valid) return;
+      if (!this.isValid) return;
       
       const data = {
-        product_comment: {
-          content: this.inputted.comment,
-        },
+        content: this.inputted.comment,
       };
       this.formReset();
 
@@ -340,7 +338,7 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コメントを削除できませんでした', color: 'error' });
       }
     },
-    async handleFavorites(id, type, method) {
+    async handleFavorites(type, method) {
       try {
         // ログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
         const favoriteResponses = this.$store.state.product.favorite;
@@ -348,9 +346,9 @@ export default {
 
         // APIリクエストを送信
         if (method === 'delete') {
-          await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
+          await this.$axios[method](`/api/v1/product_${type}s/${this.currentProduct.id}/user`);
         } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
+          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: this.currentProduct.id });
         }
 
         // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映
@@ -362,21 +360,21 @@ export default {
         // Vuexストア内のデータを直接更新
         if (method === 'post') {
           if (type === 'favorite') {
-            if (unfavoriteResponses.some(unfavorite => unfavorite.id === id)) {
-              this.$store.commit('decrementCurrentProductUnfavoritesCount', id);
+            if (unfavoriteResponses.some(unfavorite => unfavorite.id === this.currentProduct.id)) {
+              this.$store.commit('decrementCurrentProductUnfavoritesCount');
             }
-            this.$store.commit('incrementCurrentProductFavoritesCount', id);
+            this.$store.commit('incrementCurrentProductFavoritesCount');
           } else {
-            if (favoriteResponses.some(favorite => favorite.id === id)) {
-              this.$store.commit('decrementCurrentProductFavoritesCount', id);
+            if (favoriteResponses.some(favorite => favorite.id === this.currentProduct.id)) {
+              this.$store.commit('decrementCurrentProductFavoritesCount');
             }
-            this.$store.commit('incrementCurrentProductUnfavoritesCount', id);
+            this.$store.commit('incrementCurrentProductUnfavoritesCount');
           }
         } else if (method === 'delete') {
           if (type === 'favorite') {
-            this.$store.commit('decrementCurrentProductFavoritesCount', id);
+            this.$store.commit('decrementCurrentProductFavoritesCount');
           } else {
-            this.$store.commit('decrementCurrentProductUnfavoritesCount', id);
+            this.$store.commit('decrementCurrentProductUnfavoritesCount');
           }
         }
 
@@ -399,8 +397,39 @@ export default {
       if (category === "果物") return "mdi-food-apple-outline";
       return "";
     },
-    addProductToCart(id, quantity) {
-      this.$store.dispatch('addProductToCart', { id, quantity });
+    async addProductToCart(quantity) {
+      if (
+        !this.$auth.user.zipcode ||
+        !this.$auth.user.street ||
+        !this.$auth.user.building
+      ) {
+        this.$store.dispatch('getToast', { msg: "まずは住所を編集してください", color: "error" });
+        return;
+      }
+    
+      try {
+        const cart = this.$store.state.carts.find(cart => cart.product_id === this.currentProduct.id);
+    
+        if (!cart) {
+          await this.$axios.$post('/api/v1/carts', { cart: { product_id: this.currentProduct.id, quantity } });
+        } else {
+          const cartQuantity = Number(cart.quantity) + Number(quantity);
+          await this.$axios.$patch(`/api/v1/carts/${cart.id}`, { cart: { quantity: cartQuantity } });
+        }
+    
+        const [carts, product] = await Promise.all([
+          this.$axios.$get('/api/v1/carts'),
+          this.$axios.$get(`/api/v1/products/${this.currentProduct.id}`)
+        ]);
+    
+        this.$store.commit('setCart', carts);
+        this.$store.dispatch('getCurrentProduct', product);
+        this.$store.dispatch('getToast', { msg: "カートに入れました", color: "success" });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        this.$store.dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
+      }
     },
   }
 }

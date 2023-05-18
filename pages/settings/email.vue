@@ -100,9 +100,7 @@ export default {
 
           await this.$axios.$post('/api/v1/users/send_email_reset_confirmation', data);
 
-          const msg = 'メールアドレスに確認メールを送信しました';
-          const color = 'success';
-          this.$store.dispatch('getToast', { msg, color });
+          this.$store.dispatch('getToast', { msg: 'メールアドレスに確認メールを送信しました', color: 'success' });
         } catch (error) {
           const msg = error.response.data.message || '現在のパスワードが間違っております';
           const color = 'error';

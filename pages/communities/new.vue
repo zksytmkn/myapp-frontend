@@ -20,7 +20,7 @@
           <v-card>
             <v-form
               ref="new"
-              v-model="valid"
+              v-model="isValid"
               @submit.prevent="addCommunity"
             >
               <v-list>
@@ -94,7 +94,7 @@
                     >
                       <v-btn
                         type="submit"
-                        :disabled="!valid || loading"
+                        :disabled="!isValid || loading"
                         :loading="loading"
                         class="mb-6 mr-2 font-weight-bold white--text"
                         color="teal"
@@ -118,81 +118,11 @@
       </v-row>
     </v-container>
 
-    <v-container>
-      <v-list-item>
-        <v-list-item-title
-          class="font-weight-bold"
-        >
-          作成済み（{{ newCommunities.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-list-item
-        v-show="!newCommunities.length"
-      >
-        <v-list-item-title>
-          作成しておりません。
-        </v-list-item-title>
-      </v-list-item>
-    </v-container>
-    <v-container
-      v-show="newCommunities.length"
-    >
-      <v-row
-        justify="center"
-        align="center"
-      >
-        <v-col
-          cols="12"
-        >
-          <v-container>
-            <v-row
-              align="center"
-            >
-              <v-col
-                v-for="(community, i) in newCommunities.slice(pageSize*(page-1),pageSize*(page))"
-                :key="`card-community-${i}`"
-                cols="12"
-                :sm="card.sm"
-                :md="card.md"
-              >
-                <v-card
-                  block
-                  :height="card.height"
-                  :elevation="card.elevation"
-                  :to="$my.communityLinkToDetail(community.id)"
-                  class="v-btn text-capitalize align-center"
-                >
-                  <v-container>
-                    <v-col
-                      cols="12"
-                    >
-                      <v-row>
-                        <v-card-title class="pb-1 d-block text-truncate text-none font-weight-bold">
-                          {{ community.name.length > 13 ? community.name.substring(0, 13) + '...' : community.name }}
-                        </v-card-title>
-                        <v-card-text class="caption grey--text text-none text--darken-1">
-                          {{ community.description.length > 23 ? community.description.substring(0, 23) + '...' : community.description }}
-                        </v-card-text>
-                      </v-row>
-                    </v-col>
-                  </v-container>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <v-pagination
-      v-show="newCommunities.length"
-      v-model="page"
-      class="my-6"
-      :length="Math.ceil(newCommunities.length/pageSize)"
-      circle
-    >
-    </v-pagination>
+    <CommunityList
+      title="作成済み"
+      message="作成しておりません。"
+      :communities="newCommunities"
+    />
   </div>
 </template>
 
@@ -205,9 +135,7 @@ export default {
     const descMax = 300
     return {
       noImg,
-      page: 1,
-      pageSize: 10,
-      valid: false,
+      isValid: false,
       loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
@@ -223,16 +151,6 @@ export default {
         v => (!!v && descMax >= v.length) || `${descMax}文字以内で入力してください`
       ],
       inputted: { name: '', description: '', image: null },
-      container: {
-        sm: 10,
-        md: 8
-      },
-      card: {
-        sm: 6,
-        md: 4,
-        height: 110,
-        elevation: 4
-      }
     }
   },
   computed: {
@@ -240,13 +158,17 @@ export default {
       return this.inputted.image ? URL.createObjectURL(this.inputted.image) : noImg;
     },
     newCommunities() {
-      const userCommunities = this.$store.state.community.list.filter(x => x.user_id === this.$auth.user.id);
-      return userCommunities.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const userCommunities = this.$store.state.community.list.filter(community => community.user_id === this.$auth.user.id);
+      return userCommunities.sort((a, b) => {
+        if (a.created_at > b.created_at) return -1;
+        if (a.created_at < b.created_at) return 1;
+        return 0;
+      });
     }
   },
   methods: {
     async addCommunity() {
-      if (!this.valid) {
+      if (!this.isValid) {
         this.loading = false
         return
       }

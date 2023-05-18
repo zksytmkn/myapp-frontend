@@ -70,7 +70,7 @@
                     </span>
                     <v-spacer/>
                     <v-list-item-action
-                      v-if="currentCommunity.user_id === $auth.user.id"
+                      v-show="currentCommunity.user_id === $auth.user.id"
                     >
                       <v-menu
                         app
@@ -96,7 +96,7 @@
                               編集する
                             </v-list-item-title>
                           </v-list-item>
-                          <v-list-item @click="deleteCurrentCommunity(currentCommunity.id)">
+                          <v-list-item @click="deleteCurrentCommunity">
                             <v-list-item-title>
                               削除する
                             </v-list-item-title>
@@ -116,7 +116,7 @@
                     </span>
                     <br/>
                     {{
-                      $store.state.community.participation.some(community => community.id === currentCommunity.id)
+                      isCurrentUserParticipatingIn
                         ? '＊ご参加済みです。'
                         : '＊ご自由に参加していただけます。'
                     }}
@@ -131,19 +131,19 @@
                       block
                       dark
                       @click="
-                        $store.state.community.participation.some(community => community.id === currentCommunity.id)
-                          ? withdrawCommunity(currentCommunity.id)
-                          : participateInCommunity(currentCommunity.id)"
+                        isCurrentUserParticipatingIn
+                          ? withdrawCommunity()
+                          : participateInCommunity()"
                     >
                       {{
-                        $store.state.community.participation.some(community => community.id === currentCommunity.id)
+                        isCurrentUserParticipatingIn
                           ? 'コミュニティを退会する'
                           : 'コミュニティに参加する'
                       }}
                     </v-btn>
                   </v-card-actions>
                   <v-card-actions
-                    v-show="$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+                    v-show="isCurrentUserParticipatingIn"
                     style="width:60%;"
                   >
                     <v-menu
@@ -171,7 +171,7 @@
                         <v-list-item
                           v-for="(user, i) in allUsers"
                           :key="`user-${i}`"
-                          @click="inviteUser(user.id, currentCommunity.id)"
+                          @click="inviteUser(user.id)"
                         >
                           <v-list-item-title>
                             {{ user.name }}
@@ -189,7 +189,7 @@
     </v-container>
 
     <v-container
-      v-show="$store.state.community.participation.some(community => community.id === currentCommunity.id)"
+      v-show="isCurrentUserParticipatingIn"
     >
       <v-row>
         <v-col cols="12">
@@ -202,66 +202,26 @@
               </v-list-item>
             </v-list>
             <v-divider/>
-            <v-sheet
-              ref="messageContainer"
-              class="overflow-y-auto grey lighten-5 text-caption font-weight-medium pt-4"
-              :style="{height: 'calc(100vh - 250px)', 'background-color': '#e0f2f1'}"
+            <MessageBoard
+              :messages="messages"
+              :inputted="inputted"
+              @submitMessage="addCommunityMessage"
+              @resetForm="formReset"
             >
-              <v-row v-for="(message, i) in messages" :key="`message-${i}`">
-                <v-col
-                  cols="12"
-                  :class="message.user.id === $auth.user.id ? 'd-flex justify-end' : 'd-flex'"
+              <template #messageLink="{ message }">
+                <router-link
+                  v-if="isUserParticipatingIn(message.user.id)"
+                  v-slot="{ navigate }"
+                  :to="$my.userLinkToProfile(message.user.id)"
+                  custom
                 >
-                  <div v-if="message.user.id !== $auth.user.id" class="mb-1" style="font-size: 0.7rem; margin-left: 30px;">
-                    <router-link
-                      v-if="isUserInParticipation(message.user.id)"
-                      v-slot="{ navigate }"
-                      :to="$my.userLinkToProfile(message.user.id)"
-                      custom
-                    >
-                      <strong @click="navigate">
-                        {{ message.user.name }}
-                      </strong>
-                    </router-link>
-                    <strong v-else>退会済みユーザー</strong>
-                    <br>
-                    {{ dateFormat(message.updated_at) }}
-                  </div>
-                  <v-list
-                    :class="message.user.id === $auth.user.id ? 'ml-6 pa-2 teal lighten-2 text-white' : 'mr-6 pa-2 orange lighten-2'"
-                    style="border-radius: 18px; margin-left: 12px; margin-right: 12px; display: inline-block;"
-                    :style="{ maxWidth: '50%', width: 'auto' }"
-                  >
-                    <v-list-item-title
-                      class="font-weight-bold"
-                      :style="{ 'word-wrap': 'break-word', 'white-space': 'pre-wrap' }"
-                    >{{ message.content }}</v-list-item-title>
-                  </v-list>
-                  <div v-if="message.user.id === $auth.user.id" class="mt-1" style="font-size: 0.7rem; margin-right: 30px;">
-                    <strong>あなた</strong>
-                    <br>
-                    {{ dateFormat(message.updated_at) }}
-                  </div>
-                </v-col>
-              </v-row>
-            </v-sheet>
-            <v-divider/>
-            <v-sheet class="pa-4" height="110">
-              <v-form ref="new" v-model="valid" @submit.prevent="addCommunityMessage">
-                <v-text-field
-                  v-model="inputted.msg"
-                  :rules="msgRules"
-                  label="メッセージを入力する"
-                  counter="200"
-                  dense
-                  append-icon="mdi-send"
-                  @click:append="addCommunityMessage"
-                />
-              </v-form>
-              <v-btn text @click="formReset">
-                キャンセル
-              </v-btn>
-            </v-sheet>
+                  <strong @click="navigate">
+                    {{ message.user.name }}
+                  </strong>
+                </router-link>
+                <strong v-else>退会済みユーザー</strong>
+              </template>
+            </MessageBoard>
           </v-card>
         </v-col>
       </v-row>
@@ -273,13 +233,11 @@
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  middleware: ['get-user-list'],
+  middleware: 'get-user-list',
   data () {
     return {
       noImg,
-      valid: false,
-      msgRules: [v => !!v || ''],
-      inputted: { msg: '' }
+      inputted: { msg: '' },
     }
   },
   computed: {
@@ -287,10 +245,11 @@ export default {
       return this.$store.state.community.current.community
     },
     messages() {
-      return Array.from(this.$store.state.community.message).sort((a, b) => a.created_at.localeCompare(b.created_at));
-    },
-    dateFormat() {
-      return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
+      return Array.from(this.$store.state.community.message).sort((a, b) => {
+        if (a.created_at < b.created_at) return -1;
+        if (a.created_at > b.created_at) return 1;
+        return 0;
+      });
     },
     allUsers() {
       const { participation, invited } = this.$store.state.community.current;
@@ -303,21 +262,23 @@ export default {
     invitingUser() {
       return this.$store.state.community.current.inviting
     },
-    isUserInParticipation() {
-      return (userId) =>
-        this.$store.state.community.current.participation.some(
-          (participant) => participant.id === userId
-        );
+    isCurrentUserParticipatingIn() {
+      return this.$store.state.community.participation.some(community => community.id === this.currentCommunity.id);
     },
   },
   methods: {
-    async deleteCurrentCommunity(id) {
+    isUserParticipatingIn(userId) {
+      return this.$store.state.community.current.participation.some(
+        (participant) => participant.id === userId
+      );
+    },
+    async deleteCurrentCommunity() {
       try {
         if (!confirm('本当にこのコミュニティを削除しますか？')) {
           return;
         }
 
-        await this.$axios.$delete(`/api/v1/communities/${id}`);
+        await this.$axios.$delete(`/api/v1/communities/${this.currentCommunity.id}`);
         this.$store.dispatch('getToast', { msg: 'コミュニティを削除しました', color: 'success' });
         
         this.$router.go(-1);
@@ -325,15 +286,18 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コミュニティを削除できませんでした', color: 'error' });
       }
     },
-    async addCommunityMessage() {
-      if (!this.valid) return;
-
+    async addCommunityMessage(message) {
+      if (this.isValid) return;
+      const data = {
+        community_message: {
+          content: message,
+        },
+      };
+      this.formReset();
+    
       try {
-        await this.$axios.$post(`/api/v1/communities/${this.currentCommunity.id}/community_messages`, {
-          community_message: {
-            content: this.inputted.msg
-          }
-        });
+        await this.$axios.$post(`/api/v1/communities/${this.currentCommunity.id}/community_messages`, data);
+    
         this.$store.dispatch('getToast', { msg: 'メッセージを送信しました', color: 'success' });
         await this.refreshMessages();
         await this.scrollBottom();
@@ -343,21 +307,20 @@ export default {
       }
     },
     formReset() {
-      this.sentIt = false
-      this.$refs.new.reset()
+      this.sentIt = false;
     },
     async refreshMessages() {
       const messages = await this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}/community_messages`);
       this.$store.commit('setCommunityMessage', messages);
     },
-    async participateInCommunity(communityId) {
+    async participateInCommunity() {
       try {
-        await this.$axios.$post('/api/v1/participations', { community_id: communityId });
+        await this.$axios.$post('/api/v1/participations', { community_id: this.currentCommunity.id });
         this.$store.dispatch('getToast', { msg: 'コミュニティに参加しました', color: 'success' });
 
         const [participations, community] = await Promise.all([
           this.$axios.$get('/api/v1/participations'),
-          this.$axios.$get(`/api/v1/communities/${communityId}`),
+          this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}`),
         ]);
         this.$store.commit('setParticipationCommunity', participations);
         this.$store.commit('setCurrentCommunity', community);
@@ -365,14 +328,18 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コミュニティに参加できませんでした', color: 'error' });
       }
     },
-    async withdrawCommunity(communityId) {
+    async withdrawCommunity() {
       try {
-        await this.$axios.$delete(`/api/v1/participations/${communityId}`);
+        if (!confirm('本当にこのコミュニティを退会しますか？')) {
+          return;
+        }
+
+        await this.$axios.$delete(`/api/v1/participations/${this.currentCommunity.id}`);
         this.$store.dispatch('getToast', { msg: 'コミュニティを退会しました', color: 'success' });
 
         const [participations, community] = await Promise.all([
           this.$axios.$get('/api/v1/participations'),
-          this.$axios.$get(`/api/v1/communities/${communityId}`),
+          this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}`),
         ]);
         this.$store.commit('setParticipationCommunity', participations);
         this.$store.commit('setCurrentCommunity', community);
@@ -380,15 +347,21 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コミュニティを退会できませんでした', color: 'error' });
       }
     },
-    async inviteUser(userId, communityId) {
+    async inviteUser(userId) {
       try {
+        if (!confirm('本当にこのコミュニティに招待しますか？')) {
+          return;
+        }
+
         await this.$axios.$post('/api/v1/invitations', {
-          invited_id: userId,
-          community_id: communityId
+          invitation: {
+            invited_id: userId,
+            community_id: this.currentCommunity.id
+          }
         });
         this.$store.dispatch('getToast', { msg: 'コミュニティに招待しました', color: 'success' });
 
-        const community = await this.$axios.$get(`/api/v1/communities/${communityId}`);
+        const community = await this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}`);
         this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'コミュニティに招待できませんでした', color: 'error' });

@@ -10,7 +10,7 @@
       <v-row justify="center">
         <v-col cols="12">
           <v-card>
-            <v-form ref="new" v-model="valid" @submit.prevent="addProduct">
+            <v-form ref="new" v-model="isValid" @submit.prevent="addProduct">
               <v-list>
                 <v-list-item>
                   <v-list-item-title class="font-weight-bold">農産物</v-list-item-title>
@@ -123,7 +123,7 @@
                       >
                         <v-btn
                           type="submit"
-                          :disabled="!valid || loading"
+                          :disabled="!isValid || loading"
                           :loading="loading"
                           class="mb-6 mr-2 font-weight-bold white--text"
                           color="teal"
@@ -148,20 +148,11 @@
       </v-row>
     </v-container>
 
-    <v-container>
-      <v-list-item>
-        <v-list-item-title class="font-weight-bold">
-          出品済み（{{ newProducts.length }}件）
-        </v-list-item-title>
-      </v-list-item>
-      <v-divider/>
-      <v-list-item v-show="!newProducts.length">
-        <v-list-item-title>
-          出品しておりません。
-        </v-list-item-title>
-      </v-list-item>
-    </v-container>
-    <ProductList :product-list="newProducts" />
+    <ProductList
+      title="出品済み"
+      message="出品しておりません。"
+      :products="newProducts"
+    />
   </div>
 </template>
 
@@ -173,7 +164,7 @@ export default {
     const descMax = 300
     return {
       noImg,
-      valid: false,
+      isValid: false,
       loading: false,
       imgRules: [
         value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
@@ -203,7 +194,7 @@ export default {
       return this.inputted.image ? URL.createObjectURL(this.inputted.image) : noImg;
     },
     newProducts() {
-      const userProducts = this.$store.state.product.list.filter(x => x.user_id === this.$auth.user.id);
+      const userProducts = this.$store.state.product.list.filter(product => product.user_id === this.$auth.user.id);
       return userProducts.sort((a, b) => {
         if (a.created_at > b.created_at) return -1;
         if (a.created_at < b.created_at) return 1;
@@ -218,7 +209,7 @@ export default {
         return;
       }
 
-      if (!this.valid) {
+      if (!this.isValid) {
         this.loading = false;
         return;
       }

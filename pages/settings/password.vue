@@ -109,9 +109,7 @@ export default {
       }
     
       if (this.inputted.password !== this.inputted.password_confirmation) {
-        const msg = '新しいパスワードと確認用パスワードが一致しません';
-        const color = 'error';
-        this.$store.dispatch('getToast', { msg, color });
+        this.$store.dispatch('getToast', { msg: '新しいパスワードと確認用パスワードが一致しません', color: 'error' });
         this.loading = false;
         return;
       }
@@ -124,9 +122,7 @@ export default {
     
         await this.$axios.$patch("/api/v1/users/update_password", data)
     
-        const msg = 'パスワードを変更しました';
-        const color = 'success';
-        this.$store.dispatch('getToast', { msg, color });
+        this.$store.dispatch('getToast', { msg: 'パスワードを変更しました', color: 'success' });
     
         const response = await this.$axios.$post('/api/v1/auth_token/refresh');
         this.$auth.login(response);

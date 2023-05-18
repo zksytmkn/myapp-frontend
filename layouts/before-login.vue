@@ -11,9 +11,7 @@
 </template>
 
 <script>
-import AppFooter from '../components/App/AppFooter.vue'
 export default {
-  components: { AppFooter },
-  middleware: ['logged-in-redirect']
+  middleware: 'logged-in-redirect'
 }
 </script>

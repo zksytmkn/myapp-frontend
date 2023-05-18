@@ -113,7 +113,7 @@
                         </v-list-item-title>
                       </v-list-item>
 
-                      <V-list-item
+                      <v-list-item
                         to="/communities/search"
                         @click="setCommunitySearchCondition"
                       >
@@ -131,7 +131,7 @@
                               : CurrentUser.name + 'さんの作成したコミュニティを見る'
                           }}
                         </v-list-item-title>
-                      </V-list-item>
+                      </v-list-item>
                     </v-list>
                   </v-col>
                   <v-col
@@ -173,7 +173,7 @@
 import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 
 export default {
-  layout: 'mypage',
+  layout: 'logged-in',
   middleware: ['get-user-current', 'get-user-relationship'],
   data() {
     return {
@@ -218,17 +218,17 @@ export default {
     },
     setProductSearchCondition() {
       this.$store.commit('setProductSearchCondition', {
-        seller: this.$store.state.user.current.name
+        seller: this.CurrentUser.name
       });
     },
     setPostSearchCondition() {
       this.$store.commit('setPostSearchCondition', {
-        poster: this.$store.state.user.current.name
+        poster: this.CurrentUser.name
       });
     },
     setCommunitySearchCondition() {
       this.$store.commit('setCommunitySearchCondition', {
-        maker: this.$store.state.user.current.name
+        maker: this.CurrentUser.name
       });
     }
   }

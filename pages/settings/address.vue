@@ -13,7 +13,7 @@
         >
           <v-form
             ref="edit"
-            v-model="valid"
+            v-model="isValid"
             @submit.prevent="editAddress"
           >
             <v-list>
@@ -70,7 +70,7 @@
                       >
                         <v-btn
                           type="submit"
-                          :disabled="!valid || loading"
+                          :disabled="!isValid || loading"
                           :loading="loading"
                           color="appblue"
                           class="white--text mt-3 mb-3 mr-2"
@@ -103,7 +103,7 @@ const url = '/api/search?zipcode='
 export default {
   data() {
     return {
-      valid: false,
+      isValid: false,
       loading: false,
       inputted: { zipcode: '', street: '', building: '' },
       zipcodeRules: [
@@ -115,7 +115,7 @@ export default {
     };
   },
   mounted() {
-    const user = this.$store.state.user.login;
+    const user = this.$auth.user;
     this.inputted = { ...user };
   },
   methods: {
@@ -127,7 +127,7 @@ export default {
       this.inputted.street = address1 + address2 + address3;
     },
     async editAddress() {
-      if (!this.valid) return;
+      if (!this.isValid) return;
       this.loading = true;
 
       try {
