@@ -39,7 +39,6 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   layout: 'logged-in',
-  middleware: ['get-user-current', 'get-user-relationship'],
   props: {
     title: {
       type: String,

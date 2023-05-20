@@ -122,12 +122,7 @@ export default {
   },
   methods: {
     updateSearchCondition() {
-      this.$store.commit('setCommunitySearchCondition', { 
-        name: this.searched.name, 
-        maker: this.searched.maker, 
-        description: this.searched.description 
-      })
-
+      this.$store.commit('setCommunitySearchCondition', { ...this.searched });
       this.calculateSearchedCommunities();
     },
     calculateSearchedCommunities() {

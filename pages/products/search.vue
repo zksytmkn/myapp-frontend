@@ -214,14 +214,7 @@ export default {
   },
   methods: {
     updateSearchCondition() {
-      this.$store.commit('setProductSearchCondition', {
-        name: this.searched.name,
-        seller: this.searched.seller,
-        description: this.searched.description,
-        category: this.searched.category,
-        prefecture: this.searched.prefecture
-      });
-
+      this.$store.commit('setProductSearchCondition', { ...this.searched });
       this.calculateSearchedProducts();
     },
     calculateSearchedProducts() {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <UserList
-      title="$auth.user.id === $auth.user.id ? 'あなたのフォロワー' : $auth.user.name + 'さんのフォロワー'"
+      :title="CurrentUser.id === $auth.user.id ? 'あなたのフォロワー' : $auth.user.name + 'さんのフォロワー'"
       message="フォローされておりません。"
       :users="followedUsers"
     />
@@ -10,9 +10,13 @@
 
 <script>
 export default {
+  middleware: ['get-user-current', 'get-user-relationship'],
   computed: {
+    CurrentUser() {
+      return this.$store.state.user.current
+    },
     followedUsers() {
-      return this.$store.state.user.relationship.followed;
+      return this.$store.state.user.relationship.followers;
     },
   },
 };

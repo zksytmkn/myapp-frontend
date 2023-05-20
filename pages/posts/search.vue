@@ -119,12 +119,7 @@ export default {
   },
   methods: {
     updateSearchCondition() {
-      this.$store.commit('setPostSearchCondition', {
-        title: this.searched.title,
-        poster: this.searched.poster,
-        body: this.searched.body,
-      });
-
+      this.$store.commit('setPostSearchCondition', { ...this.searched });
       this.calculateSearchedPosts();
     },
     calculateSearchedPosts() {

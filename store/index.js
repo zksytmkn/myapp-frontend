@@ -97,7 +97,7 @@ export const getters = {
     } else {
       return 'grey';
     }
-  }
+  },
 };
 
 export const mutations = {

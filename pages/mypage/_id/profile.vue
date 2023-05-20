@@ -142,7 +142,7 @@
                       justify="center"
                     >
                       <v-btn
-                        v-show="!$store.state.user.relationship.followed.some(user => user.id === $auth.user.id)"
+                        v-show="!$store.state.user.relationship.followers.some(user => user.id === $auth.user.id)"
                         color="teal"
                         class="white--text mt-6 mb-9 mr-2 font-weight-bold"
                         @click="addRelationship(CurrentUser.id)"
@@ -150,7 +150,7 @@
                         {{ CurrentUser.name }}さんをフォローする
                       </v-btn>
                       <v-btn
-                        v-show="$store.state.user.relationship.followed.some(user => user.id === $auth.user.id)"
+                        v-show="$store.state.user.relationship.followers.some(user => user.id === $auth.user.id)"
                         color="teal"
                         class="white--text mt-6 mb-9 mr-2 font-weight-bold"
                         @click="deleteRelationship(CurrentUser.id)"

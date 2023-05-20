@@ -81,14 +81,12 @@ export default {
           .then(response => {
             // eslint-disable-next-line no-console
             console.log(response);
-            const msg = "メールアドレスに確認メールを送信しました";
-            const color = "success";
-            return this.$store.dispatch("getToast", { msg, color });
+            return this.$store.dispatch('getToast', { msg: 'メールアドレスに確認メールを送信しました', color: 'success' });
           })
           .catch(error => {
             // eslint-disable-next-line no-console
             console.log(error);
-            const msg = "ユーザー登録ができませんでした";
+            const msg = error.response.data.errors ? error.response.data.errors.join(', ') : "ユーザー登録ができませんでした";
             const color = "error";
             return this.$store.dispatch("getToast", { msg, color });
           });
