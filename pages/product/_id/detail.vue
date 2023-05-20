@@ -174,93 +174,14 @@
         </v-col>
       </v-row>
     </v-container>
-
-    <v-container v-show="cmt">
-      <v-row>
-        <v-col cols="12">
-          <v-card flat rounded="lg">
-            <v-list>
-              <v-list-item>
-                <v-list-item-title class="font-weight-bold">コメント</v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <v-divider />
-            <v-list v-for="(comment, i) in comments" :key="`comment-${i}`">
-              <v-list-item>
-                <v-list-item-avatar left>
-                  <v-img :src="noImg"></v-img>
-                </v-list-item-avatar>
-                {{ comment.user.name }}
-                <v-spacer />
-                <v-list-item-action v-show="comment.user.id === $auth.user.id">
-                  <v-menu app offset-x offset-y max-width="200">
-                    <template #activator="{ on }">
-                      <v-btn icon v-on="on">
-                        <v-icon>mdi-dots-horizontal</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list dense>
-                      <v-list-item @click="deleteProductComment(comment.id)">
-                        <v-list-item-title>削除する</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-                <v-card-subtitle>{{ dateFormat(comment.updated_at) }}</v-card-subtitle>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-text>{{ comment.content }}</v-list-item-text>
-              </v-list-item>
-              <v-divider/>
-            </v-list>
-            <v-form ref="new" v-model="isValid">
-              <v-list>
-                <v-list-item>
-                  <v-list-item-avatar left>
-                    <v-img :src="$auth.user.image_url ? $auth.user.image_url : noImg"></v-img>
-                  </v-list-item-avatar>
-                  {{ $auth.user.name }}
-                </v-list-item>
-                <v-list-item>
-                  <v-container>
-                    <v-row justify="center">
-                      <v-col cols="11">
-                        <v-textarea
-                          v-model="inputted.comment"
-                          dense
-                          outlined
-                          rows="2"
-                          placeholder="コメントを追加する"
-                          hide-details="auto"
-                          :rules="cmtRules"
-                          :disabled="sentIt"
-                        ></v-textarea>
-                      </v-col>
-                      <v-col cols="11">
-                        <v-row justify="center" align="center">
-                          <v-btn
-                            text
-                            outlined
-                            class="font-weight-bold mt-3 mb-3 mr-2"
-                            :disabled="!isValid"
-                            @click="addProductComment"
-                          >
-                            コメントする
-                          </v-btn>
-                          <v-btn text @click="formReset">
-                            キャンセル
-                          </v-btn>
-                        </v-row>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-list-item>
-              </v-list>
-            </v-form>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+    <CommentSection
+      :cmt="cmt"
+      :comments="comments"
+      :inputted="inputted"
+      @addComment="addProductComment"
+      @deleteComment="deleteProductComment"
+      @resetForm="formReset"
+    />
   </div>
 </template>
 
@@ -274,8 +195,7 @@ export default {
       noImg,
       isValid: false,
       cmt: false,
-      cmtRules: [v => !!v || ''],
-      inputted: { comment: '' },
+      inputted: { cmt: '' },
       selectedQuantity: 1
     }
   },
@@ -290,14 +210,11 @@ export default {
         return 0;
       });
     },
-    dateFormat() {
-      return (date) => new Intl.DateTimeFormat('ja', { dateStyle: 'medium' }).format(new Date(date));
-    },
     ...mapGetters(['productButtonClass']),
   },
   methods: {
     async deleteCurrentProduct() {
-      if (!confirm('本当にこの農産物を削除しますか？')) {
+      if (!confirm('本当に農産物を削除しますか？')) {
         return;
       }
 
@@ -309,11 +226,12 @@ export default {
         this.$store.dispatch('getToast', { msg: '農産物を削除できませんでした', color: 'error' });
       }
     },
-    async addProductComment() {
-      if (!this.isValid) return;
-      
+    async addProductComment({ comment, isValid }) {
+      if (!isValid) return;
       const data = {
-        content: this.inputted.comment,
+        product_comment: {
+          content: comment,
+        }
       };
       this.formReset();
 
@@ -327,7 +245,6 @@ export default {
     },
     formReset() {
       this.sentIt = false
-      this.$refs.new.reset()
     },
     async deleteProductComment(id) {
       try {
@@ -348,7 +265,7 @@ export default {
         if (method === 'delete') {
           await this.$axios[method](`/api/v1/product_${type}s/${this.currentProduct.id}/user`);
         } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: this.currentProduct.id });
+          await this.$axios[method](`/api/v1/product_${type}s`, { [`product_${type}`]: { product_id: this.currentProduct.id } });
         }
 
         // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映

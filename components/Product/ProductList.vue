@@ -198,7 +198,7 @@ export default {
     otherProducts: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
@@ -224,7 +224,7 @@ export default {
   methods: {
     async deleteProduct(id) {
       try {
-        if (!confirm('本当にこの農産物を削除しますか？')) {
+        if (!confirm('本当に農産物を削除しますか？')) {
           return;
         }
 
@@ -248,7 +248,7 @@ export default {
         if (method === 'delete') {
           await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
         } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
+          await this.$axios[method](`/api/v1/product_${type}s`, { [`product_${type}`]: { product_id: id } });
         }
 
         // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映

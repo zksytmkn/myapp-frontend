@@ -130,11 +130,13 @@ export default {
     async addOrder() {
       try {
         const data = {
-          billing_amount: Math.floor(this.$store.getters.cartTotalPrice)
+          order: {
+            billing_amount: Math.floor(this.$store.getters.cartTotalPrice)
+          }
         };
     
         await this.$axios.$post('/api/v1/orders', data);
-
+    
         const cartsResponse = await this.$axios.$get('/api/v1/carts');
         this.$store.commit('setCart', cartsResponse);
         this.$store.dispatch('getToast', { msg: '農産物を購入しました', color: 'success' });

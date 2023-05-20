@@ -114,10 +114,7 @@ export default {
     }
   },
   mounted() {
-    this.searched.title = this.$store.state.post.searchCondition.title
-    this.searched.poster = this.$store.state.post.searchCondition.poster
-    this.searched.body = this.$store.state.post.searchCondition.body
-
+    this.searched = {...this.$store.state.post.searchCondition};
     this.calculateSearchedPosts();
   },
   methods: {
@@ -137,22 +134,22 @@ export default {
     
       if (title && title.length) {
         const titleArray = Array.isArray(title) ? title : [title];
-        copySearchedPosts = copySearchedPosts.filter((x) =>
-          titleArray.some((str) => x.title.includes(str))
+        copySearchedPosts = copySearchedPosts.filter((post) =>
+          titleArray.some((str) => post.title.includes(str))
         );
       }
     
       if (poster && poster.length) {
         const posterArray = Array.isArray(poster) ? poster : [poster];
-        copySearchedPosts = copySearchedPosts.filter((x) =>
-          posterArray.some((str) => x.user.name.includes(str))
+        copySearchedPosts = copySearchedPosts.filter((post) =>
+          posterArray.some((str) => post.user.name.includes(str))
         );
       }
     
       if (body && body.length) {
         const bodyArray = Array.isArray(body) ? body : [body];
-        copySearchedPosts = copySearchedPosts.filter((x) =>
-          bodyArray.some((str) => x.body.includes(str))
+        copySearchedPosts = copySearchedPosts.filter((post) =>
+          bodyArray.some((str) => post.body.includes(str))
         );
       }
     

@@ -117,10 +117,7 @@ export default {
     }
   },
   mounted() {
-    this.searched.name = this.$store.state.community.searchCondition.name
-    this.searched.maker = this.$store.state.community.searchCondition.maker
-    this.searched.description = this.$store.state.community.searchCondition.description
-
+    this.searched = {...this.$store.state.community.searchCondition};
     this.calculateSearchedCommunities();
   },
   methods: {
@@ -139,20 +136,20 @@ export default {
       let copySearchedCommunities = Array.from(this.$store.state.community.list)
     
       if (name && name.length) {
-        copySearchedCommunities = copySearchedCommunities.filter((x) =>
-          x.name.includes(name)
+        copySearchedCommunities = copySearchedCommunities.filter((community) =>
+          community.name.includes(name)
         );
       }
     
       if (maker && maker.length) {
-        copySearchedCommunities = copySearchedCommunities.filter((x) =>
-          x.user && x.user.name.includes(maker)
+        copySearchedCommunities = copySearchedCommunities.filter((community) =>
+          community.user.name.includes(maker)
         );
       }
     
       if (description && description.length) {
-        copySearchedCommunities = copySearchedCommunities.filter((x) =>
-          x.description.includes(description)
+        copySearchedCommunities = copySearchedCommunities.filter((community) =>
+          community.description.includes(description)
         );
       }
     

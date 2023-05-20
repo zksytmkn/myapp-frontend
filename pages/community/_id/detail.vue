@@ -194,15 +194,8 @@
       <v-row>
         <v-col cols="12">
           <v-card flat rounded="lg">
-            <v-list>
-              <v-list-item>
-                <v-list-item-title class="font-weight-bold">
-                  コミュニティ
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <v-divider/>
             <MessageBoard
+              :title="'コミュニティ'"
               :messages="messages"
               :inputted="inputted"
               @submitMessage="addCommunityMessage"
@@ -210,9 +203,9 @@
             >
               <template #messageLink="{ message }">
                 <router-link
-                  v-if="isUserParticipatingIn(message.user.id)"
+                  v-if="isUserParticipatingIn(message.user_id)"
                   v-slot="{ navigate }"
-                  :to="$my.userLinkToProfile(message.user.id)"
+                  :to="$my.userLinkToProfile(message.user_id)"
                   custom
                 >
                   <strong @click="navigate">
@@ -274,7 +267,7 @@ export default {
     },
     async deleteCurrentCommunity() {
       try {
-        if (!confirm('本当にこのコミュニティを削除しますか？')) {
+        if (!confirm('本当にコミュニティを削除しますか？')) {
           return;
         }
 
@@ -286,8 +279,8 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コミュニティを削除できませんでした', color: 'error' });
       }
     },
-    async addCommunityMessage(message) {
-      if (this.isValid) return;
+    async addCommunityMessage({ message, isValid }) {
+      if (!isValid) return;
       const data = {
         community_message: {
           content: message,
@@ -301,7 +294,6 @@ export default {
         this.$store.dispatch('getToast', { msg: 'メッセージを送信しました', color: 'success' });
         await this.refreshMessages();
         await this.scrollBottom();
-        this.formReset();
       } catch (error) {
         this.$store.dispatch('getToast', { msg: 'メッセージを送信できませんでした', color: 'error' });
       }
@@ -315,9 +307,13 @@ export default {
     },
     async participateInCommunity() {
       try {
-        await this.$axios.$post('/api/v1/participations', { community_id: this.currentCommunity.id });
+        await this.$axios.$post('/api/v1/participations', { 
+          participation: {
+            community_id: this.currentCommunity.id 
+          }
+        });
         this.$store.dispatch('getToast', { msg: 'コミュニティに参加しました', color: 'success' });
-
+    
         const [participations, community] = await Promise.all([
           this.$axios.$get('/api/v1/participations'),
           this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}`),
@@ -330,7 +326,7 @@ export default {
     },
     async withdrawCommunity() {
       try {
-        if (!confirm('本当にこのコミュニティを退会しますか？')) {
+        if (!confirm('本当にコミュニティを退会しますか？')) {
           return;
         }
 
@@ -349,7 +345,7 @@ export default {
     },
     async inviteUser(userId) {
       try {
-        if (!confirm('本当にこのコミュニティに招待しますか？')) {
+        if (!confirm('本当にコミュニティに招待しますか？')) {
           return;
         }
 

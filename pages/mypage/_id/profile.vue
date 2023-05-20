@@ -188,7 +188,9 @@ export default {
   methods: {
     async addRelationship(id) {
       const data = {
-        followed_id: id
+        relationship: {
+          followed_id: id,
+        },
       };
 
       try {

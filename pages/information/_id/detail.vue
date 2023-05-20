@@ -127,24 +127,17 @@
           </v-card>
 
           <v-card flat rounded="lg" class="mt-12 mb-12">
-            <v-list>
-              <v-list-item>
-                <v-list-item-title class="font-weight-bold">
-                  {{ currentOrder.product.user_id === $auth.user.id ? '購入者とのメッセージ' : '出品者とのメッセージ' }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <v-divider/>
             <MessageBoard
+              :title="currentOrder.product.user_id === $auth.user.id ? '購入者とのメッセージ' : '出品者とのメッセージ'"
               :messages="messages"
               :inputted="inputted"
-              :is-valid="isValid"
               @submitMessage="addOrderMessage"
+              @resetForm="formReset"
             >
               <template #messageLink="{ message }">
                 <router-link
                   v-slot="{ navigate }"
-                  :to="$my.userLinkToProfile(message.user.id)"
+                  :to="$my.userLinkToProfile(message.user_id)"
                   custom
                 >
                   <strong @click="navigate">
@@ -164,12 +157,10 @@
 import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
-  layout:"logged-in",
   middleware: [ 'get-order-current', 'get-order-message' ],
   data () {
     return {
       noImg,
-      isValid: false,
       orderInfoDialog: false,
       inputted: { msg: '' },
       orderStatus: {
@@ -212,8 +203,8 @@ export default {
     },
     messages() {
       return Array.from(this.$store.state.order.message).sort((a, b) => {
-        if (a.created_at > b.created_at) return -1;
-        if (a.created_at < b.created_at) return 1;
+        if (a.created_at < b.created_at) return -1;
+        if (a.created_at > b.created_at) return 1;
         return 0;
       });
     },
@@ -235,9 +226,11 @@ export default {
   methods: {
     async updateOrderStatus(status) {
       const data = {
-        status
+        order: {
+          status
+        }
       };
-
+    
       try {
         await this.$axios.$patch(`/api/v1/orders/${this.currentOrder.id}`, data);
         const order = await this.$axios.$get(`/api/v1/orders/${this.currentOrder.id}`);
@@ -247,19 +240,23 @@ export default {
         console.log(error);
       }
     },
-    handleButtonClick(statusKey) {
+    async handleButtonClick(statusKey) {
       const statusToUpdate = this.orderStatus[statusKey].statusToUpdate;
       if (statusToUpdate) {
-        this.updateOrderStatus(statusToUpdate);
+        if (confirm('本当に注文ステータスを更新しますか？')) {
+          await this.updateOrderStatus(statusToUpdate);
+        }
       }
     },
-    async addOrderMessage() {
-      if (!this.isValid) return;
+    async addOrderMessage({ message, isValid }) {
+      if (!isValid) return;
       const data = {
-        content: this.localInputtedMsg,
+        order_message: {
+          content: message,
+        },
       };
       this.formReset();
-
+    
       try {
         await this.$axios.$post(`/api/v1/orders/${this.currentOrder.id}/order_messages`, data);
         await this.refreshMessages();
@@ -284,7 +281,6 @@ export default {
     },
     formReset() {
       this.sentIt = false
-      this.$refs.new.reset()
     },
   },
 };

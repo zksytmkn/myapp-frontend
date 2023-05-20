@@ -214,7 +214,7 @@ export default {
         if (method === 'delete') {
           await this.$axios[method](`/api/v1/product_${type}s/${id}/user`);
         } else {
-          await this.$axios[method](`/api/v1/product_${type}s`, { product_id: id });
+          await this.$axios[method](`/api/v1/product_${type}s`, { [`product_${type}`]: { product_id: id } });
         }
     
         // 更新後のログインユーザーのproduct_favoritesとproduct_unfavoritesを取得し、Vuexストアに反映

@@ -167,7 +167,7 @@ export default {
         if (method === 'delete') {
           await this.$axios[method](`/api/v1/post_${type}s/${id}/user`);
         } else {
-          await this.$axios[method](`/api/v1/post_${type}s`, { post_id: id });
+          await this.$axios[method](`/api/v1/post_${type}s`, { [`post_${type}`]: { post_id: id } });
         }
 
         // 更新後のログインユーザーのpost_favoritesとpost_unfavoritesを取得し、Vuexストアに反映

@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     async deleteUser() {
-      if (!confirm('本当にこのアカウントを削除しますか？')) {
+      if (!confirm('本当にアカウントを削除しますか？')) {
         return;
       }
 

@@ -200,13 +200,16 @@ export default {
       ]
     }
   },
+  watch: {
+    '$store.state.carts': {
+      deep: true,
+      handler() {
+        this.calculateSearchedProducts();
+      }
+    }
+  },
   mounted() {
-    this.searched.name = this.$store.state.product.searchCondition.name;
-    this.searched.seller = this.$store.state.product.searchCondition.seller;
-    this.searched.description = this.$store.state.product.searchCondition.description;
-    this.searched.category = this.$store.state.product.searchCondition.category;
-    this.searched.prefecture = this.$store.state.product.searchCondition.prefecture;
-
+    this.searched = {...this.$store.state.product.searchCondition};
     this.calculateSearchedProducts();
   },
   methods: {
@@ -227,32 +230,32 @@ export default {
       let copySearchedProducts = Array.from(this.$store.state.product.list)
 
       if (name && name.length) {
-        copySearchedProducts = copySearchedProducts.filter((x) =>
-          x.name.includes(name)
+        copySearchedProducts = copySearchedProducts.filter((product) =>
+          product.name.includes(name)
         );
       }
 
       if (seller && seller.length) {
-        copySearchedProducts = copySearchedProducts.filter((x) =>
-          x.user.name.includes(seller)
+        copySearchedProducts = copySearchedProducts.filter((product) =>
+          product.user.name.includes(seller)
         );
       }
 
       if (category && category.length) {
-        copySearchedProducts = copySearchedProducts.filter((x) =>
-          category.some((str) => x.category.includes(str))
+        copySearchedProducts = copySearchedProducts.filter((product) =>
+          category.some((str) => product.category.includes(str))
         );
       }
     
       if (prefecture && prefecture.length) {
-        copySearchedProducts = copySearchedProducts.filter((x) =>
-          prefecture.some((str) => x.prefecture.includes(str))
+        copySearchedProducts = copySearchedProducts.filter((product) =>
+          prefecture.some((str) => product.prefecture.includes(str))
         );
       }
     
       if (description && description.length) {
-        copySearchedProducts = copySearchedProducts.filter((x) =>
-          x.description.includes(description)
+        copySearchedProducts = copySearchedProducts.filter((product) =>
+          product.description.includes(description)
         );
       }
     
