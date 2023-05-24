@@ -276,7 +276,13 @@ export default {
         
         this.$router.go(-1);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コミュニティを削除できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コミュニティを作成できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async addCommunityMessage({ message, isValid }) {
@@ -295,7 +301,13 @@ export default {
         await this.refreshMessages();
         await this.scrollBottom();
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'メッセージを送信できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "メッセージを送信できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     formReset() {
@@ -321,7 +333,13 @@ export default {
         this.$store.commit('setParticipationCommunity', participations);
         this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コミュニティに参加できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コミュニティに参加できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async withdrawCommunity() {
@@ -340,7 +358,13 @@ export default {
         this.$store.commit('setParticipationCommunity', participations);
         this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コミュニティを退会できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コミュニティを退会できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async inviteUser(userId) {
@@ -360,7 +384,13 @@ export default {
         const community = await this.$axios.$get(`/api/v1/communities/${this.currentCommunity.id}`);
         this.$store.commit('setCurrentCommunity', community);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コミュニティに招待できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コミュニティに招待できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     scrollBottom() {

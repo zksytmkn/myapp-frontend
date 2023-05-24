@@ -129,12 +129,16 @@ export default {
       }).then(() => {
         this.loading = false
         this.sentIt = true
-        this.$store.dispatch('getToast', { msg: 'お問い合わせ内容が送信されました。メールアドレスへ担当者よりご連絡いたします。', color: 'success' });
+        this.$store.dispatch('getToast', { msg: 'お問い合わせありがとうございます。担当者よりご連絡いたします。', color: 'success' });
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.log(error)
+        let errorMsg = "お問い合わせの送信に失敗しました。もう一度お試しください。";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
         this.loading = false
-        this.$store.dispatch('getToast', { msg: 'お問い合わせの送信中にエラーが発生しました', color: 'error' });
       })
     },
     formReset () {

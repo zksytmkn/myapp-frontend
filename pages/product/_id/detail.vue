@@ -345,7 +345,11 @@ export default {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
-        this.$store.dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
+        let errorMsg = "カートに入れられませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
   }

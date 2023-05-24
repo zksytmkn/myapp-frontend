@@ -129,24 +129,31 @@ export default {
     async editAddress() {
       if (!this.isValid) return;
       this.loading = true;
-
+    
       try {
         const data = { ...this.inputted };
         await this.$axios.$patch(`/api/v1/users/${this.$auth.user.id}`, data);
         this.$store.dispatch('getToast', { msg: '住所を編集しました', color: 'success' });
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '住所を編集できませんでした', color: 'error' });
+        let errorMsg = '住所を編集できませんでした';
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg += `: ${error.response.data.error}`;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
       }
-
+    
       try {
         const response = await this.$axios.$post('/api/v1/auth_token/refresh');
         this.$auth.login(response);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
+        let errorMsg = 'セッションの更新に失敗しました。再度ログインしてください。';
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg += `: ${error.response.data.error}`;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
+      } finally {
+        this.loading = false;
       }
-
-      this.loading = false;
     },
     formReset() {
       this.sentIt = false;

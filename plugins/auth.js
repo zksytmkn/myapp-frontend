@@ -29,8 +29,8 @@ class Authentication {
 
     this.store.commit('setLoggedInUser', user)
     this.store.commit('setAuthToken', token)
-    this.store.dispatch('getAuthExpires', exp)
-    this.store.dispatch('getAuthPayload', jwtPayload)
+    this.store.commit('setAuthPayload', jwtPayload)
+    this.store.commit('setAuthExpires', exp)
   }
 
   // ログイン業務
@@ -41,13 +41,6 @@ class Authentication {
   // Vuexの値を初期値に戻す
   resetVuex () {
     this.setAuth({ token: null, expires: 0, user: null })
-    // のちに追加
-    // this.store.dispatch('getCurrentProduct', null)
-    // this.store.dispatch('getProductList', [])
-    // this.store.dispatch('getCurrentPost', null)
-    // this.store.dispatch('getPostList', [])
-    // this.store.dispatch('getCurrentCommunity', null)
-    // this.store.dispatch('getCommunityList', [])
   }
 
   // axiosのレスポンス401を許容する

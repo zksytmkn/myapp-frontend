@@ -262,12 +262,13 @@ export default {
 
         this.$store.commit('setCart', response);
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          this.$store.dispatch('getToast', { msg: 'カートから削除できませんでした', color: 'error' });
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(error.message);
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = 'カートから削除できませんでした';
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
         }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
       }
     },
   },

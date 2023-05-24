@@ -169,7 +169,6 @@ export default {
   methods: {
     async addCommunity() {
       if (!this.isValid) {
-        this.loading = false
         return
       }
     
@@ -197,7 +196,13 @@ export default {
         const communities = await this.$axios.$get('api/v1/communities')
         this.$store.commit('setCommunityList', communities)
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コミュニティを作成できませんでした', color: 'error' })
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コミュニティを作成できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       } finally {
         this.loading = false
       }

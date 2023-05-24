@@ -141,7 +141,13 @@ export default {
         this.$store.commit('setCart', cartsResponse);
         this.$store.dispatch('getToast', { msg: '農産物を購入しました', color: 'success' });
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '農産物を購入できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "農産物を購入できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
   },

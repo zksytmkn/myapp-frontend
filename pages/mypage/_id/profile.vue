@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="my-12"
+    class="mt-12"
   >
     <v-row>
       <mypage-menu/>

@@ -226,18 +226,23 @@ export default {
   methods: {
     async updateOrderStatus(status) {
       const data = {
-        order: {
+        order_detail: {
           status
         }
       };
-    
+
       try {
-        await this.$axios.$patch(`/api/v1/orders/${this.currentOrder.id}`, data);
-        const order = await this.$axios.$get(`/api/v1/orders/${this.currentOrder.id}`);
-        this.$store.commit("setCurrentOrder", order);
+        await this.$axios.$patch(`/api/v1/order_details/${this.currentOrderDetail.id}`, data);
+        const order = await this.$axios.$get(`/api/v1/order_details/${this.currentOrderDetail.id}`);
+        this.$store.commit("setCurrentOrderDetail", order);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
+        let errorMsg = "注文ステータスを更新できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async handleButtonClick(statusKey) {
@@ -263,7 +268,13 @@ export default {
         await this.scrollBottom();
         this.$store.dispatch('getToast', { msg: 'メッセージを送信しました', color: 'success' });
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'メッセージを送信できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "メッセージを送信できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async refreshMessages() {

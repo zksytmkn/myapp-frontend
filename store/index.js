@@ -116,17 +116,20 @@ export const mutations = {
   setProductUnfavorite (state, payload) {
     state.product.unfavorite = payload
   },
+  setProductSearchCondition (state, payload) {
+    state.product.searchCondition = payload;
+  },
   incrementProductFavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
     product.favorites_count++;
   },
-  decrementProductFavoritesCount(state, id) {
-    const product = state.product.list.find(product => product.id === id);
-    product.favorites_count--;
-  },
   incrementProductUnfavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
     product.unfavorites_count++;
+  },
+  decrementProductFavoritesCount(state, id) {
+    const product = state.product.list.find(product => product.id === id);
+    product.favorites_count--;
   },
   decrementProductUnfavoritesCount(state, id) {
     const product = state.product.list.find(product => product.id === id);
@@ -136,29 +139,17 @@ export const mutations = {
     const product = state.product.current
     product.favorites_count++;
   },
-  decrementCurrentProductFavoritesCount(state) {
-    const product = state.product.current
-    product.favorites_count--;
-  },
   incrementCurrentProductUnfavoritesCount(state) {
     const product = state.product.current
     product.unfavorites_count++;
   },
+  decrementCurrentProductFavoritesCount(state) {
+    const product = state.product.current
+    product.favorites_count--;
+  },
   decrementCurrentProductUnfavoritesCount(state) {
     const product = state.product.current
     product.unfavorites_count--;
-  },
-  setCart (state, payload) {
-    state.carts = payload
-  },
-  setOrder (state, payload) {
-    state.order.list = payload
-  },
-  setOrderMessage (state, payload) {
-    state.order.message = payload
-  },
-  setCurrentOrder (state, payload) {
-    state.order.current = payload
   },
   setPostList (state, payload) {
     state.post.list = payload
@@ -174,6 +165,9 @@ export const mutations = {
   },
   setPostUnfavorite (state, payload) {
     state.post.unfavorite = payload
+  },
+  setPostSearchCondition (state, payload) {
+    state.post.searchCondition = payload;
   },
   incrementPostFavoritesCount(state, id) {
     const post = state.post.list.find(post => post.id === id);
@@ -216,6 +210,27 @@ export const mutations = {
   setCommunityMessage (state, payload) {
     state.community.message = payload
   },
+  setCommunitySearchCondition (state, payload) {
+    state.community.searchCondition = payload
+  },
+  setParticipationCommunity (state, payload) {
+    state.community.participation = payload
+  },
+  setInvitationCommunity (state, payload) {
+    state.community.invitation = payload
+  },
+  setCart (state, payload) {
+    state.carts = payload
+  },
+  setOrder (state, payload) {
+    state.order.list = payload
+  },
+  setCurrentOrder (state, payload) {
+    state.order.current = payload
+  },
+  setOrderMessage (state, payload) {
+    state.order.message = payload
+  },
   setUserList (state, payload) {
     state.user.list = payload
   },
@@ -224,12 +239,6 @@ export const mutations = {
   },
   setUserRelationship (state, payload) {
     state.user.relationship = payload
-  },
-  setParticipationCommunity (state, payload) {
-    state.community.participation = payload
-  },
-  setInvitationCommunity (state, payload) {
-    state.community.invitation = payload
   },
   setLoggedInUser (state, payload) {
     state.user.login = payload
@@ -248,15 +257,6 @@ export const mutations = {
   },
   setRememberPath (state, payload) {
     state.loggedIn.rememberPath = payload
-  },
-  setProductSearchCondition (state, payload) {
-    state.product.searchCondition = payload;
-  },
-  setPostSearchCondition (state, payload) {
-    state.post.searchCondition = payload;
-  },
-  setCommunitySearchCondition (state, payload) {
-    state.community.searchCondition = payload
   },
   setLoginType(state, type) {
     state.loginType = type;
@@ -314,14 +314,6 @@ export const actions = {
       unfavorites_count: favorite.unfavorites_count,
     }));
     commit('setPostFavorite', processedFavorites)
-  },
-  getAuthExpires ({ commit }, expires) {
-    expires = expires || 0
-    commit('setAuthExpires', expires)
-  },
-  getAuthPayload ({ commit }, jwtPayload) {
-    jwtPayload = jwtPayload || {}
-    commit('setAuthPayload', jwtPayload)
   },
   getToast ({ commit }, { msg, color, timeout }) {
     color = color || 'transparent'

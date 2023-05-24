@@ -44,6 +44,7 @@
           v-for="(product, i) in products.slice(pageSize * (page - 1), pageSize * page)"
           :key="`product-${i}`"
           cols="6"
+          class="my-col"
         >
           <v-card>
             <v-container>
@@ -316,7 +317,11 @@ export default {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
-        this.$store.dispatch('getToast', { msg: "カートに入れられませんでした", color: "error" });
+        let errorMsg = "カートに入れられませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
   },
@@ -329,5 +334,17 @@ export default {
 }
 .dislikeColor {
   background: #336791 !important;
+}
+@media (min-width: 1264px) {
+  .my-col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+@media (max-width: 1263px) {
+  .my-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 </style>

@@ -100,22 +100,26 @@ export default {
       }
     },
     async guestLogin() {
-      await this.$axios.$post('/api/v1/guest_sessions')
-        .then(response => {
-          this.$axios.$post('/api/v1/auth_token', response)
-            .then(response => this.authSuccessful(response))
-            .catch(error => this.authFailure(error))
-        })
+      try {
+        const response = await this.$axios.$post('/api/v1/guest_sessions');
+        this.$auth.login(response.auth)
+        this.$store.commit('setLoginType', 'guest');
+        this.$router.push(this.redirectPath)
+      } catch (error) {
+        this.authFailure(error);
+      }
     },
     authSuccessful (response) {
       this.$auth.login(response)
       this.$store.commit('setLoginType', 'guest');
       this.$router.push(this.redirectPath)
     },
-    authFailure ({ response }) {
-      if (response) {
-        return this.$store.dispatch('getToast', { msg: 'ゲストログインできませんでした', color: 'error' });
+    authFailure (error) {
+      let errorMsg = "ゲストログインできませんでした";
+      if (error && error.response && error.response.data && error.response.data.error) {
+        errorMsg = error.response.data.error;
       }
+      this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
     }
   }
 }
