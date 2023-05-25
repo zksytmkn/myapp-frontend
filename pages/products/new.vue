@@ -208,7 +208,7 @@ export default {
         this.$store.dispatch('getToast', { msg: 'まずはプロフィールを編集してください', color: 'error' });
         return;
       }
-
+    
       if (!this.isValid) {
         this.loading = false;
         return;
@@ -227,17 +227,22 @@ export default {
         },
       };
     
-      this.formReset();
-    
       try {
         await this.$axios.$post('/api/v1/products', formData, config);
+        this.formReset();
         this.$store.dispatch('getToast', { msg: '農産物を出品しました', color: 'success' });
+        const products = await this.$axios.$get('api/v1/products');
+        this.$store.dispatch('getProductList', products);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '農産物を出品できませんでした', color: 'error' });
+        this.formReset();
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "農産物を出品できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
-    
-      const products = await this.$axios.$get('api/v1/products');
-      this.$store.dispatch('getProductList', products);
     
       this.loading = false;
     },

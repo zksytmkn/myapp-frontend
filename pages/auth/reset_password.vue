@@ -49,13 +49,16 @@ export default {
   methods: {
     async forgotPassword() {
       this.loading = true;
-      if (this.isValid) {
-        await this.$axios
-          .$post("/api/v1/users/send_password_reset_email", this.params)
-          .then((response) => this.handleSuccess(response))
-          .catch((error) => this.handleError(error));
+      try {
+        if (this.isValid) {
+          const response = await this.$axios.$post("/api/v1/users/send_password_reset_email", this.params);
+          this.handleSuccess(response);
+        }
+      } catch (error) {
+        this.handleError(error);
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     handleSuccess(response) {
       this.$store.dispatch("getToast", {

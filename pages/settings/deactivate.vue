@@ -83,7 +83,13 @@ export default {
         this.$store.dispatch('getToast', { msg: 'アカウントを削除しました', color: 'success' });
         this.$router.push('/logout');
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'アカウントを削除できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "アカウントを削除できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     }
   }

@@ -248,29 +248,36 @@ export default {
   methods: {
     async editProduct(id) {
       this.loading = true;
-      if (this.isValid) {
-        const formData = new FormData();
-        Object.keys(this.inputted).forEach(key => {
-          if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
-            formData.append(key, this.inputted[key]);
-          }
-        });
-      
-        const config = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        };
-      
-        try {
+      try {
+        if (this.isValid) {
+          const formData = new FormData();
+          Object.keys(this.inputted).forEach(key => {
+            if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
+              formData.append(key, this.inputted[key]);
+            }
+          });
+        
+          const config = {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          };
+        
           await this.$axios.$patch(`/api/v1/products/${id}`, formData, config);
           this.$router.back();
           this.$store.dispatch('getToast', { msg: '農産物を編集しました', color: 'success' });
-        } catch (error) {
-          this.$store.dispatch('getToast', { msg: '農産物を編集できませんでした', color: 'error' });
         }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "農産物を編集できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     formReset() {
       this.sentIt = false;

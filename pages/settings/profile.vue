@@ -247,7 +247,13 @@ export default {
         const response = await this.$axios.$post('/api/v1/auth_token/refresh');
         this.$auth.login(response);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'プロフィールを編集できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "プロフィールを編集できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       } finally {
         this.loading = false;
       }

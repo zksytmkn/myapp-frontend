@@ -102,11 +102,13 @@ export default {
 
           this.$store.dispatch('getToast', { msg: 'メールアドレスに確認メールを送信しました', color: 'success' });
         } catch (error) {
-          const msg = error.response.data.message || '現在のパスワードが間違っております';
-          const color = 'error';
-          this.$store.dispatch('getToast', { msg, color });
-        } finally {
-          this.loading = false;
+          // eslint-disable-next-line no-console
+          console.log(error);
+          let errorMsg = 'メールアドレスを変更できませんでした';
+          if (error.response && error.response.data && error.response.data.error) {
+            errorMsg = error.response.data.error;
+          }
+          this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
         }
       }
     },

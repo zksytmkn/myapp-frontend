@@ -113,7 +113,7 @@ export default {
         this.loading = false;
         return;
       }
-    
+
       try {
         const data = {
           password: this.inputted.password,
@@ -127,9 +127,13 @@ export default {
         const response = await this.$axios.$post('/api/v1/auth_token/refresh');
         this.$auth.login(response);
       } catch (error) {
-        const msg = error.response.data.message || '現在のパスワードが間違っております';
-        const color = 'error';
-        this.$store.dispatch('getToast', { msg, color });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "パスワードを変更できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       } finally {
         this.loading = false;
       }

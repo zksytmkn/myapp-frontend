@@ -66,10 +66,17 @@ export default {
       if (this.isValid) {
         await this.$axios
           .$put("/api/v1/users/reset_password", this.params)
-          .then((response) => this.handleSuccess(response))
-          .catch((error) => this.handleError(error));
+          .then((response) => {
+            this.handleSuccess(response);
+            this.loading = false;
+          })
+          .catch((error) => {
+            this.handleError(error);
+            this.loading = false;
+          });
+      } else {
+        this.loading = false;
       }
-      this.loading = false;
     },
     handleSuccess(response) {
       this.$store.dispatch("getToast", {

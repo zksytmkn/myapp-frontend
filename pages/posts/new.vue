@@ -171,33 +171,38 @@ export default {
         this.loading = false;
         return;
       }
-    
+
       this.loading = true;
-    
+
       const formData = new FormData();
       Object.entries(this.inputted).forEach(([key, value]) => {
         if (value !== null) formData.append(key, value);
       });
-    
+
       const config = {
         header: {
           "Content-Type": "multipart/form-data",
         },
       };
-    
+
       this.formReset();
-    
+
       try {
         await this.$axios.$post('/api/v1/posts', formData, config);
         this.$store.dispatch('getToast', { msg: 'つぶやきを投稿しました', color: 'success' });
+        const posts = await this.$axios.$get('api/v1/posts');
+        this.$store.dispatch('getPostList', posts);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'つぶやきを投稿できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "つぶやきを投稿できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
+      } finally {
+        this.loading = false;
       }
-
-      const posts = await this.$axios.$get('api/v1/posts');
-      this.$store.dispatch('getPostList', posts);
-    
-      this.loading = false;
     },
     formReset () {
       this.sentIt = false

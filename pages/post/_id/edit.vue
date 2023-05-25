@@ -166,29 +166,36 @@ export default {
   methods: {
     async editPost(id) {
       this.loading = true;
-      if (this.isValid) {
-        const formData = new FormData();
-        Object.keys(this.inputted).forEach(key => {
-          if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
-            formData.append(key, this.inputted[key]);
-          }
-        });
+      try {
+        if (this.isValid) {
+          const formData = new FormData();
+          Object.keys(this.inputted).forEach(key => {
+            if (key !== 'image' || (key === 'image' && this.inputted[key] !== null)) {
+              formData.append(key, this.inputted[key]);
+            }
+          });
 
-        const config = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        };
-      
-        try {
+          const config = {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          };
+
           await this.$axios.$patch(`/api/v1/posts/${id}`, formData, config);
           this.$router.back();
           this.$store.dispatch('getToast', { msg: 'つぶやきを編集しました', color: 'success' });
-        } catch (error) {
-          this.$store.dispatch('getToast', { msg: 'つぶやきを編集できませんでした', color: 'error' });
         }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "つぶやきを編集できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     formReset() {
       this.sentIt = false;

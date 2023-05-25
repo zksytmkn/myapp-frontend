@@ -70,28 +70,29 @@ export default {
   methods: {
     async signup() {
       this.loading = true;
-      if (this.isValid) {
-        const data = {
-          name: this.params.user.name,
-          email: this.params.user.email,
-          password: this.params.user.password
-        };
-        await this.$axios
-          .$post("api/v1/users", data)
-          .then(response => {
-            // eslint-disable-next-line no-console
-            console.log(response);
-            return this.$store.dispatch('getToast', { msg: 'メールアドレスに確認メールを送信しました', color: 'success' });
-          })
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.log(error);
-            const msg = error.response.data.errors ? error.response.data.errors.join(', ') : "ユーザー登録ができませんでした";
-            const color = "error";
-            return this.$store.dispatch("getToast", { msg, color });
-          });
+      try {
+        if (this.isValid) {
+          const data = {
+            name: this.params.user.name,
+            email: this.params.user.email,
+            password: this.params.user.password
+          };
+          const response = await this.$axios.$post("api/v1/users", data);
+          // eslint-disable-next-line no-console
+          console.log(response);
+          await this.$store.dispatch('getToast', { msg: 'メールアドレスに確認メールを送信しました', color: 'success' });
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "ユーザーを登録できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        await this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     formReset() {
       this.$refs.form.reset()

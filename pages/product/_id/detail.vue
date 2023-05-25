@@ -223,7 +223,13 @@ export default {
         this.$store.dispatch('getToast', { msg: '農産物を削除しました', color: 'success' });
         this.$router.go(-1);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: '農産物を削除できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "農産物を削除できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async addProductComment({ comment, isValid }) {
@@ -240,7 +246,13 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コメントしました', color: 'success' });
         this.refreshComments();
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コメントできませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コメントできませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     formReset() {
@@ -252,7 +264,13 @@ export default {
         this.$store.dispatch('getToast', { msg: 'コメントを削除しました', color: 'success' });
         this.refreshComments();
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'コメントを削除できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "コメントを削除できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async handleFavorites(type, method) {

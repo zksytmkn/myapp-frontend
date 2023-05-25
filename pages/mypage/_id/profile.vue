@@ -200,7 +200,13 @@ export default {
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
         this.$store.commit('setUserRelationship', relationship);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'フォローできませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "フォローできませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     async deleteRelationship(id) {
@@ -215,7 +221,13 @@ export default {
         const relationship = await this.$axios.$get(`/api/v1/relationships/${id}/user_follow_relationships`);
         this.$store.commit('setUserRelationship', relationship);
       } catch (error) {
-        this.$store.dispatch('getToast', { msg: 'フォローを解除できませんでした', color: 'error' });
+        // eslint-disable-next-line no-console
+        console.log(error);
+        let errorMsg = "フォローを解除できませんでした";
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMsg = error.response.data.error;
+        }
+        this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
     },
     setProductSearchCondition() {
