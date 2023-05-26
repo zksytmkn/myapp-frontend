@@ -93,7 +93,7 @@
                               v-model="inputted.stock"
                               dense
                               outlined
-                              label="数量"
+                              label="在庫"
                               type="number"
                               :rules="stockRules"
                               :disabled="sentIt"
@@ -162,7 +162,7 @@ export default {
       categoryRules: [v => !!v || '種類を選択してください'],
       prefectureRules: [v => !!v || '都道府県を選択してください'],
       priceRules: [v => !!v || '価格を入力してください'],
-      stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '数量を入力してください'],
+      stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '在庫を入力してください'],
       descRules: [
         descMax,
         v => !!v || '',
@@ -256,13 +256,13 @@ export default {
               formData.append(key, this.inputted[key]);
             }
           });
-        
+
           const config = {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           };
-        
+
           await this.$axios.$patch(`/api/v1/products/${id}`, formData, config);
           this.$router.back();
           this.$store.dispatch('getToast', { msg: '農産物を編集しました', color: 'success' });

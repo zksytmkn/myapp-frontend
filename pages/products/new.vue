@@ -93,7 +93,7 @@
                             v-model="inputted.stock"
                             dense
                             outlined
-                            label="数量"
+                            label="在庫"
                             type="number"
                             :rules="stockRules"
                             :disabled="sentIt"
@@ -176,7 +176,7 @@ export default {
       ],
       Rules: [v => !!v || '種類を選択してください'],
       priceRules: [v => !!v || '価格を入力してください'],
-      stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '数量を入力してください'],
+      stockRules: [v => (v > 0 && Number.isInteger(Number(v))) || '在庫を入力してください'],
       descRules: [
         descMax,
         v => !!v || '',
@@ -208,25 +208,25 @@ export default {
         this.$store.dispatch('getToast', { msg: 'まずはプロフィールを編集してください', color: 'error' });
         return;
       }
-    
+
       if (!this.isValid) {
         this.loading = false;
         return;
       }
-    
+
       this.loading = true;
-    
+
       const formData = new FormData();
       Object.entries(this.inputted).forEach(([key, value]) => {
         if (value !== null) formData.append(key, value);
       });
-    
+
       const config = {
         header: {
           "Content-Type": "multipart/form-data",
         },
       };
-    
+
       try {
         await this.$axios.$post('/api/v1/products', formData, config);
         this.formReset();
@@ -243,7 +243,7 @@ export default {
         }
         this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
-    
+
       this.loading = false;
     },
     formReset() {
