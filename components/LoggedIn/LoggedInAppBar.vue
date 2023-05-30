@@ -18,7 +18,7 @@
       :class="{ 'hidden-mobile-and-down': isNotHomePath }"
     />
 
-    <logged-in-app-bar-breadcrumbs/>
+    <logged-in-app-bar-breadcrumbs v-if="isBreadcrumbsVisible" />
 
     <v-spacer />
 
@@ -44,6 +44,9 @@ export default {
   computed: {
     isNotHomePath () {
       return this.$route.name !== this.homePath.name
+    },
+    isBreadcrumbsVisible () {
+      return this.$vuetify.breakpoint.width > 440;
     }
   }
 }

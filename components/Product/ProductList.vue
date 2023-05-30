@@ -49,14 +49,12 @@
           <v-card>
             <v-container>
               <v-row>
-                <v-col cols="6">
+                <v-col cols="12" sm="6">
                   <v-img
                     :src="product.image_url || noImg"
-                    max-height="360px"
-                    max-width="360px"
                     aspect-ratio="1"
                   ></v-img>
-                  <v-card-title class="font-weight-bold pa-1" style="max-width: 360px;">
+                  <v-card-title class="font-weight-bold pa-1">
                     {{ product.name.length > 7 ? product.name.substring(0, 7) + "..." : product.name }}
                     <v-spacer />
                     <v-btn text outlined :to="$my.productLinkToDetail(product.id)" class="font-weight-bold">詳細</v-btn>
@@ -87,21 +85,21 @@
                   </v-card-actions>
                 </v-col>
 
-                <v-col cols="6">
-                  <v-card-text>
+                <v-col cols="12" sm="6">
+                  <v-card-text class="pa-1">
                     {{
                       product.description.length > 80
                         ? product.description.substring(0, 80) + '...'
                         : product.description
                     }}
                   </v-card-text>
-                  <v-card-title class="pt-0 font-weight-bold">
+                  <v-card-title class="pa-1 font-weight-bold">
                     ¥{{ product.price.toLocaleString() }}
                   </v-card-title>
                   <v-divider />
                   <v-container :class="{'pt-0': product.user_id !== $auth.user.id}">
                     <template v-if="product.user_id !== $auth.user.id">
-                      <v-card-actions class="pa-0" style="width: 80%;">
+                      <v-card-actions class="pa-0">
                         <v-select
                           v-show="product.stock"
                           ref="quantitySelect"
@@ -121,7 +119,7 @@
                       >
                         ＊在庫が残っておりません。
                       </v-card-text>
-                      <v-card-actions class="pa-0" style="width: 80%;">
+                      <v-card-actions class="pa-0">
                         <v-btn
                           :disabled="!product.stock"
                           class="font-weight-bold"
@@ -135,7 +133,7 @@
                       </v-card-actions>
                     </template>
                     <template v-else>
-                      <v-card-actions style="width: 86%;">
+                      <v-card-actions>
                         <v-btn
                           :to="$my.productLinkToEdit(product.id)"
                           class="font-weight-bold mt-2"
@@ -147,7 +145,7 @@
                           編集する
                         </v-btn>
                       </v-card-actions>
-                      <v-card-actions style="width: 86%;">
+                      <v-card-actions>
                         <v-btn
                           class="font-weight-bold mt-2"
                           color="teal"
