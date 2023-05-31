@@ -21,20 +21,18 @@
             <v-container>
               <v-row>
                 <v-col
-                  cols="5"
+                  cols="12"
+                  sm="6"
                 >
                   <v-img
                     :src="currentCommunity.image_url ? currentCommunity.image_url : noImg"
-                    max-height="430px"
-                    max-width="430px"
                     aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
                     class="font-weight-bold pa-1"
-                    style="max-width:430px;"
                   >
-                    {{ currentCommunity.name.length > 13 ? currentCommunity.name.substring(0, 13) + '...' : currentCommunity.name }}
+                    {{ currentCommunity.name.length > 10 ? currentCommunity.name.substring(0, 10) + '...' : currentCommunity.name }}
                     <v-spacer />
                     <v-btn
                       text
@@ -48,9 +46,12 @@
                 </v-col>
 
                 <v-col
-                  cols="7"
+                  cols="12"
+                  sm="6"
                 >
-                  <v-card-title>
+                  <v-card-title
+                    class="pl-1"
+                  >
                     <span
                       class="text-subtitle-2"
                     >
@@ -105,12 +106,12 @@
                       </v-menu>
                     </v-list-item-action>
                   </v-card-title>
-                  <v-card-text>
+                  <v-card-text class="pl-1">
                     {{ currentCommunity.description.length > 300 ? currentCommunity.description.substring(0, 300) + '...' : currentCommunity.description }}
                   </v-card-text>
 
                   <v-divider/>
-                  <v-card-text>
+                  <v-card-text class="pl-1">
                     <span class="font-weight-bold">
                       参加人数：{{ $store.state.community.current.participation.length }}人
                     </span>
@@ -121,14 +122,11 @@
                         : '＊ご自由に参加していただけます。'
                     }}
                   </v-card-text>
-                  <v-card-actions
-                    style="width:30%;"
-                  >
-                    <community-member />
+                  <community-member class="my-auto" />
+                  <v-card-actions class="d-flex flex-wrap pl-1">
                     <v-btn
-                      class="font-weight-bold ml-2"
+                      class="font-weight-bold flex-grow-1"
                       color="teal"
-                      block
                       dark
                       @click="
                         isCurrentUserParticipatingIn
@@ -144,7 +142,7 @@
                   </v-card-actions>
                   <v-card-actions
                     v-show="isCurrentUserParticipatingIn"
-                    style="width:60%;"
+                    class="pl-1"
                   >
                     <v-menu
                       app
@@ -191,33 +189,29 @@
     <v-container
       v-show="isCurrentUserParticipatingIn"
     >
-      <v-row>
-        <v-col cols="12">
-          <v-card flat rounded="lg">
-            <MessageBoard
-              :title="'コミュニティ'"
-              :messages="messages"
-              :inputted="inputted"
-              @submitMessage="addCommunityMessage"
-              @resetForm="formReset"
+      <v-card flat rounded="lg">
+        <MessageBoard
+          :title="'コミュニティ'"
+          :messages="messages"
+          :inputted="inputted"
+          @submitMessage="addCommunityMessage"
+          @resetForm="formReset"
+        >
+          <template #messageLink="{ message }">
+            <router-link
+              v-if="isUserParticipatingIn(message.user_id)"
+              v-slot="{ navigate }"
+              :to="$my.userLinkToProfile(message.user_id)"
+              custom
             >
-              <template #messageLink="{ message }">
-                <router-link
-                  v-if="isUserParticipatingIn(message.user_id)"
-                  v-slot="{ navigate }"
-                  :to="$my.userLinkToProfile(message.user_id)"
-                  custom
-                >
-                  <strong @click="navigate">
-                    {{ message.user.name }}
-                  </strong>
-                </router-link>
-                <strong v-else>退会済みユーザー</strong>
-              </template>
-            </MessageBoard>
-          </v-card>
-        </v-col>
-      </v-row>
+              <strong @click="navigate">
+                {{ message.user.name }}
+              </strong>
+            </router-link>
+            <strong v-else>退会済みユーザー</strong>
+          </template>
+        </MessageBoard>
+      </v-card>
     </v-container>
   </div>
 </template>

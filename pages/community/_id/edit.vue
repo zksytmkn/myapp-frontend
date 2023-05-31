@@ -48,8 +48,8 @@
                       >
                         <v-img
                           :src="url"
-                          height="300px"
-                          width="300px"
+                          max-height="400px"
+                          max-width="400px"
                         >
                         </v-img>
                         <v-file-input
@@ -129,7 +129,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   data () {
-    const nameMax = 13
+    const nameMax = 10
     const descMax = 300
     return {
       noImg,

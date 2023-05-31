@@ -35,9 +35,7 @@
                 justify="center"
               >
                 <v-col
-                  cols="12"
-                  sm="6"
-                  md="9"
+                  cols="9"
                 >
                   <v-text-field
                     v-model="searched.name"
@@ -50,9 +48,7 @@
                 </v-col>
 
                 <v-col
-                  cols="12"
-                  sm="6"
-                  md="9"
+                  cols="9"
                 >
                   <v-text-field
                     v-model="searched.maker"
@@ -64,9 +60,7 @@
                 </v-col>
 
                 <v-col
-                  cols="12"
-                  sm="6"
-                  md="9"
+                  cols="9"
                 >
                   <v-text-field
                     v-model="searched.description"

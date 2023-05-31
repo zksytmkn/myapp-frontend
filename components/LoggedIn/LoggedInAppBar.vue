@@ -46,7 +46,7 @@ export default {
       return this.$route.name !== this.homePath.name
     },
     isBreadcrumbsVisible () {
-      return this.$vuetify.breakpoint.width > 440;
+      return this.$vuetify.breakpoint.width > 460;
     }
   }
 }

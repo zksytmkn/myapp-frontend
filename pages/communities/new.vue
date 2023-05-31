@@ -31,87 +31,86 @@
                     コミュニティ
                   </v-list-item-title>
                 </v-list-item>
-              </v-list>
-  
-              <v-divider/>
-  
-              <v-container>
-                <v-row
-                  justify="center"
-                >
-                  <v-col
-                    cols="11"
-                    class="mt-9"
-                  >
-                    <v-img
-                      :src="url"
-                      height=300px
-                      width=300px
-                    >
-                    </v-img>
-                    <v-file-input
-                      v-model="inputted.image"
-                      :rules="imgRules"
-                      accept="image/png, image/jpeg, image/bmp"
-                      placeholder="画像を選択して下さい"
-                      prepend-icon="mdi-camera"
-                      label="画像ファイル"
-                      :disabled="sentIt"
-                    >
-                    </v-file-input>
-                  </v-col>
-                  <v-col
-                    cols="11"
-                  >
-                    <v-text-field
-                      v-model="inputted.name"
-                      dense
-                      outlined
-                      label="名前"
-                      :rules="nameRules"
-                      :disabled="sentIt"
-                    >
-                    </v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="11"
-                  >
-                    <v-textarea
-                      v-model="inputted.description"
-                      dense
-                      outlined
-                      label="紹介文"
-                      :rules="descRules"
-                      :disabled="sentIt"
-                    >
-                    </v-textarea>
-                  </v-col>
-                  <v-col
-                    cols="11"
-                  >
-                    <v-row
-                      justify="center"
-                    >
-                      <v-btn
-                        type="submit"
-                        :disabled="!isValid || loading"
-                        :loading="loading"
-                        class="mb-6 mr-2 font-weight-bold white--text"
-                        color="teal"
-                      >
-                        コミュニティを作成する
-                      </v-btn>
+                <v-divider/>
 
-                      <v-btn
-                        text
-                        @click="formReset"
+                <v-container>
+                  <v-row
+                    justify="center"
+                  >
+                    <v-col
+                      cols="11"
+                      class="mt-9"
+                    >
+                      <v-img
+                        :src="url"
+                        max-height=400px
+                        max-width=400px
                       >
-                        キャンセル
-                      </v-btn>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-container>
+                      </v-img>
+                      <v-file-input
+                        v-model="inputted.image"
+                        :rules="imgRules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="画像を選択して下さい"
+                        prepend-icon="mdi-camera"
+                        label="画像ファイル"
+                        :disabled="sentIt"
+                      >
+                      </v-file-input>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-text-field
+                        v-model="inputted.name"
+                        dense
+                        outlined
+                        label="名前"
+                        :rules="nameRules"
+                        :disabled="sentIt"
+                      >
+                      </v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-textarea
+                        v-model="inputted.description"
+                        dense
+                        outlined
+                        label="紹介文"
+                        :rules="descRules"
+                        :disabled="sentIt"
+                      >
+                      </v-textarea>
+                    </v-col>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-row
+                        justify="center"
+                      >
+                        <v-btn
+                          type="submit"
+                          :disabled="!isValid || loading"
+                          :loading="loading"
+                          class="mb-6 mr-2 font-weight-bold white--text"
+                          color="teal"
+                        >
+                          コミュニティを作成する
+                        </v-btn>
+
+                        <v-btn
+                          text
+                          @click="formReset"
+                        >
+                          キャンセル
+                        </v-btn>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-list>
             </v-form>
           </v-card>
         </v-col>
@@ -131,7 +130,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   data () {
-    const nameMax = 13
+    const nameMax = 10
     const descMax = 300
     return {
       noImg,

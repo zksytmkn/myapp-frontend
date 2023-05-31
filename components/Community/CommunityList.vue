@@ -59,7 +59,7 @@
                 <v-container>
                   <v-row>
                     <v-card-title class="pb-1 d-block text-truncate text-none font-weight-bold">
-                      {{ community.name.length > 13 ? community.name.substring(0, 13) + '...' : community.name }}
+                      {{ community.name.length > 10 ? community.name.substring(0, 10) + '...' : community.name }}
                     </v-card-title>
                     <v-card-text class="caption text-none grey--text text--darken-1">
                       {{ community.description.length > 23 ? community.description.substring(0, 23) + '...' : community.description }}

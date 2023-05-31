@@ -297,7 +297,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 .compact-timeline {
   padding: 6px 0 0 0;
   font-size: 0.6rem;

@@ -8,17 +8,19 @@
     <template
       #activator="{ on }"
     >
-      <v-btn
-        v-show="users.length"
-        class ="font-weight-bold"
-        color="teal"
-        outlined
-        block
-        dark
-        v-on="on"
-      >
-        参加メンバーを見る
-      </v-btn>
+      <v-card-actions class="d-flex flex-wrap pl-1">
+        <v-btn
+          v-show="users.length"
+          class ="font-weight-bold"
+          color="teal"
+          outlined
+          block
+          dark
+          v-on="on"
+        >
+          参加メンバーを見る
+        </v-btn>
+      </v-card-actions>
     </template>
     <v-list
       dense

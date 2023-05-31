@@ -14,21 +14,15 @@
           <v-card>
             <v-container>
               <v-row>
-                <v-col cols="5">
+                <v-col cols="12" sm="6">
                   <v-img
-                    :src="currentProduct.image_url ? currentProduct.image_url : noImg"
-                    max-height="430px"
-                    max-width="430px"
-                    aspect-ratio="1"
+                    :src="currentProduct.image_url ? currentProduct.image_url : noImg" aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
                     class="font-weight-bold pa-1"
-                    style="max-width:430px;"
                   >
-                    <span>
-                      {{ currentProduct.name.length > 13 ? currentProduct.name.substring(0, 13) + '...' : currentProduct.name }}
-                    </span>
+                    {{ currentProduct.name }}
                     <v-spacer />
                     <v-btn
                       text
@@ -76,20 +70,20 @@
                   </v-card-actions>
                 </v-col>
 
-                <v-col cols="7">
-                  <v-chip class="ma-2 font-weight-bold" outlined>
+                <v-col cols="12" sm="6">
+                  <v-chip class="font-weight-bold" outlined>
                     <v-icon left>{{ getCategoryIcon(currentProduct.category) }}</v-icon>
                     {{ currentProduct.category }}
                   </v-chip>
 
-                  <v-chip class="ma-2 font-weight-bold" outlined>
+                  <v-chip class="ml-2 font-weight-bold" outlined>
                     <v-icon left>
                       mdi-map-marker-outline
                     </v-icon>
                     {{ currentProduct.prefecture }}
                   </v-chip>
 
-                  <v-card-subtitle>
+                  <v-card-subtitle class="pl-1">
                     <nuxt-link
                       :to="$my.userLinkToProfile(currentProduct.user_id)"
                       class="text-decoration-none teal--text text--darken-2"
@@ -98,18 +92,17 @@
                     </nuxt-link>
                   </v-card-subtitle>
 
-                  <v-card-text>
+                  <v-card-text class="pl-1">
                     {{ truncate(currentProduct.description, 300) }}
                   </v-card-text>
                 
-                  <v-card-title class="font-weight-bold">
+                  <v-card-title class="pl-1 font-weight-bold">
                     ¥{{ currentProduct.price.toLocaleString() }}
                   </v-card-title>
                   <v-divider />
 
                   <template v-if="currentProduct.user_id !== $auth.user.id">
-                    <v-row no-gutters align="start">
-                      <v-col cols="12">
+                      <v-card-actions class="pa-0">
                         <v-select
                           v-if="currentProduct.stock"
                           ref="quantitySelect"
@@ -120,51 +113,47 @@
                           dense
                           rounded
                           outlined
-                          style="width: 200px; max-width: 200px"
                         ></v-select>
                         <v-card-text v-else class="px-0 font-weight-bold" style="color: #cc0000;">
                           ＊在庫が残っておりません。
                         </v-card-text>
-                      </v-col>
-                      <v-col cols="12">
+                      </v-card-actions>
+                      <v-card-actions class="pa-0">
                         <v-btn
                           :disabled="!currentProduct.stock"
                           class="font-weight-bold"
                           color="teal"
+                          block
                           dark
-                          style="width: 200px; max-width: 200px"
                           @click="addProductToCart(selectedQuantity)"
                         >
                           カートに入れる
                         </v-btn>
-                      </v-col>
-                    </v-row>
+                      </v-card-actions>
                   </template>
                   <template v-else>
                     <v-row no-gutters align="start">
-                      <v-col cols="12">
+                      <v-card-actions>
                         <v-btn
                           :to="$my.productLinkToEdit(currentProduct.id)"
                           class="font-weight-bold mt-6"
                           color="teal"
                           dark
                           outlined
-                          style="width: 200px; max-width: 200px"
                         >
                           編集する
                         </v-btn>
-                      </v-col>
-                      <v-col cols="12">
+                      </v-card-actions>
+                      <v-card-actions>
                         <v-btn
                           class="font-weight-bold mt-6"
                           color="teal"
                           dark
-                          style="width: 200px; max-width: 200px"
                           @click="deleteCurrentProduct"
                         >
                           削除する
                         </v-btn>
-                      </v-col>
+                      </v-card-actions>
                     </v-row>
                   </template>
                 </v-col>

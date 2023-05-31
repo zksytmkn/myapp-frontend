@@ -29,7 +29,7 @@
             :style="{ maxWidth: '50%', width: 'auto' }"
           >
             <v-list-item-title
-              class="font-weight-bold"
+              class="font-weight-bold pa-1"
               :style="{ 'word-wrap': 'break-word', 'white-space': 'pre-wrap' }"
             >{{ message.content }}</v-list-item-title>
           </v-list>

@@ -17,7 +17,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .my-app-log {
   margin-right: 8px;
   cursor: pointer;

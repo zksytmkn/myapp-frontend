@@ -31,7 +31,7 @@
                   <v-container>
                     <v-row justify="center">
                       <v-col cols="11" class="mt-9">
-                        <v-img :src="url" height="300px" width="300px"></v-img>
+                        <v-img :src="url" max-height="400px" max-width="400px"></v-img>
                         <v-file-input
                           v-model="inputted.image"
                           :rules="imgRules"
@@ -145,7 +145,7 @@ import noImg from '~/assets/images/logged-in/no.png'
 
 export default {
   data() {
-    const nameMax = 13;
+    const nameMax = 10;
     const descMax = 300;
     return {
       noImg,

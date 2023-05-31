@@ -55,7 +55,12 @@
                     aspect-ratio="1"
                   ></v-img>
                   <v-card-title class="font-weight-bold pa-1">
-                    {{ product.name.length > 7 ? product.name.substring(0, 7) + "..." : product.name }}
+                    <template v-if="screenWidth <= 1263 && product.name.length >= 7">
+                      {{ product.name }}
+                    </template>
+                    <template v-else>
+                      {{ product.name.length > 7 ? product.name.substring(0, 7) + "..." : product.name }}
+                    </template>
                     <v-spacer />
                     <v-btn text outlined :to="$my.productLinkToDetail(product.id)" class="font-weight-bold">詳細</v-btn>
                   </v-card-title>
@@ -205,6 +210,7 @@ export default {
       selectedQuantity: {},
       page: 1,
       pageSize: 10,
+      screenWidth: 0,
     };
   },
   computed: {
@@ -219,6 +225,13 @@ export default {
         });
       }
     },
+  },
+  mounted() {
+    window.addEventListener('resize', this.updateScreenWidth);
+    this.updateScreenWidth();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateScreenWidth);
   },
   methods: {
     async deleteProduct(id) {
@@ -327,6 +340,9 @@ export default {
         }
         this.$store.dispatch('getToast', { msg: errorMsg, color: "error" });
       }
+    },
+    updateScreenWidth() {
+      this.screenWidth = window.innerWidth;
     },
   },
 };

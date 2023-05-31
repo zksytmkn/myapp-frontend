@@ -8,8 +8,3 @@
     {{ $my.pageTitle('login') }}
   </v-btn>
 </template>
-
-<script>
-export default {
-}
-</script>

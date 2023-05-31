@@ -35,9 +35,7 @@
                 justify="center"
               >
                 <v-col
-                  cols="12"
-                  sm="6"
-                  md="9"
+                  cols="9"
                 >
                   <v-text-field
                     v-model="searched.title"
@@ -49,9 +47,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col
-                  cols="12"
-                  sm="6"
-                  md="9"
+                  cols="9"
                 >
                   <v-text-field
                     v-model="searched.poster"
@@ -62,9 +58,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col
-                  cols="12"
-                  sm="6"
-                  md="9"
+                  cols="9"
                 >
                   <v-text-field
                     v-model="searched.body"

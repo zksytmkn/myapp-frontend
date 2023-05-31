@@ -133,7 +133,7 @@ import noPersonImg from '~/assets/images/logged-in/noPerson.png'
 
 export default {
   data () {
-    const nameMax = 13
+    const nameMax = 10
     const textMax = 120
     return {
       noPersonImg,

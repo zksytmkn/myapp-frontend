@@ -27,82 +27,53 @@
                 align="center"
               >
                 <v-col
-                  cols="7"
+                  cols="8"
                 >
-                  <v-list
-                    color="transparent"
+                  <v-container
                     class="text-left"
                   >
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          class="font-weight-bold text-h5 mb-3"
-                          style="white-space:pre-line; line-height:1.5; 
-                          text-shadow:1px 1px 1px black;"
-                        >
-                          『Edible』は規格外農産物を減らし、
-                          持続可能な社会の実現を目指します。
-                        </v-list-item-title>
-                        <div
-                          style="background-color:white;"
-                        >
-                          <v-divider/>
-                        </div>
-                        <v-list-item-subtitle
-                          class="font-weight-bold text-p white--text"
-                          style="white-space:pre-line; line-height:1.5; text-shadow:1px 1px 1px black;"
-                        >
-                          世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
-                          本サービスはそれら規格外農産物を減らすことを始めとし、世の中のフードロスを減らします。
-                          さらにSDGs（持続可能な開発目標）Goal12の『つくる責任、つかう責任』達成に則しています。
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list>
-                  <v-list
-                    color="transparent"
+                    <v-list-item-title
+                      class="font-weight-bold text-h5 mb-3"
+                      style="white-space:pre-line; line-height:1.5; 
+                      text-shadow:2px 2px 2px black;"
+                    >
+                      『Edible』は規格外農産物を減らし、
+                      持続可能な社会の実現を目指します。
+                    </v-list-item-title>
+                    <v-divider/>
+                    <v-list-item-text
+                      class="font-weight-bold text-p white--text"
+                      style="white-space:pre-line; line-height:1.5; text-shadow:2px 2px 2px black;"
+                    >
+                      世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
+                      本サービスはそれら規格外農産物を減らすことを始めとし、世の中のフードロスを減らします。
+                      さらにSDGs（持続可能な開発目標）Goal12の『つくる責任、つかう責任』達成に則しています。
+                    </v-list-item-text>
+                  </v-container>
+                  <v-container
                     class="text-left"
                   >
-                    <v-list-item>
-                      <before-login-app-bar-signup-button>
-                        無料で会員登録する
-                      </before-login-app-bar-signup-button>
-                      <before-login-app-bar-guest-login-button>
-                        無料で機能を試す
-                      </before-login-app-bar-guest-login-button>
-                    </v-list-item>
-                  </v-list>
-                  <v-list
-                    color="transparent"
+                    <before-login-app-bar-signup-button>
+                      無料で会員登録する
+                    </before-login-app-bar-signup-button>
+                    <before-login-app-bar-guest-login-button>
+                      無料で機能を試す
+                    </before-login-app-bar-guest-login-button>
+                  </v-container>
+                  <v-container
                     class="text-left"
                   >
-                    <v-list-item>
-                      <nuxt-link
-                        class="ml-2 font-weight-bold teal--text"
-                        to="/login"
-                      >
-                        すでにアカウントをお持ちの方はこちら
-                      </nuxt-link>
-                    </v-list-item>
-                  </v-list>
+                    <nuxt-link
+                      class="ml-2 font-weight-bold teal--text"
+                      to="/login"
+                    >
+                      すでにアカウントをお持ちの方はこちら
+                    </nuxt-link>
+                  </v-container>
                 </v-col>
 
-                <v-col
-                  cols="4"
-                >
-                  <v-list
-                    color="transparent"
-                    class="text-center"
-                  >
-                    <v-list-item>
-                      <v-img
-                        :src=SDGsImg
-                        height=330px
-                        width=330px
-                      >
-                      </v-img>
-                    </v-list-item>
-                  </v-list>
+                <v-col v-if="showSDGsImg" cols="4">
+                  <v-img :src=SDGsImg></v-img>
                 </v-col>
               </v-row>
             </v-container>
@@ -159,7 +130,9 @@ export default {
       imgHeight: 700,
       menus: [
         { title: 'app-about' }
-      ]
+      ],
+      windowWidth: 0,
+      showSDGsImg: true,
     }
   },
   mounted() {
@@ -167,6 +140,19 @@ export default {
       this.$store.dispatch('getToast', { msg: 'ログアウトしました', color: 'success' });
       // メッセージ表示後、logoutSuccessをfalseにリセット
       this.$store.commit('setLogoutSuccess', false);
+    }
+    this.$nextTick(function() {
+      window.addEventListener('resize', this.getWindowWidth);
+      this.getWindowWidth();
+    });
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.getWindowWidth);
+  },
+  methods: {
+    getWindowWidth() {
+      this.windowWidth = document.documentElement.clientWidth;
+      this.showSDGsImg = this.windowWidth > 1270;
     }
   }
 }

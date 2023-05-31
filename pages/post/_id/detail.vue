@@ -13,93 +13,85 @@
       <v-divider/>
     </v-container>
     <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-card>
-            <v-container>
+      <v-card>
+        <v-container>
+          <v-card-title class="font-weight-bold">
+            {{ currentPost.title }}
+            <v-card-subtitle>
+              <nuxt-link :to="$my.userLinkToProfile(currentPost.user_id)" class="text-decoration-none teal--text text--darken-2">
+                by {{ currentPost.user.name }}
+              </nuxt-link>
+            </v-card-subtitle>
+            <v-btn text outlined to="/posts/list" class="font-weight-bold">一覧</v-btn>
+            <v-list-item-action v-show="currentPost.user_id === $auth.user.id">
+              <v-menu app offset-x offset-y max-width="200">
+                <template #activator="{ on }">
+                  <v-btn icon v-on="on">
+                    <v-icon>mdi-dots-horizontal</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item :to="$my.postLinkToEdit(currentPost.id)">
+                    <v-list-item-title>編集する</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="deleteCurrentPost">
+                    <v-list-item-title>削除する</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-list-item-action>
+          </v-card-title>
+          <v-divider />
+          <v-container class="mt-6 mb-6">
+            <v-col cols="12">
               <v-row>
-                <v-col>
-                  <v-card-title class="font-weight-bold">
-                    {{ currentPost.title }}
-                    <v-card-subtitle>
-                      <nuxt-link :to="$my.userLinkToProfile(currentPost.user_id)" class="text-decoration-none teal--text text--darken-2">
-                        by {{ currentPost.user.name }}
-                      </nuxt-link>
-                    </v-card-subtitle>
-                    <v-btn text outlined to="/posts/list" class="font-weight-bold">一覧</v-btn>
-                    <v-list-item-action v-show="currentPost.user_id === $auth.user.id">
-                      <v-menu app offset-x offset-y max-width="200">
-                        <template #activator="{ on }">
-                          <v-btn icon v-on="on">
-                            <v-icon>mdi-dots-horizontal</v-icon>
-                          </v-btn>
-                        </template>
-                        <v-list dense>
-                          <v-list-item :to="$my.postLinkToEdit(currentPost.id)">
-                            <v-list-item-title>編集する</v-list-item-title>
-                          </v-list-item>
-                          <v-list-item @click="deleteCurrentPost">
-                            <v-list-item-title>削除する</v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-                      </v-menu>
-                    </v-list-item-action>
-                  </v-card-title>
-                  <v-divider />
-                  <v-container class="mt-9 mb-9">
-                    <v-col cols="12">
-                      <v-row>
-                        <v-col cols="5"><v-img :src="currentPost.image_url || noImg" max-height="430px" max-width="430px" aspect-ratio="1"></v-img></v-col>
-                        <v-col cols="7" align-self="center">
-                          <v-card-text class="text-subtitle-1">
-                            {{ currentPost.body.length > 400 ? currentPost.body.substring(0, 400) + '...' : currentPost.body }}
-                          </v-card-text>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-container>
-                  <v-divider />
-                  <v-container>
-                    <v-card-actions class="pa-1">
-                      <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
-                        <v-btn
-                          :key="actionType + 'Btn'"
-                          :class="postButtonClass(actionType, currentPost.id)"
-                          class="ml-0"
-                          fab
-                          dark
-                          x-small
-                          @click="handleFavorites(actionType, $store.state.post[actionType].some(post => post.id === currentPost.id) ? 'delete' : 'post')"
-                        >
-                          <v-icon>
-                            {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
-                          </v-icon>
-                        </v-btn>
-                        <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
-                          {{
-                            actionType === 'favorite' ? currentPost.favorites_count : currentPost.unfavorites_count
-                          }}
-                        </span>
-                      </div>
-
-                      <v-btn
-                        class="ml-2"
-                        text
-                        x-small
-                        @click="cmt = !cmt"
-                      >
-                        <v-icon>
-                          mdi-comment-outline
-                        </v-icon>
-                      </v-btn>
-                    </v-card-actions>
-                  </v-container>
+                <v-col cols="12" sm="6"><v-img :src="currentPost.image_url || noImg" aspect-ratio="1"></v-img></v-col>
+                <v-col cols="12" sm="6" align-self="center">
+                  <v-card-text class="text-subtitle-1 pl-0">
+                    {{ currentPost.body.length > 400 ? currentPost.body.substring(0, 400) + '...' : currentPost.body }}
+                  </v-card-text>
                 </v-col>
               </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
+            </v-col>
+          </v-container>
+          <v-divider />
+          <v-container>
+            <v-card-actions class="pa-1">
+              <div v-for="actionType in ['favorite', 'unfavorite']" :key="actionType + 'Wrapper'">
+                <v-btn
+                  :key="actionType + 'Btn'"
+                  :class="postButtonClass(actionType, currentPost.id)"
+                  class="ml-0"
+                  fab
+                  dark
+                  x-small
+                  @click="handleFavorites(actionType, $store.state.post[actionType].some(post => post.id === currentPost.id) ? 'delete' : 'post')"
+                >
+                  <v-icon>
+                    {{ actionType === 'favorite' ? 'mdi-thumb-up' : 'mdi-thumb-down' }}
+                  </v-icon>
+                </v-btn>
+                <span :key="actionType + 'Count'" class="font-weight-bold ml-1" :class="{ 'mr-3': actionType === 'favorite' }">
+                  {{
+                    actionType === 'favorite' ? currentPost.favorites_count : currentPost.unfavorites_count
+                  }}
+                </span>
+              </div>
+
+              <v-btn
+                class="ml-2"
+                text
+                x-small
+                @click="cmt = !cmt"
+              >
+                <v-icon>
+                  mdi-comment-outline
+                </v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-container>
+        </v-container>
+      </v-card>
     </v-container>
     <CommentSection
       :cmt="cmt"

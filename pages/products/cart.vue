@@ -45,26 +45,26 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-action>
-            <v-row>
-              <v-col cols="auto">
-                <v-btn
-                  class="font-weight-bold"
-                  color="teal"
-                  dark
-                  to="/products/register"
-                >
-                  レジに進む
-                </v-btn>
-                <v-btn
-                  class="font-weight-bold ml-1"
-                  color="teal"
-                  outlined
-                  dark
-                  to="/products/list"
-                >
-                  一覧に戻る
-                </v-btn>
-              </v-col>
+            <v-row
+              justify="center"
+            >
+              <v-btn
+                class="font-weight-bold"
+                color="teal"
+                dark
+                to="/products/register"
+              >
+                レジに進む
+              </v-btn>
+              <v-btn
+                class="font-weight-bold ml-2"
+                color="teal"
+                outlined
+                dark
+                to="/products/list"
+              >
+                一覧に戻る
+              </v-btn>
             </v-row>
           </v-list-item-action>
         </v-list-item>
@@ -77,25 +77,28 @@
           v-for="(cart, i) in cartProducts.slice(pageSize * (page - 1), pageSize * page)"
           :key="`cart-${i}`"
           cols="6"
+          class="my-col"
         >
           <v-card>
             <v-container>
               <v-row>
                 <v-col
-                  cols="6"
+                  cols="12" sm="6"
                 >
                   <v-img
                     :src="cart.product.image_url || noImg"
-                    max-height="360px"
-                    max-width="360px"
                     aspect-ratio="1"
                   >
                   </v-img>
                   <v-card-title
                     class="font-weight-bold pa-1"
-                    style="max-width:360px;"
                   >
-                    {{ cart.product.name.length > 7 ? cart.product.name.substring(0, 7) + '...' : cart.product.name }}
+                    <template v-if="screenWidth <= 1263 && cart.product.name.length >= 7">
+                      {{ cart.product.name }}
+                    </template>
+                    <template v-else>
+                      {{ cart.product.name.length > 7 ? cart.product.name.substring(0, 7) + "..." : cart.product.name }}
+                    </template>
                     <v-spacer />
                     <v-btn
                       text
@@ -133,35 +136,32 @@
                 </v-col>
 
                 <v-col
-                  cols="6"
+                  cols="12" sm="6"
                 >
                   <v-card-text
-                    class="pb-0"
+                    class="pa-1"
                   >
                     {{ cart.product.description.length > 90 ? cart.product.description.substring(0, 90) + '...' : cart.product.description }}
                   </v-card-text>
                   <v-card-subtitle
-                    class="pt-0 font-weight-bold"
+                    class="pa-1 font-weight-bold"
                     style="white-space:pre-line; line-height:2;"
                   >
                     数量：¥{{ cart.product.price.toLocaleString() }} × {{ cart.quantity }}
                     小計（税込）：¥{{ Math.floor(cart.product.price * cart.quantity * 1.1).toLocaleString() }}
                   </v-card-subtitle>
                   <v-divider/>
-                  <v-card-actions
-                    style="width:80%;"
-                  >
-                    <v-container>
-                      <v-btn
-                        class="font-weight-bold"
-                        color="teal"
-                        block
-                        dark
-                        @click="removeProductFromCart(cart.id)"
-                      >
-                        削除する
-                      </v-btn>
-                    </v-container>
+                  <v-card-actions>
+                    <v-btn
+                      class="mt-3 font-weight-bold"
+                      width="80%"
+                      color="teal"
+                      block
+                      dark
+                      @click="removeProductFromCart(cart.id)"
+                    >
+                      削除する
+                    </v-btn>
                   </v-card-actions>
                 </v-col>
               </v-row>
@@ -190,7 +190,8 @@ export default {
     return {
       noImg,
       page: 1,
-      pageSize: 10
+      pageSize: 10,
+      screenWidth: 0,
     }
   },
   computed: {
@@ -202,6 +203,13 @@ export default {
       });
     },
     ...mapGetters(['cartTotalPrice', 'productButtonClass']),
+  },
+  mounted() {
+    window.addEventListener('resize', this.updateScreenWidth);
+    this.updateScreenWidth();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateScreenWidth);
   },
   methods: {
     async handleFavorites(id, type, method) {
@@ -271,6 +279,9 @@ export default {
         this.$store.dispatch('getToast', { msg: errorMsg, color: 'error' });
       }
     },
+    updateScreenWidth() {
+      this.screenWidth = window.innerWidth;
+    },
   },
 }
 </script>
@@ -281,5 +292,17 @@ export default {
 }
 .dislikeColor {
   background: #336791 !important;
+}
+@media (min-width: 1264px) {
+  .my-col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+@media (max-width: 1263px) {
+  .my-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 </style>

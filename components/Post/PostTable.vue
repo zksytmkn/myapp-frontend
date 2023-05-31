@@ -53,7 +53,7 @@
                 :to="$my.postLinkToDetail(item.id)"
                 class="text-decoration-none teal--text"
               >
-                {{ item.title.length > 13 ? item.title.substring(0, 13) + '...' : item.title }}
+                {{ item.title.length > 10 ? item.title.substring(0, 10) + '...' : item.title }}
               </nuxt-link>
             </template>
             <template #[`item.body`]="{ item }">
@@ -134,21 +134,22 @@ export default {
       tableHeaders: [
         {
           text: 'タイトル',
-          value: 'title'
+          value: 'title',
+          sortable: false,
         },
         {
           text: 'つぶやき',
-          value: 'body'
+          value: 'body',
+          sortable: false,
         },
         {
-          text: 'いいね履歴',
-          width: 170,
-          value: 'like'
+          text: 'いいね or ないね',
+          value: 'like',
+          sortable: false,
         },
         {
           text: '更新日',
-          width: 150,
-          value: 'updatedAt'
+          value: 'updatedAt',
         }
       ]
     };
