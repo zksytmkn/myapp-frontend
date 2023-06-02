@@ -1,12 +1,13 @@
 <template>
   <div>
     <v-container
-      class="mt-12"
+      class="my-12"
     >
       <v-row>
         <info-menu />
         <v-col
-          cols="9"
+          md="9"
+          xs="12"
         >
           <v-card
             flat

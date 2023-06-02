@@ -1,6 +1,7 @@
 <template>
   <v-col
-    cols="3"
+    lg="3"
+    xs="12"
   >
     <v-card
       flat

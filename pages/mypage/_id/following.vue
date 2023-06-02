@@ -1,7 +1,7 @@
 <template>
   <div>
     <UserList
-      :title="CurrentUser.id === $auth.user.id ? 'あなたのフォロー' : $auth.user.name + 'さんのフォロー'"
+      :title="CurrentUser.id === $auth.user.id ? 'あなたのフォロー' : CurrentUser.name + 'さんのフォロー'"
       message="フォローしておりません。"
       :users="followingUsers"
     />

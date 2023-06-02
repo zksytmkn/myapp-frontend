@@ -1,11 +1,12 @@
 <template>
   <v-container
-    class="mt-12"
+    class="my-12"
   >
     <v-row>
       <mypage-menu/>
       <v-col
-        cols="9"
+        md="8"
+        xs="12"
       >
         <v-card
           flat
@@ -34,11 +35,11 @@
                         align="center"
                       >
                         <v-col
-                          cols="5"
+                          md="6" xs="12"
+                          class="d-flex justify-center"
                         >
                           <v-avatar
-                            height="260px"
-                            width="260px"
+                            size="260"
                           >
                             <v-img
                               :src="CurrentUser.image_url ? CurrentUser.image_url : noPersonImg"
@@ -47,24 +48,27 @@
                           </v-avatar>
                         </v-col>
                         <v-col
-                          cols="7"
+                          md="6" xs="12"
+                          class="d-flex justify-center"
                         >
-                          <v-list-item-title>
-                            {{ CurrentUser.name }}
-                          </v-list-item-title>
-                          <v-list-item-title :class="{ 'text--secondary': !CurrentUser.prefecture }">
-                            {{ CurrentUser.prefecture || '都道府県：未登録' }}
-                          </v-list-item-title>
-                          <br/>
-                          <v-list-item-text :class="{ 'text--secondary': !CurrentUser.profile_text }">
-                            {{
-                              CurrentUser.profile_text
-                                ? (CurrentUser.profile_text.length > 120
-                                    ? CurrentUser.profile_text.substring(0, 120) + '...'
-                                    : CurrentUser.profile_text)
-                                : 'プロフィール文：未登録'
-                            }}
-                          </v-list-item-text>
+                          <div style="text-align: left;">
+                            <v-list-item-title>
+                              {{ CurrentUser.name }}
+                            </v-list-item-title>
+                            <v-list-item-title :class="{ 'text--secondary': !CurrentUser.prefecture }">
+                              {{ CurrentUser.prefecture || '都道府県：未登録' }}
+                            </v-list-item-title>
+                            <br/>
+                            <v-list-item-text :class="{ 'text--secondary': !CurrentUser.profile_text }">
+                              {{
+                                CurrentUser.profile_text
+                                  ? (CurrentUser.profile_text.length > 120
+                                      ? CurrentUser.profile_text.substring(0, 120) + '...'
+                                      : CurrentUser.profile_text)
+                                  : 'プロフィール文：未登録'
+                              }}
+                            </v-list-item-text>
+                          </div>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -144,7 +148,7 @@
                       <v-btn
                         v-show="!$store.state.user.relationship.followers.some(user => user.id === $auth.user.id)"
                         color="teal"
-                        class="white--text mt-6 mb-9 mr-2 font-weight-bold"
+                        class="white--text mt-6 mb-9 font-weight-bold"
                         @click="addRelationship(CurrentUser.id)"
                       >
                         {{ CurrentUser.name }}さんをフォローする
@@ -152,10 +156,10 @@
                       <v-btn
                         v-show="$store.state.user.relationship.followers.some(user => user.id === $auth.user.id)"
                         color="teal"
-                        class="white--text mt-6 mb-9 mr-2 font-weight-bold"
+                        class="white--text mt-6 mb-9 font-weight-bold"
                         @click="deleteRelationship(CurrentUser.id)"
                       >
-                      {{ CurrentUser.name }}さんをフォロー解除する
+                      {{ CurrentUser.name }}さんのフォロー解除する
                       </v-btn>
                     </v-row>
                   </v-col>

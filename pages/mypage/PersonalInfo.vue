@@ -1,8 +1,8 @@
 <template>
-  <v-container class="mt-12">
+  <v-container class="my-12">
     <v-row>
       <mypage-menu />
-      <v-col cols="9">
+      <v-col md="8" xs="12">
         <v-card flat rounded="lg">
           <v-list>
             <v-list-item>

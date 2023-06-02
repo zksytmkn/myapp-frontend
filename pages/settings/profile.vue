@@ -5,7 +5,8 @@
     <v-row>
       <setting-menu />
       <v-col
-        cols="9"
+        md="9"
+        sm="12"
       >
         <v-card
           flat
@@ -35,8 +36,7 @@
                       class="mt-9"
                     >
                       <v-avatar
-                        height="260px"
-                        width="260px"
+                        size="260"
                       >
                         <v-img
                           :src="url"

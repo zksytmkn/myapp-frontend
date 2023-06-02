@@ -1,7 +1,7 @@
 <template>
   <div>
     <UserList
-      :title="CurrentUser.id === $auth.user.id ? 'あなたのフォロワー' : $auth.user.name + 'さんのフォロワー'"
+      :title="CurrentUser.id === $auth.user.id ? 'あなたのフォロワー' : CurrentUser.name + 'さんのフォロワー'"
       message="フォローされておりません。"
       :users="followedUsers"
     />

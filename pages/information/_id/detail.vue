@@ -1,12 +1,13 @@
 <template>
   <div>
     <v-container
-      class="mt-12"
+      class="my-12"
     >
       <v-row>
         <info-menu />
         <v-col
-          cols="9"
+          lg="9"
+          sm="12"
         >
           <v-card
             flat
@@ -26,10 +27,10 @@
                     <v-col cols="11">
                       <v-container>
                         <v-row align="start">
-                          <v-col cols="5" class="img-container" :style="{ 'margin-top': marginTop }">
+                          <v-col cols="12" md="6" class="img-container d-flex align-center justify-center" :style="{ 'margin-top': marginTop }">
                             <v-img :src="currentOrderProduct.image_url ? currentOrderProduct.image_url : noImg"></v-img>
                           </v-col>
-                          <v-col cols="7">
+                          <v-col cols="12" md="6" class="d-flex align-center justify-center" :style="{ 'margin-top': marginTop }">
                             <v-list>
                               <v-list-item>
                                 <v-list-item-content>
@@ -126,7 +127,7 @@
             </v-list>
           </v-card>
 
-          <v-card flat rounded="lg" class="mt-12 mb-12">
+          <v-card flat rounded="lg" class="my-12">
             <MessageBoard
               :title="currentOrder.product.user_id === $auth.user.id ? '購入者とのメッセージ' : '出品者とのメッセージ'"
               :messages="messages"

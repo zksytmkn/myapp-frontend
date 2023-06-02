@@ -1,8 +1,8 @@
 <template>
-  <v-container class="mt-12">
+  <v-container class="my-12">
     <v-row>
       <setting-menu />
-      <v-col cols="9">
+      <v-col md="9" sm="12">
         <v-card flat rounded="lg">
           <v-list>
             <v-list-item>
@@ -19,7 +19,8 @@
                           退会前にご確認ください。
                         </v-list-item-title>
                         <v-list-item-text style="white-space: pre-line;">
-                          ＊プロフィールやメールアドレスを変更したい場合は、下記のメニューから変更できます。 退会の手続きは必要ありません。引き続きEdibleをお楽しみください。
+                          ＊プロフィールやメールアドレスを変更したい場合は、下記のメニューから変更できます。
+                          退会の手続きは必要ありません。引き続きEdibleをお楽しみください。
                         </v-list-item-text>
                       </v-container>
                     </v-list-item>
@@ -33,11 +34,11 @@
                     </v-list-item>
                   </v-col>
                   <v-col cols="11">
-                    <v-list-item-title>
-                      <div class="red--text">
+                    <v-container>
+                      <v-list-item-text class="red--text">
                         ＊Edibleを退会すると、これまでに登録したデータなどが失われ、元に戻すことはできません。
-                      </div>
-                    </v-list-item-title>
+                      </v-list-item-text>
+                    </v-container>
                   </v-col>
                   <v-col cols="11">
                     <v-row justify="center">
