@@ -17,13 +17,14 @@
               align="center"
             >
               <v-col
-                cols="8"
+                lg="8" md="12"
               >
                 <v-list>
                   <v-list-item>
-                    <v-list-item-content>
+                    <v-list-item-content class="text-center-lg-down">
                       <v-list-item-title
                         class="font-weight-bold teal--text text-h5"
+                        style="white-space: normal;"
                       >
                         規格外農産物を出品、購入できる！
                       </v-list-item-title>
@@ -41,6 +42,7 @@
                 </v-list>
               </v-col>
               <v-col
+                v-if="showImgs"
                 cols="4"
               >
                 <v-img
@@ -67,6 +69,7 @@
               align="center"
             >
               <v-col
+                v-if="showImgs"
                 cols="4"
               >
                 <v-img
@@ -77,13 +80,14 @@
                 />
               </v-col>
               <v-col
-                cols="8"
+                lg="8" md="12"
               >
                 <v-list>
                   <v-list-item>
-                    <v-list-item-content>
+                    <v-list-item-content class="text-center-lg-down">
                       <v-list-item-title
                         class="font-weight-bold teal--text text-h5"
+                        style="white-space: normal;"
                       >
                         皆さまにとって有益な情報を発信、閲覧できる！
                       </v-list-item-title>
@@ -119,13 +123,14 @@
               align="center"
             >
               <v-col
-                cols="8"
+                lg="8" md="12"
               >
                 <v-list>
                   <v-list-item>
-                    <v-list-item-content>
+                    <v-list-item-content class="text-center-lg-down">
                       <v-list-item-title
                         class="font-weight-bold teal--text text-h5"
+                        style="white-space: normal;"
                       >
                         コミュニティを作成、参加できる！
                       </v-list-item-title>
@@ -142,6 +147,7 @@
                 </v-list>
               </v-col>
               <v-col
+                v-if="showImgs"
                 cols="4"
               >
                 <v-img
@@ -192,7 +198,8 @@
           v-for="(que, i) in questions"
           :key="`que-${i}`"
           cols="12"
-          :sm="12 / questions.length"
+          lg="4"
+          md="6"
         >
           <v-card
             class="mx-auto mb-10"
@@ -243,21 +250,30 @@
           全ての機能が無料でご利用できます！
         </v-list-item-title>
       </v-list-item>
-      <v-list-item
-        class="justify-center"
-      >
-        <before-login-app-bar-signup-button>
-          無料で会員登録する
-        </before-login-app-bar-signup-button>
-        <before-login-app-bar-guest-login-button>
-          無料で機能を試す
-        </before-login-app-bar-guest-login-button>
-      </v-list-item>
+      <v-container>
+        <v-row
+          class="justify-center align-center"
+        >
+          <v-col class="text-center">
+            <before-login-app-bar-signup-button
+              class="mb-2"
+            >
+              無料で会員登録する
+            </before-login-app-bar-signup-button>
+            <before-login-app-bar-guest-login-button
+              class="mb-2"
+            >
+              無料で機能を試す
+            </before-login-app-bar-guest-login-button>
+          </v-col>
+        </v-row>
+      </v-container>
+
       <v-list-item
         class="justify-center"
       >
         <nuxt-link
-          class="ml-2 font-weight-bold teal--text"
+          class="text-decoration-none ml-2 font-weight-bold green--text"
           to="/login"
         >
           すでにアカウントをお持ちの方はこちら
@@ -282,6 +298,7 @@ export default {
       productsImg,
       postsImg,
       communitiesImg,
+      showImgs: true,
       answerers,
       answer: answerers[0].label,
       questions: [
@@ -344,6 +361,29 @@ export default {
         }
       ]
     }
+  },
+  mounted() {
+    this.$nextTick(function() {
+      window.addEventListener('resize', this.getWindowWidth);
+      this.getWindowWidth();
+    });
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.getWindowWidth);
+  },
+  methods: {
+    getWindowWidth() {
+      this.windowWidth = document.documentElement.clientWidth;
+      this.showImgs = this.windowWidth > 1270;
+    },
   }
 }
 </script>
+
+<style lang="scss">
+@media (max-width: 1263px) {
+  .text-center-lg-down {
+    text-align: center;
+  }
+}
+</style>

@@ -27,10 +27,10 @@
                 align="center"
               >
                 <v-col
-                  cols="8"
+                  lg="7" md="12"
                 >
                   <v-container
-                    class="text-left"
+                    class="text-left-lg-up"
                   >
                     <v-list-item-title
                       class="font-weight-bold text-h5 mb-3"
@@ -40,31 +40,36 @@
                       『Edible』は規格外農産物を減らし、
                       持続可能な社会の実現を目指します。
                     </v-list-item-title>
-                    <v-divider/>
-                    <v-list-item-text
-                      class="font-weight-bold text-p white--text"
+                    <v-divider style="border-color: white;"></v-divider>
+                    <v-list-item-subtitle
+                      class="font-weight-bold"
                       style="white-space:pre-line; line-height:1.5; text-shadow:2px 2px 2px black;"
                     >
-                      世の中には味が同じでも形が悪いため、棄てられる農産物が全体生産量の2-3割存在します。
-                      本サービスはそれら規格外農産物を減らすことを始めとし、世の中のフードロスを減らします。
-                      さらにSDGs（持続可能な開発目標）Goal12の『つくる責任、つかう責任』達成に則しています。
-                    </v-list-item-text>
+                      味が同じでも形が悪いため、棄てられる農産物は全体の2-3割存在します。
+                      本サービスはそれら規格外農産物を減らし、世の中のフードロスを減らします。
+                      さらにSDGs Goal12の『つくる責任、つかう責任』達成に則しています。
+                    </v-list-item-subtitle>
                   </v-container>
                   <v-container
-                    class="text-left"
+                    class="text-left-lg-up"
                   >
-                    <before-login-app-bar-signup-button>
+                    <before-login-app-bar-signup-button
+                      class="mb-2"
+                    >
                       無料で会員登録する
                     </before-login-app-bar-signup-button>
-                    <before-login-app-bar-guest-login-button>
+                    <before-login-app-bar-guest-login-button
+                      class="mb-2"
+                    >
                       無料で機能を試す
                     </before-login-app-bar-guest-login-button>
                   </v-container>
                   <v-container
-                    class="text-left"
+                    class="text-left-lg-up"
                   >
                     <nuxt-link
-                      class="ml-2 font-weight-bold teal--text"
+                      class="text-decoration-none ml-2 font-weight-bold green--text"
+                      style="text-shadow: 1px 1px 2px black;"
                       to="/login"
                     >
                       すでにアカウントをお持ちの方はこちら
@@ -72,7 +77,7 @@
                   </v-container>
                 </v-col>
 
-                <v-col v-if="showSDGsImg" cols="4">
+                <v-col v-show="showSDGsImg" cols="5">
                   <v-img :src=SDGsImg></v-img>
                 </v-col>
               </v-row>
@@ -157,3 +162,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+@media (min-width: 1264px) {
+  .text-left-lg-up {
+    text-align: left;
+  }
+}
+</style>

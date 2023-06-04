@@ -88,7 +88,7 @@
                             mdi-food-apple
                           </v-icon>
                         </v-list-item-avatar>
-                        <v-list-item-title>
+                        <v-list-item-title style="white-space: normal;">
                           {{
                             CurrentUser.id === $auth.user.id
                               ? 'あなたの出品した農産物を見る'
@@ -108,7 +108,7 @@
                             mdi-file-document
                           </v-icon>
                         </v-list-item-avatar>
-                        <v-list-item-title>
+                        <v-list-item-title style="white-space: normal;">
                           {{
                             CurrentUser.id === $auth.user.id
                               ? 'あなたの投稿したつぶやきを見る'
@@ -128,7 +128,7 @@
                             mdi-charity
                           </v-icon>
                         </v-list-item-avatar>
-                        <v-list-item-title>
+                        <v-list-item-title style="white-space: normal;">
                           {{
                             CurrentUser.id === $auth.user.id
                               ? 'あなたの作成したコミュニティを見る'

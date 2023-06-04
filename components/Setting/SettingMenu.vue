@@ -27,7 +27,9 @@
               {{ set.icon }}
             </v-icon>
           </v-list-item-avatar>
-          <v-list-item-title>
+          <v-list-item-title
+            style="white-space: normal;"
+          >
             {{ set.name }}
           </v-list-item-title>
         </v-list-item>
