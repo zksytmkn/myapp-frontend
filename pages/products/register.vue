@@ -9,8 +9,9 @@
         </v-list-item-title>
       </v-list-item>
       <v-divider/>
-      <v-container
+      <v-list
         v-show="!cartProducts.length"
+        color="transparent"
       >
         <v-list-item>
           <v-list-item-title>
@@ -30,7 +31,7 @@
             </v-btn>
           </v-list-item-action>
         </v-list-item>
-      </v-container>
+      </v-list>
     </v-container>
 
     <v-container
