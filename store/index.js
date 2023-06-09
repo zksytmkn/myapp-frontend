@@ -173,13 +173,13 @@ export const mutations = {
     const post = state.post.list.find(post => post.id === id);
     post.favorites_count++;
   },
-  decrementPostFavoritesCount(state, id) {
-    const post = state.post.list.find(post => post.id === id);
-    post.favorites_count--;
-  },
   incrementPostUnfavoritesCount(state, id) {
     const post = state.post.list.find(post => post.id === id);
     post.unfavorites_count++;
+  },
+  decrementPostFavoritesCount(state, id) {
+    const post = state.post.list.find(post => post.id === id);
+    post.favorites_count--;
   },
   decrementPostUnfavoritesCount(state, id) {
     const post = state.post.list.find(post => post.id === id);
@@ -189,13 +189,13 @@ export const mutations = {
     const post = state.post.current
     post.favorites_count++;
   },
-  decrementCurrentPostFavoritesCount(state) {
-    const post = state.post.current
-    post.favorites_count--;
-  },
   incrementCurrentPostUnfavoritesCount(state) {
     const post = state.post.current
     post.unfavorites_count++;
+  },
+  decrementCurrentPostFavoritesCount(state) {
+    const post = state.post.current
+    post.favorites_count--;
   },
   decrementCurrentPostUnfavoritesCount(state) {
     const post = state.post.current

@@ -18,6 +18,14 @@ test('should have the correct initial state for loggedIn', () => {
   });
 });
 
+test('should have the correct initial state for loginType', () => {
+  expect(state.loginType).toBeNull();
+});
+
+test('should have the correct initial state for logoutSuccess', () => {
+  expect(state.logoutSuccess).toBeFalsy();
+});
+
 test('should have the correct initial state for product', () => {
   expect(state.product).toEqual({
     current: null,
