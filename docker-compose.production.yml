@@ -12,7 +12,7 @@ services:
     volumes:
       - ".:/$WORKDIR"
     ports:
-      - "$FRONT_PORT:3000"
+      - "$FRONT_PORT:8080"
     networks:
       - api_external
 networks: 
