@@ -1,4 +1,4 @@
-import { getters } from './index.js';
+import { getters } from '../../store/index.js'
 
 let state;
 

@@ -1,4 +1,4 @@
-import { state as originalState } from './index.js';
+import { state as originalState } from '../../store/index.js'
 
 let state;
 

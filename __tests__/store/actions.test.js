@@ -1,4 +1,4 @@
-import { actions } from './index.js';
+import { actions } from '../../store/index.js'
 
 let commit;
 

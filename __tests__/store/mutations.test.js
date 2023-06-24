@@ -1,4 +1,4 @@
-import { mutations } from './index.js';
+import { mutations } from '../../store/index.js'
 
 let state;
 
