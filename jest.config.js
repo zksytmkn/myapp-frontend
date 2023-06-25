@@ -20,7 +20,7 @@ module.exports = {
       pug: {
         doctype: 'html'
       },
-      compiler: require('@vue/compiler-sfc')
+      compiler: require('vue-template-compiler')
     }
   },
   transformIgnorePatterns: [
