@@ -1,17 +1,31 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { Store } from 'vuex'
-import AppToaster from '@/components/AppToaster.vue'
+import Vuetify from 'vuetify'
+import AppToaster from '@/components/App/AppToaster.vue'
 
 const localVue = createLocalVue()
-localVue.use(Store)
+localVue.use(Vuetify)
 
 describe('AppToaster.vue', () => {
+  let actions
+  let mutations
   let store
 
   beforeEach(() => {
+    actions = {
+      getToast: jest.fn((context, payload) => {
+        context.commit('setToast', payload)
+      }),
+    }
+    mutations = {
+      setToast: (state, payload) => {
+        state.toast = payload
+      },
+    }
     store = new Store({
       state: { toast: { msg: null, timeout: 3000, color: 'success' } },
-      actions: { getToast: jest.fn() },
+      actions,
+      mutations
     })
   })
 
@@ -36,6 +50,6 @@ describe('AppToaster.vue', () => {
   it('resetToast method resets toast.msg to null', () => {
     const wrapper = shallowMount(AppToaster, { store, localVue })
     wrapper.vm.resetToast()
-    expect(store.actions.getToast).toHaveBeenCalledWith(expect.anything(), { msg: null })
+    expect(store.state.toast.msg).toBeNull()
   })
 })

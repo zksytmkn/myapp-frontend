@@ -34,4 +34,5 @@ module.exports = {
   ],
   testEnvironment: 'jsdom',
   setupFiles: ['<rootDir>/__tests__/setup.js'],
+  testMatch: ['<rootDir>/__tests__/**/?(*.)+(spec|test).[jt]s?(x)'],
 }

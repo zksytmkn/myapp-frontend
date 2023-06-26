@@ -1,11 +1,27 @@
-import { shallowMount } from '@vue/test-utils'
-import AppFooterTop from '@/components/AppFooterTop.vue'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import AppFooterTop from '@/components/App/AppFooterTop.vue'
 
 describe('AppFooterTop.vue', () => {
   let wrapper
+  let vuetify
 
   beforeEach(() => {
-    wrapper = shallowMount(AppFooterTop)
+    const localVue = createLocalVue()
+
+    vuetify = new Vuetify()
+    localVue.use(Vuetify)
+
+    wrapper = shallowMount(AppFooterTop, {
+      localVue,
+      vuetify,
+      mocks: {
+        $config: { appName: 'MyApp' },
+      },
+      stubs: {
+        NuxtLink: true,
+      },
+    })
   })
 
   it('sets the correct height', () => {
@@ -17,7 +33,7 @@ describe('AppFooterTop.vue', () => {
   })
 
   it('renders the correct links', () => {
-    const links = wrapper.findAll('nuxt-link-stub')
+    const links = wrapper.findAll('NuxtLink-stub')
 
     expect(links.length).toBe(3)
     expect(links.at(0).attributes().to).toBe('/contact')

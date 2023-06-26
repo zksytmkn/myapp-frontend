@@ -35,13 +35,15 @@ test('should calculate cartProducts correctly', () => {
 });
 
 test('should calculate cartTotalPrice correctly', () => {
-  const result = getters.cartTotalPrice(state, getters);
+  const cartProducts = getters.cartProducts(state);
+  const result = getters.cartTotalPrice(state, { cartProducts });
 
   expect(result).toEqual(880);
 });
 
 test('should calculate cartTotalQuantity correctly', () => {
-  const result = getters.cartTotalQuantity(state, getters);
+  const cartProducts = getters.cartProducts(state);
+  const result = getters.cartTotalQuantity(state, { cartProducts });
 
   expect(result).toEqual(5);
 });

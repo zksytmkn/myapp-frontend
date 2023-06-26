@@ -1,11 +1,19 @@
-import { shallowMount } from '@vue/test-utils'
-import MyLogo from '@/components/MyLogo.vue'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import AppLogo from '@/components/App/AppLogo.vue'
 
-describe('MyLogo.vue', () => {
+const localVue = createLocalVue()
+
+describe('AppLogo', () => {
   let wrapper
+  let vuetify
 
   beforeEach(() => {
-    wrapper = shallowMount(MyLogo)
+    vuetify = new Vuetify()
+    wrapper = shallowMount(AppLogo, {
+      localVue,
+      vuetify,
+    })
   })
 
   it('renders the component correctly', () => {

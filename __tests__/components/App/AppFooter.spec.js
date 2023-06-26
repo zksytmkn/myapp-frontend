@@ -1,11 +1,20 @@
-import { shallowMount } from '@vue/test-utils'
-import AppFooter from '@/components/AppFooter.vue'
+import { createLocalVue, mount } from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import AppFooter from '@/components/App/AppFooter.vue'
 
 describe('AppFooter.vue', () => {
   let wrapper
+  let vuetify
 
   beforeEach(() => {
-    wrapper = shallowMount(AppFooter, {
+    const localVue = createLocalVue()
+
+    vuetify = new Vuetify()
+    localVue.use(Vuetify)
+
+    wrapper = mount(AppFooter, {
+      localVue,
+      vuetify,
       mocks: {
         $config: { appName: 'MyApp' },
       },

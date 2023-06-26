@@ -1,11 +1,17 @@
-import { shallowMount } from '@vue/test-utils'
-import AppTitle from '@/components/AppTitle.vue'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import AppTitle from '@/components/App/AppTitle.vue'
 
 describe('AppTitle.vue', () => {
   let wrapper
+  let localVue
 
   beforeEach(() => {
+    localVue = createLocalVue()
+    localVue.use(Vuetify)
+
     wrapper = shallowMount(AppTitle, {
+      localVue,
       mocks: {
         $config: { appName: 'My App' }
       }
