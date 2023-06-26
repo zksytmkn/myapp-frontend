@@ -1,10 +1,11 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { Store } from 'vuex'
+import Vuex, { Store } from 'vuex'
 import Vuetify from 'vuetify'
 import AppToaster from '@/components/App/AppToaster.vue'
 
 const localVue = createLocalVue()
 localVue.use(Vuetify)
+localVue.use(Vuex)
 
 describe('AppToaster.vue', () => {
   let actions
