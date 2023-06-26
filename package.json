@@ -26,7 +26,8 @@
     "vue-server-renderer": "2.7.14",
     "vue-star": "^0.0.4",
     "vue-template-compiler": "2.7.14",
-    "vuetify": "^2.6.10"
+    "vuetify": "^2.6.10",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.21.8",
