@@ -25,7 +25,6 @@ module.exports = {
   },
   transformIgnorePatterns: [
     "/node_modules/(?!vue|vue-router|vuex|vuex-persist|@nuxtjs)",
-    "/assets/"
   ],
   collectCoverage: true,
   collectCoverageFrom: [
