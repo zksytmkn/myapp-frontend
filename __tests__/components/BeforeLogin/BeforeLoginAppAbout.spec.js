@@ -18,6 +18,12 @@ describe('BeforeLoginAppAbout.vue', () => {
       localVue,
       vuetify,
       mocks: { $t },
+      stubs: {
+        'nuxt-link': true,
+        'before-login-app-bar-guest-login-button': true,
+        'before-login-app-bar-signup-button': true,
+        ...options.stubs
+      },
       ...options
     });
   };
@@ -25,7 +31,7 @@ describe('BeforeLoginAppAbout.vue', () => {
   // ゲストログインボタンが表示されているかテスト
   test('renders the guest login button', () => {
       const wrapper = createComponent();
-      const button = wrapper.find('before-login-app-bar-guest-login-button');
+      const button = wrapper.find('before-login-app-bar-guest-login-button-stub');
       expect(button.exists()).toBe(true);
   });
 
@@ -43,33 +49,27 @@ describe('BeforeLoginAppAbout.vue', () => {
 
   // showImgsがwindowサイズに応じて変更されるかテスト
   test('showImgs changes based on window width', async () => {
-    const wrapper = createComponent();
-    Object.defineProperty(document.documentElement, 'clientWidth', {
-      value: 1280,
-      configurable: true
-    });
-    await wrapper.vm.getWindowWidth();
-    expect(wrapper.vm.showImgs).toBe(true);
+      const wrapper = createComponent();
+      Object.defineProperty(document.documentElement, 'clientWidth', {
+        value: 1280,
+        configurable: true
+      });
+      await wrapper.vm.getWindowWidth();
+      expect(wrapper.vm.showImgs).toBe(true);
 
-    Object.defineProperty(document.documentElement, 'clientWidth', {
-      value: 1200,
-      configurable: true
-    });
-    await wrapper.vm.getWindowWidth();
-    expect(wrapper.vm.showImgs).toBe(false);
+      Object.defineProperty(document.documentElement, 'clientWidth', {
+        value: 1200,
+        configurable: true
+      });
+      await wrapper.vm.getWindowWidth();
+      expect(wrapper.vm.showImgs).toBe(false);
   });
 
   // 登録ボタンが表示されているかテスト
-    test('renders the registration button', () => {
+  test('renders the signup button', () => {
       const wrapper = createComponent();
-      const button = wrapper.find('before-login-app-bar-signup-button');
+      const button = wrapper.find('before-login-app-bar-signup-button-stub');
       expect(button.exists()).toBe(true);
   });
 
-  // ゲストログインボタンが表示されているかテスト
-  test('renders the guest login button', () => {
-      const wrapper = createComponent();
-      const button = wrapper.find('before-login-app-bar-guest-login-button');
-      expect(button.exists()).toBe(true);
-  });
 });
