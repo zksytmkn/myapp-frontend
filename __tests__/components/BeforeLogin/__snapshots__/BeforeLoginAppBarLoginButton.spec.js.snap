@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BeforeLoginAppBarLoginButton.vue renders correctly 1`] = `
+<v-btn
+  class="ml-2 font-weight-bold"
+  color="black"
+  text=""
+  to="/login"
+>
+  
+  Login
+
+</v-btn>
+`;
