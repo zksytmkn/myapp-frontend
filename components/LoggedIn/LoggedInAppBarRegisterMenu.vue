@@ -15,6 +15,3 @@
     </template>
   </v-menu>
 </template>
-
-<script>
-</script>
